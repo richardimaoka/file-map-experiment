@@ -6,6 +6,17 @@ import (
 	"github.com/richardimaoka/file-map-experiment/env"
 )
 
+// PathResolver resolves paths for a single Excel case directory under APP_BASE_DIR.
+//
+// Expected layout (dirPath is relative to APP_BASE_DIR; excelFileName is the workbook file name):
+//
+//	$APP_BASE_DIR/<dirPath>/
+//	    <excelFileName>   # .xlsx workbook
+//	    config.json
+//	    schemas/
+//	        <name>.json   # schema files referenced by config
+//
+// Example: NewPathResolver("cases/client1", "folder_map.xlsx")
 type PathResolver struct {
 	dirPath       string
 	excelFileName string
