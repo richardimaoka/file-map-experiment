@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// Verifies path joins for the case directory layout (see PathResolver doc); no files created.
+// Case tree under APP_BASE_DIR/<dirPath>/ must match PathResolver's documented layout.
 func TestPathResolver_paths(t *testing.T) {
 	base := t.TempDir()
 	t.Setenv("APP_BASE_DIR", base)
@@ -14,23 +14,25 @@ func TestPathResolver_paths(t *testing.T) {
 	caseDir := filepath.Join(base, "cases", "client1")
 
 	if r.DirPath() != caseDir {
-		t.Fatalf("DirPath: got %q want %q", r.DirPath(), caseDir)
+		t.Fatalf("case root: got %q want %q", r.DirPath(), caseDir)
 	}
 
-	checks := []struct {
-		name string
-		got  string
-		want string
+	// Each entry is a path under the case root; absolute must equal Join(caseDir, relative).
+	layout := []struct {
+		relative string
+		absolute string
 	}{
-		{"ExcelPath", r.ExcelPath(), filepath.Join(caseDir, "folder_map.xlsx")},
-		{"ConfigPath", r.ConfigPath(), filepath.Join(caseDir, "config.json")},
-		{"SchemaDirPath", r.SchemaDirPath(), filepath.Join(caseDir, "schemas")},
-		{"SchemaPath", r.SchemaPath("sheet1"), filepath.Join(caseDir, "schemas", "sheet1.json")},
+		{"folder_map.xlsx", r.ExcelPath()},
+		{"config.json", r.ConfigPath()},
+		{"schemas", r.SchemaDirPath()},
+		{"schemas/sheet1.json", r.SchemaPath("sheet1")},
+		{"schemas/sheet2.json", r.SchemaPath("sheet2")},
 	}
-	for _, c := range checks {
-		t.Run(c.name, func(t *testing.T) {
-			if c.got != c.want {
-				t.Errorf("got %q want %q", c.got, c.want)
+	for _, ent := range layout {
+		t.Run(ent.relative, func(t *testing.T) {
+			want := filepath.Join(caseDir, ent.relative)
+			if ent.absolute != want {
+				t.Errorf("got %q want %q", ent.absolute, want)
 			}
 		})
 	}
