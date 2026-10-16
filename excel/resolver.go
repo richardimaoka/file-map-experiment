@@ -6,52 +6,50 @@ import (
 	"github.com/richardimaoka/file-map-experiment/env"
 )
 
+// Expected layout:
+// $APP_BASE_DIR/<dirPath>/
+//   <excelFileName>   # .xlsx/.xlsm workbook
+//	 config.json
+//	 schemas/
+//	   <name1>.json
+//	   <name2>.json
+//	   <name3>.json
+//
+
 // PathResolver resolves paths for a single Excel case directory under APP_BASE_DIR.
-//
-// Expected layout (dirPath is relative to APP_BASE_DIR; excelFileName is the workbook file name):
-//
-//	$APP_BASE_DIR/<dirPath>/
-//	    <excelFileName>   # .xlsx workbook
-//	    config.json
-//	    schemas/
-//	        <name>.json   # schema files referenced by config
-//
 // Example: NewPathResolver("cases/client1", "folder_map.xlsx")
 type PathResolver struct {
-	dirPath       string
+	baseDir       string
+	relPath       string
 	excelFileName string
 }
 
-func NewPathResolver(dirPath, excelFileName string) *PathResolver {
+func NewPathResolver(relPath string) *PathResolver {
 	baseDir := env.AppBaseDir()
-	fullPath := filepath.Join(baseDir, dirPath)
 
 	return &PathResolver{
-		dirPath:       fullPath,
-		excelFileName: excelFileName,
+		baseDir: baseDir,
+		relPath: relPath,
 	}
 }
 
 func (p *PathResolver) DirPath() string {
-	return p.dirPath
+	return filepath.Join(p.baseDir, p.relPath)
 }
 
-func (p *PathResolver) ExcelPath() string {
-	path := filepath.Join(p.dirPath, p.excelFileName)
-	return path
+func (p *PathResolver) ExcelPath(config *ExcelConfig) string {
+	return filepath.Join(p.DirPath(), config.ExcelFileName)
 }
 
 func (p *PathResolver) ConfigPath() string {
-	path := filepath.Join(p.dirPath, "config.json")
-	return path
+	return filepath.Join(p.DirPath(), "config.json")
+
 }
 
-func (p *PathResolver) SchemaDirPath() string {
-	path := filepath.Join(p.dirPath, "schemas")
-	return path
+func (p *PathResolver) SchemaCollectionPath() string {
+	return filepath.Join(p.DirPath(), "schemas")
 }
 
 func (p *PathResolver) SchemaPath(schemaName string) string {
-	path := filepath.Join(p.dirPath, "schemas", schemaName+".json")
-	return path
+	return filepath.Join(p.SchemaCollectionPath(), schemaName+".json")
 }

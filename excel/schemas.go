@@ -1,5 +1,7 @@
 package excel
 
+import "fmt"
+
 type ColumnSchema struct {
 	HeaderName   string `json:"header_name"`
 	ExcelColumn  string `json:"excel_column"`
@@ -7,9 +9,21 @@ type ColumnSchema struct {
 }
 
 type TableSchema struct {
-	SchemaName      string         `json:"schema_name"`
-	DataStartRow    int            `json:"data_start_row"`
-	DataStartColumn string         `json:"data_start_column"`
-	DataEndColumn   string         `json:"data_end_column"`
-	Columns         []ColumnSchema `json:"columns"`
+	SchemaName   string         `json:"schema_name"`
+	DataStartRow int            `json:"data_start_row"`
+	StartColumn  string         `json:"start_column"`
+	EndColumn    string         `json:"end_column"`
+	Columns      []ColumnSchema `json:"columns"`
+}
+
+func ReadSchemaFromExcel(resolver *PathResolver, schemaName string) (*TableSchema, error) {
+	return nil, fmt.Errorf("ReadSchemaFromExcel: not implemented")
+}
+
+func ReadSchemaFromJson(jsonPath string) (*TableSchema, error) {
+	return nil, fmt.Errorf("ReadSchemaFromJson: not implemented")
+}
+
+func validateExcelAgainstSchema(resolver *PathResolver, schemaName string) (*TableSchema, error) {
+	return nil, fmt.Errorf("validateExcelAgainstSchema: not implemented")
 }

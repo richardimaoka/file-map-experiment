@@ -1,26 +1,24 @@
 package excel
 
-// isCellInMergeRange reports whether pos lies inside m.Range (inclusive on all edges).
-func isCellInMergeRange(pos CellPosition, m MergedRange) bool {
-	col, err := pos.ColumnNumber()
-	if err != nil || pos.RowNumber < 1 {
-		return false
-	}
+import (
+	"fmt"
+)
 
-	startCol, err := m.Range.UpperLeft.ColumnNumber()
-	if err != nil {
-		return false
-	}
-	endCol, err := m.Range.BottomRight.ColumnNumber()
-	if err != nil {
-		return false
-	}
-	startRow := m.Range.UpperLeft.RowNumber
-	endRow := m.Range.BottomRight.RowNumber
-	if startRow < 1 || endRow < 1 {
-		return false
-	}
+// value is in string, because excelize treats all cell values as string, and we don't want to lose precision
+type RowData map[string]string
 
-	row := pos.RowNumber
-	return col >= startCol && col <= endCol && row >= startRow && row <= endRow
+func readRowsFromExcelInternal(excelPath string, schema *TableSchema) ([]RowData, error) {
+	return nil, fmt.Errorf("readRowsFromExcelInternal: not implemented")
+}
+
+func ReadRowsFromExcel(resolver *PathResolver, schemaName string) ([]RowData, error) {
+	return nil, fmt.Errorf("ReadRowsFromExcel: not implemented")
+}
+
+func ReadRowsFromJson(jsonPath string) ([]RowData, error) {
+	return nil, fmt.Errorf("ReadRowsFromJson: not implemented")
+}
+
+func ReadSingleRowFromJson(jsonPath string) ([]RowData, error) {
+	return nil, fmt.Errorf("ReadRowsFromJson: not implemented")
 }
