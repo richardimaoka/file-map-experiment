@@ -1,24 +1,26 @@
 package excel
 
-import (
-	"github.com/xuri/excelize/v2"
-)
-
-func isCellInMergeRange(cellAxis string, m excelize.MergeCell) bool {
-	col, row, err := excelize.CellNameToCoordinates(cellAxis)
-	if err != nil {
+// isCellInMergeRange reports whether pos lies inside m.Range (inclusive on all edges).
+func isCellInMergeRange(pos CellPosition, m MergedRange) bool {
+	col, err := pos.ColumnNumber()
+	if err != nil || pos.RowNumber < 1 {
 		return false
 	}
 
-	startCol, startRow, err := excelize.CellNameToCoordinates(m.GetStartAxis())
+	startCol, err := m.Range.UpperLeft.ColumnNumber()
 	if err != nil {
 		return false
 	}
-
-	endCol, endRow, err := excelize.CellNameToCoordinates(m.GetEndAxis())
+	endCol, err := m.Range.BottomRight.ColumnNumber()
 	if err != nil {
 		return false
 	}
+	startRow := m.Range.UpperLeft.RowNumber
+	endRow := m.Range.BottomRight.RowNumber
+	if startRow < 1 || endRow < 1 {
+		return false
+	}
 
+	row := pos.RowNumber
 	return col >= startCol && col <= endCol && row >= startRow && row <= endRow
 }
