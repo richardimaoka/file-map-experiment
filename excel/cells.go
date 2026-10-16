@@ -15,6 +15,15 @@ func (c *CellPosition) CellName() string {
 	return fmt.Sprintf("%s%ds", c.ColumnName, c.RowNumber)
 }
 
+func (c *CellPosition) ColumnNumber() (int, error) {
+	n, err := excelize.ColumnNameToNumber(c.ColumnName)
+	if err != nil {
+		return 0, fmt.Errorf("CellPosition.ColumnNumber: %w", err)
+	}
+
+	return n, nil
+}
+
 type CellValue struct {
 	Value       string       `json:"value"`
 	Formula     string       `json:"formula"`

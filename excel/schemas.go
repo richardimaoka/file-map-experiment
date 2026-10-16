@@ -1,9 +1,9 @@
 package excel
 
 type ColumnSchema struct {
-	HeaderName  string `json:"header_name"`
-	ExcelColumn string `json:"excel_column"`
-	IsMerged    bool   `json:"is_merged"`
+	HeaderName   string `json:"header_name"`
+	ExcelColumn  string `json:"excel_column"`
+	IsRowGrouped bool   `json:"is_row_grouped"`
 }
 
 type TableSchema struct {
