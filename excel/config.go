@@ -1,6 +1,10 @@
 package excel
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
 
 // SchemaPrep is needed before reading Excel table schema
 type SchemaPrep struct {
@@ -27,14 +31,14 @@ type ExcelConfig struct {
 	SchemaPreps   []SchemaPrep `json:"schema_preps"` // manually updated in config.json
 }
 
-func (c *ExcelConfig) GetSchemaPrep(schemaName string) (*SchemaPrep, error) {
+func (c *ExcelConfig) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
 	for _, prep := range c.SchemaPreps {
 		if prep.SchemaName == schemaName {
-			return &prep, nil
+			return prep, nil
 		}
 	}
 
-	return nil, fmt.Errorf("ExcelConfig.GetSchemaPrep: schema %q not found in config", schemaName)
+	return SchemaPrep{}, fmt.Errorf("ExcelConfig.GetSchemaPrep: schema %q not found in config", schemaName)
 }
 
 // The excelFileName argument is needed, assuming you already know
@@ -45,6 +49,16 @@ func InitConfig(excelFileName string) *ExcelConfig {
 	}
 }
 
-func ReadConfigFromJson(jsonPath string) (*ExcelConfig, error) {
-	return nil, fmt.Errorf("ReadConfigFromJson: not implemented")
+func ReadExcelConfig(jsonPath string) (*ExcelConfig, error) {
+	data, err := os.ReadFile(jsonPath)
+	if err != nil {
+		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
+	}
+
+	var config ExcelConfig
+	if err := json.Unmarshal(data, &config); err != nil {
+		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
+	}
+
+	return &config, nil
 }
