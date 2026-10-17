@@ -2,10 +2,11 @@ package excel
 
 import (
 	"bytes"
-	"io"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/richardimaoka/file-map-experiment/fs"
 )
 
 // BuildExcelDir prepares a working directory from an existing Excel file.
@@ -96,29 +97,11 @@ func copyBuildFixtureIntoTarget(t *testing.T, fixture, targetDir string) {
 		if ent.IsDir() || ent.Name() == ".gitkeep" {
 			continue
 		}
-		copyFile(t, filepath.Join(srcDir, ent.Name()), filepath.Join(targetDir, ent.Name()))
-	}
-}
-
-func copyFile(t *testing.T, src, dst string) {
-	in, err := os.Open(src)
-	if err != nil {
-		t.Fatalf("open %s: %v", src, err)
-	}
-	defer in.Close()
-
-	out, err := os.Create(dst)
-	if err != nil {
-		t.Fatalf("create %s: %v", dst, err)
-	}
-	defer func() {
-		if err := out.Close(); err != nil {
-			t.Fatalf("close %s: %v", dst, err)
+		src := filepath.Join(srcDir, ent.Name())
+		dst := filepath.Join(targetDir, ent.Name())
+		if err := fs.CopyFile(src, dst); err != nil {
+			t.Fatalf("copy %s -> %s: %v", src, dst, err)
 		}
-	}()
-
-	if _, err := io.Copy(out, in); err != nil {
-		t.Fatalf("copy %s -> %s: %v", src, dst, err)
 	}
 }
 
