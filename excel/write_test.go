@@ -9,7 +9,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// Fixture variants under excel/testdata/ (same fictional ad data, different sheet layout):
+// Fixture variants under excel/testdata/samples/ (same fictional ad data, different sheet layout):
 //   - simple: single-row headers, no grouped rows, no summary rows
 //   - multi_row_headers
 //   - grouped_rows: 広告アカウント / 広告キャンペーン / 広告グループ merged for repeated values
@@ -18,7 +18,7 @@ import (
 //   - complex: multi-row headers, grouped rows, summary rows, origin at D5
 
 func TestCreateAdsReportFixturesInTestdata(t *testing.T) {
-	dir := filepath.Join("testdata")
+	dir := filepath.Join("testdata", "samples")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatal(err)
 	}

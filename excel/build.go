@@ -2,6 +2,6 @@ package excel
 
 import "fmt"
 
-func BuildExcelDir(resolver *PathResolver) error {
+func BuildExcelDir(excelPath string, targetDirPath string) error {
 	return fmt.Errorf("BuildExcelDir: not implemented")
 }
