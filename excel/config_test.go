@@ -100,3 +100,21 @@ func TestReadExcelConfig_invalid_json(t *testing.T) {
 		t.Fatal("expected error")
 	}
 }
+
+func TestReadExcelConfig_missing_excel_file_name(t *testing.T) {
+	path := filepath.Join("testdata", "config", "read_config_missing_excel_file_name", "config.json")
+
+	_, err := ReadExcelConfig(path)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestReadExcelConfig_excel_file_missing(t *testing.T) {
+	path := filepath.Join("testdata", "config", "read_config_excel_file_missing", "config.json")
+
+	_, err := ReadExcelConfig(path)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}

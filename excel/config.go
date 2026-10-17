@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 // SchemaPrep is needed before reading Excel table schema
@@ -58,6 +60,15 @@ func ReadExcelConfig(jsonPath string) (*ExcelConfig, error) {
 	var config ExcelConfig
 	if err := json.Unmarshal(data, &config); err != nil {
 		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
+	}
+
+	if strings.TrimSpace(config.ExcelFileName) == "" {
+		return nil, fmt.Errorf("ReadExcelConfig: excel_file_name is not set")
+	}
+
+	excelPath := filepath.Join(filepath.Dir(jsonPath), config.ExcelFileName)
+	if _, err := os.Stat(excelPath); err != nil {
+		return nil, fmt.Errorf("ReadExcelConfig: excel file %q: %w", config.ExcelFileName, err)
 	}
 
 	return &config, nil
