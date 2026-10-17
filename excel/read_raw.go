@@ -2,28 +2,36 @@ package excel
 
 import "fmt"
 
-type SingleRowHeaderRaw struct {
-	ExcelColumn string `json:"excel_column"`
-	HeaderName  string `json:"header_name"`
+type RawHeader struct {
+	ExcelColumn    string      `json:"excel_column"`
+	HeaderStartRow int         `json:"header_start_row"`
+	HeaderEndRow   int         `json:"header_end_row"`
+	CellValues     []CellValue `json:"cell_values"`
 }
 
-type MultiRowHeaderRaw struct {
-	ExcelColumn string   `json:"excel_column"`
-	CellValues  []string `json:"cell_values"`
+func (h *RawHeader) Type() (string, error) {
+	return "", fmt.Errorf("RawHeader.Type: not implemented")
 }
 
-func (h *MultiRowHeaderRaw) ExtractHeaderName() (string, error) {
-	return "", fmt.Errorf("extractHeaderName: not implemented")
+func (h *RawHeader) HeaderName() (string, error) {
+	return "", fmt.Errorf("HeaderName: not implemented")
 }
 
-type DataColumnRaw struct {
-	ExcelColumn  string `json:"excel_column"`
-	DataStartRow int    `json:"data_start_row"`
-	IsMerged     bool   `json:"is_merged"`
+type RawDataColumn struct {
+	ExcelColumn  string      `json:"excel_column"`
+	DataStartRow int         `json:"data_start_row"`
+	DataEndRow   int         `json:"data_end_row"`
+	IsMerged     bool        `json:"is_merged"`
+	CellValues   []CellValue `json:"cell_values"`
 }
 
-func (c *DataColumnRaw) DetectColumnType() (string, error) {
-	return "", fmt.Errorf("extractHeaderName: not implemented")
+func (c *RawDataColumn) Type() (string, error) {
+	return "", fmt.Errorf("RawDataColumn.Type: not implemented")
+}
+
+type RawColumn struct {
+	Header *RawHeader     `json:"header"`
+	Data   *RawDataColumn `json:"data"`
 }
 
 // isCellInMergeRange reports whether pos lies inside m.Range (inclusive on all edges).
@@ -49,4 +57,8 @@ func isCellInMergeRange(pos CellPosition, m MergedRange) bool {
 
 	row := pos.RowNumber
 	return col >= startCol && col <= endCol && row >= startRow && row <= endRow
+}
+
+func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
+	return nil, fmt.Errorf("readRawColumns: not implemented")
 }

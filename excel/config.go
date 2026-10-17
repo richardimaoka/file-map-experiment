@@ -2,6 +2,7 @@ package excel
 
 import "fmt"
 
+// SchemaPrep is needed before reading Excel table schema
 type SchemaPrep struct {
 	SchemaName     string `json:"schema_name"`
 	IsReady        bool   `json:"is_ready"`
@@ -23,7 +24,7 @@ func (c *SchemaPrep) HeaderRange() CellRange {
 
 type ExcelConfig struct {
 	ExcelFileName string       `json:"excel_file_name"`
-	SchemaPreps   []SchemaPrep `json:"schema_preps"`
+	SchemaPreps   []SchemaPrep `json:"schema_preps"` // manually updated in config.json
 }
 
 func (c *ExcelConfig) GetSchemaPrep(schemaName string) (*SchemaPrep, error) {
@@ -36,6 +37,8 @@ func (c *ExcelConfig) GetSchemaPrep(schemaName string) (*SchemaPrep, error) {
 	return nil, fmt.Errorf("ExcelConfig.GetSchemaPrep: schema %q not found in config", schemaName)
 }
 
+// The excelFileName argument is needed, assuming you already know
+// which Excel file to read upon creating config.json
 func InitConfig(excelFileName string) *ExcelConfig {
 	return &ExcelConfig{
 		ExcelFileName: excelFileName,

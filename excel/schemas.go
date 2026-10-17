@@ -16,14 +16,18 @@ type TableSchema struct {
 	Columns      []ColumnSchema `json:"columns"`
 }
 
+func readSchemaInternal(excelPath string, prep *SchemaPrep) (*TableSchema, error) {
+	return nil, fmt.Errorf("readSchemaInternal: not implemented")
+}
+
+func validateExcelAgainstSchema(resolver *PathResolver, schemaName string) (*TableSchema, error) {
+	return nil, fmt.Errorf("validateExcelAgainstSchema: not implemented")
+}
+
 func ReadSchemaFromExcel(resolver *PathResolver, schemaName string) (*TableSchema, error) {
 	return nil, fmt.Errorf("ReadSchemaFromExcel: not implemented")
 }
 
 func ReadSchemaFromJson(jsonPath string) (*TableSchema, error) {
 	return nil, fmt.Errorf("ReadSchemaFromJson: not implemented")
-}
-
-func validateExcelAgainstSchema(resolver *PathResolver, schemaName string) (*TableSchema, error) {
-	return nil, fmt.Errorf("validateExcelAgainstSchema: not implemented")
 }
