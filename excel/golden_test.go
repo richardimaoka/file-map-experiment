@@ -51,10 +51,14 @@ func jsonLineDiff(want, got string) string {
 			continue
 		}
 		if i < len(wantLines) {
-			b.WriteString("- " + w + "\n")
+			b.WriteString("- ")
+			b.WriteString(w)
+			b.WriteByte('\n')
 		}
 		if i < len(gotLines) {
-			b.WriteString("+ " + g + "\n")
+			b.WriteString("+ ")
+			b.WriteString(g)
+			b.WriteByte('\n')
 		}
 	}
 	return b.String()
