@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	if os.Getenv("APP_BASE_DIR") == "" {
-		fmt.Fprintf(os.Stderr, "test setup: APP_BASE_DIR is not set (copy .env.example to .env at repo root)\n")
+		fmt.Fprintf(os.Stderr, "test setup: APP_BASE_DIR is not set\n")
 		os.Exit(1)
 	}
 	os.Exit(m.Run())
