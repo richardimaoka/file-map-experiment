@@ -15,13 +15,13 @@ func TestReadRawColumns(t *testing.T) {
 	for _, dir := range rawHeaderCaseDirs() {
 		t.Run(dir, func(t *testing.T) {
 			caseDir := filepath.Join("testdata", "raw_header", dir)
-			prepPath := filepath.Join(caseDir, "schema_pre.json")
+			prepPath := filepath.Join(caseDir, "schema_prep.json")
 			excelPath := filepath.Join(caseDir, "workbook.xlsx")
 			goldenPath := filepath.Join(caseDir, "raw_columns.json")
 
 			var prep SchemaPrep
 			if err := jsonfile.Read(prepPath, &prep); err != nil {
-				t.Fatalf("read schema_pre: %v", err)
+				t.Fatalf("read schema_prep: %v", err)
 			}
 
 			got, err := readRawColumns(excelPath, &prep)

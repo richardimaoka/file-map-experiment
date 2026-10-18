@@ -71,6 +71,9 @@ func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
 	if strings.TrimSpace(prep.SchemaName) == "" {
 		return nil, fmt.Errorf("readRawColumns: schema_name is not set")
 	}
+	if strings.TrimSpace(prep.SheetName) == "" {
+		return nil, fmt.Errorf("readRawColumns: sheet_name is not set")
+	}
 
 	f, err := excelize.OpenFile(excelPath)
 	if err != nil {
@@ -78,7 +81,7 @@ func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
 	}
 	defer f.Close()
 
-	sheet := prep.SchemaName
+	sheet := prep.SheetName
 	if idx, err := f.GetSheetIndex(sheet); err != nil || idx < 0 {
 		return nil, fmt.Errorf("readRawColumns: sheet %q not found", sheet)
 	}

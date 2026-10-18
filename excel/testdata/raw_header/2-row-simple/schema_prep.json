@@ -1,8 +1,9 @@
 {
-  "schema_name": "2-row-horizontal-merge-repeated",
+  "schema_name": "2-row-simple",
+  "sheet_name": "2-row-simple",
   "is_ready": true,
   "header_start_row": 1,
   "header_end_row": 2,
   "start_column": "A",
-  "end_column": "G"
+  "end_column": "C"
 }

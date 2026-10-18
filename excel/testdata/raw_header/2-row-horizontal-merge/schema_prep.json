@@ -1,5 +1,6 @@
 {
-  "schema_name": "2-row-simple",
+  "schema_name": "2-row-horizontal-merge",
+  "sheet_name": "2-row-horizontal-merge",
   "is_ready": true,
   "header_start_row": 1,
   "header_end_row": 2,

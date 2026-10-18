@@ -10,6 +10,7 @@ import (
 // SchemaPrep is needed before reading Excel table schema
 type SchemaPrep struct {
 	SchemaName     string `json:"schema_name"`
+	SheetName      string `json:"sheet_name"`
 	IsReady        bool   `json:"is_ready"`
 	HeaderStartRow int    `json:"header_start_row"`
 	HeaderEndRow   int    `json:"header_end_row"`

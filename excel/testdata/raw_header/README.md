@@ -10,7 +10,7 @@ Only header regions are filled; data rows below the header are intentionally emp
 
 Each case directory also has:
 
-- `schema_pre.json` — `SchemaPrep` for the header region (`schema_name` matches the directory name, `is_ready`: true).
+- `schema_prep.json` — `SchemaPrep` for the header region (`schema_name` and `sheet_name` match the directory name, `is_ready`: true).
 - `raw_columns.json` — golden output of `readRawColumns` (JSON array of `RawColumn`).
 
 Regenerate `raw_columns.json` after changing layouts or reader behavior:
