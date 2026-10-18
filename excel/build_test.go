@@ -61,7 +61,10 @@ func TestBuildExcelDir(t *testing.T) {
 			t.Setenv("APP_BASE_DIR", appBase)
 			targetDir := filepath.Join(appBase, caseRelPath)
 			if tc.buildFixture != "" {
-				copyBuildFixtureIntoTarget(t, tc.buildFixture, targetDir)
+				srcDir := filepath.Join("testdata", "build", tc.buildFixture)
+				if err := fs.CopyDir(srcDir, targetDir); err != nil {
+					t.Fatalf("CopyDir: %v", err)
+				}
 			}
 
 			excelPath := filepath.Join(targetDir, excelName)
@@ -86,28 +89,6 @@ type buildExcelDirCase struct {
 	buildFixture string // testdata/build/<name>; empty = target directory does not exist yet
 	wantExcel    []byte
 	wantConfig   *ExcelConfig // nil: expect InitConfig-shaped config after build
-}
-
-// copyBuildFixtureIntoTarget copies testdata/build/<fixture> into targetDir (read-only fixtures).
-func copyBuildFixtureIntoTarget(t *testing.T, fixture, targetDir string) {
-	srcDir := filepath.Join("testdata", "build", fixture)
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("read build fixture %s: %v", fixture, err)
-	}
-	if err := os.MkdirAll(targetDir, 0o755); err != nil {
-		t.Fatalf("mkdir target: %v", err)
-	}
-	for _, ent := range entries {
-		if ent.IsDir() || ent.Name() == ".gitkeep" {
-			continue
-		}
-		src := filepath.Join(srcDir, ent.Name())
-		dst := filepath.Join(targetDir, ent.Name())
-		if err := fs.CopyFile(src, dst); err != nil {
-			t.Fatalf("copy %s -> %s: %v", src, dst, err)
-		}
-	}
 }
 
 func assertConfigAfter(t *testing.T, configPath string, want *ExcelConfig, excelName string) {
