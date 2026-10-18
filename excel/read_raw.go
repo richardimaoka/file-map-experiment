@@ -1,6 +1,11 @@
 package excel
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/xuri/excelize/v2"
+)
 
 type RawHeader struct {
 	ExcelColumn    string      `json:"excel_column"`
@@ -60,5 +65,133 @@ func isCellInMergeRange(pos CellPosition, m MergedRange) bool {
 }
 
 func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
-	return nil, fmt.Errorf("readRawColumns: not implemented")
+	if prep == nil {
+		return nil, fmt.Errorf("readRawColumns: prep is nil")
+	}
+	if strings.TrimSpace(prep.SchemaName) == "" {
+		return nil, fmt.Errorf("readRawColumns: schema_name is not set")
+	}
+
+	f, err := excelize.OpenFile(excelPath)
+	if err != nil {
+		return nil, fmt.Errorf("readRawColumns: %w", err)
+	}
+	defer f.Close()
+
+	sheet := prep.SchemaName
+	if idx, err := f.GetSheetIndex(sheet); err != nil || idx < 0 {
+		return nil, fmt.Errorf("readRawColumns: sheet %q not found", sheet)
+	}
+
+	merges, err := loadMergedRanges(f, sheet)
+	if err != nil {
+		return nil, fmt.Errorf("readRawColumns: %w", err)
+	}
+
+	startCol, err := excelize.ColumnNameToNumber(prep.StartColumn)
+	if err != nil {
+		return nil, fmt.Errorf("readRawColumns: start_column: %w", err)
+	}
+	endCol, err := excelize.ColumnNameToNumber(prep.EndColumn)
+	if err != nil {
+		return nil, fmt.Errorf("readRawColumns: end_column: %w", err)
+	}
+	if endCol < startCol {
+		return nil, fmt.Errorf("readRawColumns: end_column before start_column")
+	}
+	if prep.HeaderStartRow < 1 || prep.HeaderEndRow < prep.HeaderStartRow {
+		return nil, fmt.Errorf("readRawColumns: invalid header row range")
+	}
+
+	columns := make([]RawColumn, 0, endCol-startCol+1)
+	for colNum := startCol; colNum <= endCol; colNum++ {
+		colName, err := excelize.ColumnNumberToName(colNum)
+		if err != nil {
+			return nil, fmt.Errorf("readRawColumns: %w", err)
+		}
+
+		cellValues := make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
+		for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
+			cv, err := readHeaderCellValue(f, sheet, colName, row, merges)
+			if err != nil {
+				return nil, fmt.Errorf("readRawColumns: %w", err)
+			}
+			cellValues = append(cellValues, cv)
+		}
+
+		columns = append(columns, RawColumn{
+			Header: &RawHeader{
+				ExcelColumn:    colName,
+				HeaderStartRow: prep.HeaderStartRow,
+				HeaderEndRow:   prep.HeaderEndRow,
+				CellValues:     cellValues,
+			},
+		})
+	}
+
+	return columns, nil
+}
+
+func loadMergedRanges(f *excelize.File, sheet string) ([]MergedRange, error) {
+	cells, err := f.GetMergeCells(sheet)
+	if err != nil {
+		return nil, err
+	}
+
+	merges := make([]MergedRange, 0, len(cells))
+	for _, mc := range cells {
+		startCol, startRow, err := excelize.SplitCellName(mc.GetStartAxis())
+		if err != nil {
+			return nil, err
+		}
+		endCol, endRow, err := excelize.SplitCellName(mc.GetEndAxis())
+		if err != nil {
+			return nil, err
+		}
+		merges = append(merges, MergedRange{
+			Value: mc.GetCellValue(),
+			Range: NewCellRange(startCol, startRow, endCol, endRow),
+		})
+	}
+	return merges, nil
+}
+
+func readHeaderCellValue(f *excelize.File, sheet, col string, row int, merges []MergedRange) (CellValue, error) {
+	pos := CellPosition{ColumnName: col, RowNumber: row}
+	cellName, err := excelize.JoinCellName(col, row)
+	if err != nil {
+		return CellValue{}, err
+	}
+
+	value, err := f.GetCellValue(sheet, cellName)
+	if err != nil {
+		return CellValue{}, err
+	}
+	formula, err := f.GetCellFormula(sheet, cellName)
+	if err != nil {
+		return CellValue{}, err
+	}
+
+	var merged *MergedRange
+	isMerged := false
+	for _, m := range merges {
+		if !isCellInMergeRange(pos, m) {
+			continue
+		}
+		isMerged = true
+		mr := m
+		merged = &mr
+		if value == "" {
+			value = m.Value
+		}
+		break
+	}
+
+	return CellValue{
+		Value:       value,
+		Formula:     formula,
+		Position:    pos,
+		IsMerged:    isMerged,
+		MergedRange: merged,
+	}, nil
 }

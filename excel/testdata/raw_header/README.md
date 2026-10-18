@@ -8,6 +8,17 @@ go test ./excel -run TestCreateRawHeaderFixturesInTestdata
 
 Only header regions are filled; data rows below the header are intentionally empty.
 
+Each case directory also has:
+
+- `schema_pre.json` — `SchemaPrep` for the header region (`schema_name` matches the directory name, `is_ready`: true).
+- `raw_columns.json` — golden output of `readRawColumns` (JSON array of `RawColumn`).
+
+Regenerate `raw_columns.json` after changing layouts or reader behavior:
+
+```bash
+UPDATE_RAW_HEADER_GOLDEN=1 go test ./excel -run TestReadRawColumns
+```
+
 | Directory                            | Description                          |
 |--------------------------------------|--------------------------------------|
 | `1-row-simple`                       | 1-row, simple                        |
