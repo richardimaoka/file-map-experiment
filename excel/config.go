@@ -66,7 +66,7 @@ type ExcelConfig struct {
 	SchemaPreps   []SchemaPrep `json:"schema_preps"` // manually updated in config.json
 }
 
-func (c *ExcelConfig) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
+func (c ExcelConfig) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
 	for _, prep := range c.SchemaPreps {
 		if prep.SchemaName == schemaName {
 			return prep, nil
@@ -78,15 +78,15 @@ func (c *ExcelConfig) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
 
 // The excelFileName argument is needed, assuming you already know
 // which Excel file to read upon creating config.json
-func InitConfig(excelFileName string) *ExcelConfig {
-	return &ExcelConfig{
+func InitConfig(excelFileName string) ExcelConfig {
+	return ExcelConfig{
 		ExcelFileName: excelFileName,
 	}
 }
 
 // Validate checks the config contents, but doesn't validate if the directory holding config.json
 // is in a good shape (e.g. if the Excel file exists).
-func (c *ExcelConfig) Validate() error {
+func (c ExcelConfig) Validate() error {
 	if strings.TrimSpace(c.ExcelFileName) == "" {
 		return fmt.Errorf("ExcelConfig.Validate: excel_file_name is not set")
 	}
@@ -97,16 +97,16 @@ func (c *ExcelConfig) Validate() error {
 	return nil
 }
 
-func ReadExcelConfig(jsonPath string) (*ExcelConfig, error) {
+func ReadExcelConfig(jsonPath string) (ExcelConfig, error) {
 	var config ExcelConfig
 	err := jsonfile.Read(jsonPath, &config)
 	if err != nil {
-		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
+		return ExcelConfig{}, fmt.Errorf("ReadExcelConfig: %w", err)
 	}
 
 	if err := config.Validate(); err != nil {
-		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
+		return ExcelConfig{}, fmt.Errorf("ReadExcelConfig: %w", err)
 	}
 
-	return &config, nil
+	return config, nil
 }

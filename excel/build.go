@@ -30,10 +30,10 @@ func copyExcelFile(sourceExcelPath string, resolver *PathResolver) error {
 func ensureConfigExists(sourceExcelPath string, resolver *PathResolver) error {
 	configPath := resolver.ConfigPath()
 
-	config, err := ReadExcelConfig(configPath)
+	_, err := ReadExcelConfig(configPath)
 	if err != nil {
 		excelName := filepath.Base(sourceExcelPath)
-		config = InitConfig(excelName)
+		config := InitConfig(excelName)
 		data, err := json.Marshal(config)
 		if err != nil {
 			return fmt.Errorf("ensureConfigExists: %w", err)

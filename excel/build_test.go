@@ -36,7 +36,7 @@ func TestBuildExcelDir(t *testing.T) {
 			name:         "existing_dir_with_config",
 			buildFixture: "existing_dir_with_config",
 			wantExcel:    sourceBytes,
-			wantConfig:   preservedConfig,
+			wantConfig:   &preservedConfig,
 		},
 		// testdata/build/existing_dir_with_excel: Excel file only (overwritten from source).
 		{
@@ -49,7 +49,7 @@ func TestBuildExcelDir(t *testing.T) {
 			name:         "existing_dir_with_excel_and_config",
 			buildFixture: "existing_dir_with_excel_and_config",
 			wantExcel:    sourceBytes,
-			wantConfig:   preservedConfig,
+			wantConfig:   &preservedConfig,
 		},
 	}
 
@@ -97,8 +97,8 @@ func assertConfigAfter(t *testing.T, configPath string, want *ExcelConfig, excel
 		t.Fatalf("ReadExcelConfig: %v", err)
 	}
 	if want != nil {
-		if !reflect.DeepEqual(cfg, want) {
-			t.Errorf("config: got %+v want %+v", cfg, want)
+		if !reflect.DeepEqual(cfg, *want) {
+			t.Errorf("config: got %+v want %+v", cfg, *want)
 		}
 		return
 	}
@@ -110,13 +110,13 @@ func assertConfigAfter(t *testing.T, configPath string, want *ExcelConfig, excel
 	}
 }
 
-func mustParseConfigFixture(t *testing.T, path string) *ExcelConfig {
+func mustParseConfigFixture(t *testing.T, path string) ExcelConfig {
 	data := mustReadFile(t, path)
 	var cfg ExcelConfig
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		t.Fatalf("parse config fixture %s: %v", path, err)
 	}
-	return &cfg
+	return cfg
 }
 
 func mustReadFile(t *testing.T, path string) []byte {

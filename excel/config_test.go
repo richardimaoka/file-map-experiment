@@ -64,7 +64,7 @@ func TestSchemaPrep_Validate(t *testing.T) {
 }
 
 func TestExcelConfig_GetSchemaPrep(t *testing.T) {
-	cfg := &ExcelConfig{
+	cfg := ExcelConfig{
 		SchemaPreps: []SchemaPrep{
 			{SchemaName: "sheet1", DataStartRow: 3},
 			{SchemaName: "sheet2"},

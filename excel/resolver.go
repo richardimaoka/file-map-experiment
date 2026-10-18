@@ -38,7 +38,7 @@ func (p *PathResolver) DirPath() string {
 	return filepath.Join(p.baseDir, p.relPath)
 }
 
-func (p *PathResolver) ExcelPath(config *ExcelConfig) string {
+func (p *PathResolver) ExcelPath(config ExcelConfig) string {
 	return filepath.Join(p.DirPath(), config.ExcelFileName)
 }
 
