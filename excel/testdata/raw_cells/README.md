@@ -17,7 +17,7 @@ go test ./excel -run TestCreateRawCellsFixturesInTestdata
 Regenerate `merged_ranges.json` and cell goldens:
 
 ```bash
-UPDATE_RAW_CELLS_GOLDEN=1 go test ./excel -run 'TestLoadMergedRanges|TestReadCellValue'
+go test ./excel -update -run 'TestLoadMergedRanges|TestReadCellValue'
 ```
 
 | Directory        | Description                          |

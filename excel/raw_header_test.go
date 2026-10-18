@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
 	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
@@ -14,7 +13,7 @@ import (
 
 // Header fixtures under excel/testdata/raw_header/<case>/ (workbook.xlsx, raw_headers.json).
 // Regenerate workbooks: go test ./excel -run TestCreateRawHeaderFixturesInTestdata
-// Regenerate raw_headers.json: UPDATE_RAW_HEADER_GOLDEN=1 go test ./excel -run TestReadRawHeaders
+// Regenerate raw_headers.json: go test ./excel -update -run TestReadRawHeaders
 
 type rawHeaderCase struct {
 	dir   string
@@ -80,7 +79,7 @@ func TestReadRawHeaders(t *testing.T) {
 				t.Fatalf("readRawHeaders: %v", err)
 			}
 
-			if os.Getenv("UPDATE_RAW_HEADER_GOLDEN") != "" {
+			if updateGoldens() {
 				writeRawHeadersGolden(t, goldenPath, got)
 				return
 			}
@@ -89,11 +88,7 @@ func TestReadRawHeaders(t *testing.T) {
 			if err != nil {
 				t.Fatalf("read golden: %v", err)
 			}
-			if !reflect.DeepEqual(got, want) {
-				gotJSON, _ := json.MarshalIndent(got, "", "  ")
-				wantJSON, _ := json.MarshalIndent(want, "", "  ")
-				t.Fatalf("raw headers mismatch:\n--- got\n%s\n--- want\n%s", gotJSON, wantJSON)
-			}
+			fatalIfJSONGoldenMismatch(t, got, want)
 		})
 	}
 }

@@ -48,7 +48,7 @@
     "header_end_row": 1,
     "cell_values": [
       {
-        "value": "",
+        "value": "headerBC",
         "formula": "",
         "position": {
           "column_name": "C",

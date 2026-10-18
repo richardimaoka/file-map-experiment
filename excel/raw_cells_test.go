@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
 	"sort"
 	"testing"
 
@@ -15,6 +14,7 @@ import (
 
 // Cell fixtures under excel/testdata/raw_cells/<case>/workbook.xlsx, merged_ranges.json, and <cell>.json (e.g. B1.json).
 // Regenerate workbooks: go test ./excel -run TestCreateRawCellsFixturesInTestdata
+// Regenerate JSON goldens: go test ./excel -update -run 'TestLoadMergedRanges|TestReadCellValue'
 
 type rawCellsCase struct {
 	dir   string
@@ -117,7 +117,7 @@ func TestLoadMergedRanges(t *testing.T) {
 			}
 			sortMergedRanges(got)
 
-			if os.Getenv("UPDATE_RAW_CELLS_GOLDEN") != "" {
+			if updateGoldens() {
 				writeMergedRangesGolden(t, goldenPath, got)
 				return
 			}
@@ -127,11 +127,7 @@ func TestLoadMergedRanges(t *testing.T) {
 				t.Fatalf("read golden: %v", err)
 			}
 			sortMergedRanges(want)
-			if !reflect.DeepEqual(got, want) {
-				gotJSON, _ := json.MarshalIndent(got, "", "  ")
-				wantJSON, _ := json.MarshalIndent(want, "", "  ")
-				t.Fatalf("merged ranges mismatch:\n--- got\n%s\n--- want\n%s", gotJSON, wantJSON)
-			}
+			fatalIfJSONGoldenMismatch(t, got, want)
 		})
 	}
 }
@@ -165,7 +161,7 @@ func TestReadCellValue(t *testing.T) {
 					t.Fatalf("readCellValue: %v", err)
 				}
 
-				if os.Getenv("UPDATE_RAW_CELLS_GOLDEN") != "" {
+				if updateGoldens() {
 					writeCellValueGolden(t, goldenPath, got)
 					return
 				}
@@ -174,11 +170,7 @@ func TestReadCellValue(t *testing.T) {
 				if err != nil {
 					t.Fatalf("read golden: %v", err)
 				}
-				if !reflect.DeepEqual(got, want) {
-					gotJSON, _ := json.MarshalIndent(got, "", "  ")
-					wantJSON, _ := json.MarshalIndent(want, "", "  ")
-					t.Fatalf("cell value mismatch:\n--- got\n%s\n--- want\n%s", gotJSON, wantJSON)
-				}
+				fatalIfJSONGoldenMismatch(t, got, want)
 			})
 		}
 	}

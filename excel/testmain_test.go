@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -26,5 +27,6 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "test setup: APP_BASE_DIR is not set\n")
 		os.Exit(1)
 	}
+	flag.Parse()
 	os.Exit(m.Run())
 }

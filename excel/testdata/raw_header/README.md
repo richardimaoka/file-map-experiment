@@ -16,7 +16,7 @@ Each case directory also has:
 Regenerate `raw_headers.json` after changing layouts or reader behavior:
 
 ```bash
-UPDATE_RAW_HEADER_GOLDEN=1 go test ./excel -run TestReadRawHeaders
+go test ./excel -update -run TestReadRawHeaders
 ```
 
 | Directory                            | Description                          |
