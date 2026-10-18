@@ -76,14 +76,6 @@ func (c ExcelConfig) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
 	return SchemaPrep{}, fmt.Errorf("ExcelConfig.GetSchemaPrep: schema %q not found in config", schemaName)
 }
 
-// The excelFileName argument is needed, assuming you already know
-// which Excel file to read upon creating config.json
-func InitConfig(excelFileName string) ExcelConfig {
-	return ExcelConfig{
-		ExcelFileName: excelFileName,
-	}
-}
-
 // Validate checks the config contents, but doesn't validate if the directory holding config.json
 // is in a good shape (e.g. if the Excel file exists).
 func (c ExcelConfig) Validate() error {
@@ -95,6 +87,14 @@ func (c ExcelConfig) Validate() error {
 	}
 
 	return nil
+}
+
+// The excelFileName argument is needed, assuming you already know
+// which Excel file to read upon creating config.json
+func InitConfig(excelFileName string) ExcelConfig {
+	return ExcelConfig{
+		ExcelFileName: excelFileName,
+	}
 }
 
 func ReadExcelConfig(jsonPath string) (ExcelConfig, error) {
