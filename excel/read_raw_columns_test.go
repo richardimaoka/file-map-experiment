@@ -24,7 +24,7 @@ func TestReadRawColumns(t *testing.T) {
 				t.Fatalf("read schema_prep: %v", err)
 			}
 
-			got, err := readRawColumns(excelPath, &prep)
+			got, err := readRawColumns(excelPath, prep)
 			if err != nil {
 				t.Fatalf("readRawColumns: %v", err)
 			}

@@ -64,10 +64,7 @@ func isCellInMergeRange(pos CellPosition, m MergedRange) bool {
 	return col >= startCol && col <= endCol && row >= startRow && row <= endRow
 }
 
-func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
-	if prep == nil {
-		return nil, fmt.Errorf("readRawColumns: prep is nil")
-	}
+func readRawColumns(excelPath string, prep SchemaPrep) ([]RawColumn, error) {
 	if strings.TrimSpace(prep.SchemaName) == "" {
 		return nil, fmt.Errorf("readRawColumns: schema_name is not set")
 	}
