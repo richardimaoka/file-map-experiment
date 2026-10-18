@@ -39,25 +39,6 @@
   },
   {
     "header": {
-      "excel_column": "C",
-      "header_start_row": 1,
-      "header_end_row": 1,
-      "cell_values": [
-        {
-          "value": "",
-          "formula": "",
-          "position": {
-            "column_name": "C",
-            "row_number": 1
-          },
-          "is_merged": false
-        }
-      ]
-    },
-    "data": null
-  },
-  {
-    "header": {
       "excel_column": "D",
       "header_start_row": 1,
       "header_end_row": 1,

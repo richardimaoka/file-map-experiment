@@ -121,6 +121,9 @@ func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
 			}
 			cellValues = append(cellValues, cv)
 		}
+		if !rawHeaderColumnHasContent(cellValues) {
+			continue
+		}
 
 		columns = append(columns, RawColumn{
 			Header: &RawHeader{
@@ -133,6 +136,16 @@ func readRawColumns(excelPath string, prep *SchemaPrep) ([]RawColumn, error) {
 	}
 
 	return columns, nil
+}
+
+// rawHeaderColumnHasContent reports whether a column contributes header cells (non-empty value or merge).
+func rawHeaderColumnHasContent(cellValues []CellValue) bool {
+	for _, cv := range cellValues {
+		if cv.IsMerged || strings.TrimSpace(cv.Value) != "" {
+			return true
+		}
+	}
+	return false
 }
 
 func loadMergedRanges(f *excelize.File, sheet string) ([]MergedRange, error) {
