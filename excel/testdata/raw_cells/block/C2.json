@@ -1,0 +1,21 @@
+{
+  "value": "",
+  "formula": "",
+  "position": {
+    "column_name": "C",
+    "row_number": 2
+  },
+  "merged_range": {
+    "value": "block",
+    "range": {
+      "upper_left": {
+        "column_name": "B",
+        "row_number": 1
+      },
+      "bottom_right": {
+        "column_name": "C",
+        "row_number": 2
+      }
+    }
+  }
+}

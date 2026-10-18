@@ -1,22 +1,23 @@
-# Raw merged-range fixtures
+# Raw cell fixtures
 
-Each case is `excel/testdata/raw_merged/<case>/` with:
+Each case is `excel/testdata/raw_cells/<case>/` with:
 
 - `workbook.xlsx` — single sheet named like the case directory
 - `merged_ranges.json` — golden `[]MergedRange` from `loadMergedRanges`
+- `<cell>.json` — golden `CellValue` from `readCellValue` (e.g. `B1.json`)
 
 All cases are also combined in `test_cases.xlsx` at this directory (one sheet per case, same names).
 
 Regenerate workbooks:
 
 ```bash
-go test ./excel -run TestCreateRawMergedFixturesInTestdata
+go test ./excel -run TestCreateRawCellsFixturesInTestdata
 ```
 
-Regenerate goldens:
+Regenerate `merged_ranges.json` and cell goldens:
 
 ```bash
-UPDATE_RAW_MERGED_GOLDEN=1 go test ./excel -run TestLoadMergedRanges
+UPDATE_RAW_CELLS_GOLDEN=1 go test ./excel -run 'TestLoadMergedRanges|TestReadCellValue'
 ```
 
 | Directory        | Description                          |

@@ -13,27 +13,28 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// Merged-range fixtures under excel/testdata/raw_merged/<case>/workbook.xlsx and merged_ranges.json.
-// Regenerate workbooks: go test ./excel -run TestCreateRawMergedFixturesInTestdata
+// Cell fixtures under excel/testdata/raw_cells/<case>/workbook.xlsx, merged_ranges.json, and <cell>.json (e.g. B1.json).
+// Regenerate workbooks: go test ./excel -run TestCreateRawCellsFixturesInTestdata
 
-type rawMergedCase struct {
+type rawCellsCase struct {
 	dir   string
 	write func(f *excelize.File, sheet string) error
+	cells []string
 }
 
-func rawMergedCases() []rawMergedCase {
-	return []rawMergedCase{
-		{"none", writeRawMergedNone},
-		{"horizontal", writeRawMergedHorizontal},
-		{"vertical", writeRawMergedVertical},
-		{"block", writeRawMergedBlock},
-		{"two-horizontal", writeRawMergedTwoHorizontal},
+func rawCellsCases() []rawCellsCase {
+	return []rawCellsCase{
+		{"none", writeRawCellsNone, []string{"A1"}},
+		{"horizontal", writeRawCellsHorizontal, []string{"A1", "B1", "C1"}},
+		{"vertical", writeRawCellsVertical, []string{"A1", "A2", "B1"}},
+		{"block", writeRawCellsBlock, []string{"A1", "B1", "C1", "B2", "C2"}},
+		{"two-horizontal", writeRawCellsTwoHorizontal, []string{"A1", "B1", "C1", "D1", "E1"}},
 	}
 }
 
-func TestCreateRawMergedFixturesInTestdata(t *testing.T) {
-	base := filepath.Join("testdata", "raw_merged")
-	cases := rawMergedCases()
+func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
+	base := filepath.Join("testdata", "raw_cells")
+	cases := rawCellsCases()
 	for _, tc := range cases {
 		t.Run(tc.dir, func(t *testing.T) {
 			dir := filepath.Join(base, tc.dir)
@@ -98,9 +99,9 @@ func TestIsCellInMergeRange_invalidMergeRange(t *testing.T) {
 }
 
 func TestLoadMergedRanges(t *testing.T) {
-	for _, tc := range rawMergedCases() {
+	for _, tc := range rawCellsCases() {
 		t.Run(tc.dir, func(t *testing.T) {
-			caseDir := filepath.Join("testdata", "raw_merged", tc.dir)
+			caseDir := filepath.Join("testdata", "raw_cells", tc.dir)
 			excelPath := filepath.Join(caseDir, "workbook.xlsx")
 			goldenPath := filepath.Join(caseDir, "merged_ranges.json")
 
@@ -116,7 +117,7 @@ func TestLoadMergedRanges(t *testing.T) {
 			}
 			sortMergedRanges(got)
 
-			if os.Getenv("UPDATE_RAW_MERGED_GOLDEN") != "" {
+			if os.Getenv("UPDATE_RAW_CELLS_GOLDEN") != "" {
 				writeMergedRangesGolden(t, goldenPath, got)
 				return
 			}
@@ -135,32 +136,80 @@ func TestLoadMergedRanges(t *testing.T) {
 	}
 }
 
-func writeRawMergedNone(f *excelize.File, sheet string) error {
+func TestReadCellValue(t *testing.T) {
+	for _, tc := range rawCellsCases() {
+		for _, cellName := range tc.cells {
+			t.Run(tc.dir+"/"+cellName, func(t *testing.T) {
+				caseDir := filepath.Join("testdata", "raw_cells", tc.dir)
+				excelPath := filepath.Join(caseDir, "workbook.xlsx")
+				goldenPath := filepath.Join(caseDir, cellName+".json")
+
+				col, row, err := excelize.SplitCellName(cellName)
+				if err != nil {
+					t.Fatalf("split cell name: %v", err)
+				}
+
+				f, err := excelize.OpenFile(excelPath)
+				if err != nil {
+					t.Fatalf("open workbook: %v", err)
+				}
+				defer f.Close()
+
+				merges, err := loadMergedRanges(f, tc.dir)
+				if err != nil {
+					t.Fatalf("loadMergedRanges: %v", err)
+				}
+
+				got, err := readCellValue(f, tc.dir, col, row, merges)
+				if err != nil {
+					t.Fatalf("readCellValue: %v", err)
+				}
+
+				if os.Getenv("UPDATE_RAW_CELLS_GOLDEN") != "" {
+					writeCellValueGolden(t, goldenPath, got)
+					return
+				}
+
+				want, err := readCellValueGolden(goldenPath)
+				if err != nil {
+					t.Fatalf("read golden: %v", err)
+				}
+				if !reflect.DeepEqual(got, want) {
+					gotJSON, _ := json.MarshalIndent(got, "", "  ")
+					wantJSON, _ := json.MarshalIndent(want, "", "  ")
+					t.Fatalf("cell value mismatch:\n--- got\n%s\n--- want\n%s", gotJSON, wantJSON)
+				}
+			})
+		}
+	}
+}
+
+func writeRawCellsNone(f *excelize.File, sheet string) error {
 	return setRawHeaderCell(f, sheet, "A", 1, "only")
 }
 
-func writeRawMergedHorizontal(f *excelize.File, sheet string) error {
+func writeRawCellsHorizontal(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "B", 1, "headerBC"); err != nil {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "B", 1, "C", 1)
 }
 
-func writeRawMergedVertical(f *excelize.File, sheet string) error {
+func writeRawCellsVertical(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "A", 1, "A", 2)
 }
 
-func writeRawMergedBlock(f *excelize.File, sheet string) error {
+func writeRawCellsBlock(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "B", 1, "block"); err != nil {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "B", 1, "C", 2)
 }
 
-func writeRawMergedTwoHorizontal(f *excelize.File, sheet string) error {
+func writeRawCellsTwoHorizontal(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "left"); err != nil {
 		return err
 	}
@@ -195,6 +244,25 @@ func readMergedRangesGolden(path string) ([]MergedRange, error) {
 
 func writeMergedRangesGolden(t *testing.T, path string, merges []MergedRange) {
 	data, err := json.MarshalIndent(merges, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	data = append(data, '\n')
+	if err := os.WriteFile(path, data, 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func readCellValueGolden(path string) (CellValue, error) {
+	var cv CellValue
+	if err := jsonfile.Read(path, &cv); err != nil {
+		return CellValue{}, err
+	}
+	return cv, nil
+}
+
+func writeCellValueGolden(t *testing.T, path string, cv CellValue) {
+	data, err := json.MarshalIndent(cv, "", "  ")
 	if err != nil {
 		t.Fatal(err)
 	}
