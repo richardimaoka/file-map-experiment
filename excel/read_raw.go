@@ -75,15 +75,29 @@ func readRawColumns(excelPath string, prep SchemaPrep) ([]RawColumn, error) {
 			return nil, fmt.Errorf("readRawColumns: %w", err)
 		}
 
-		cellValues := make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
-		for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
-			cv, err := readCellValue(f, sheet, colName, row, merges)
+		var cellValues []CellValue
+		var include bool
+		if prep.HeaderStartRow == prep.HeaderEndRow {
+			// single-row header case
+			cv, err := readCellValue(f, sheet, colName, prep.HeaderStartRow, merges)
 			if err != nil {
 				return nil, fmt.Errorf("readRawColumns: %w", err)
 			}
-			cellValues = append(cellValues, cv)
+			include = include1RowRawHeaderColumn(cv)
+			cellValues = []CellValue{cv}
+		} else {
+			// multi-row header case
+			cellValues = make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
+			for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
+				cv, err := readCellValue(f, sheet, colName, row, merges)
+				if err != nil {
+					return nil, fmt.Errorf("readRawColumns: %w", err)
+				}
+				cellValues = append(cellValues, cv)
+			}
+			include = includeMultiRowRawHeaderColumn(cellValues)
 		}
-		if !includeRawHeaderColumn(prep, cellValues) {
+		if !include {
 			continue
 		}
 
