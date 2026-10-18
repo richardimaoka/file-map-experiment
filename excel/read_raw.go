@@ -77,7 +77,7 @@ func readRawColumns(excelPath string, prep SchemaPrep) ([]RawColumn, error) {
 
 		cellValues := make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
 		for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
-			cv, err := readHeaderCellValue(f, sheet, colName, row, merges)
+			cv, err := readCellValue(f, sheet, colName, row, merges)
 			if err != nil {
 				return nil, fmt.Errorf("readRawColumns: %w", err)
 			}
@@ -100,7 +100,7 @@ func readRawColumns(excelPath string, prep SchemaPrep) ([]RawColumn, error) {
 	return columns, nil
 }
 
-func readHeaderCellValue(f *excelize.File, sheet, col string, row int, merges []MergedRange) (CellValue, error) {
+func readCellValue(f *excelize.File, sheet, col string, row int, merges []MergedRange) (CellValue, error) {
 	pos := CellPosition{ColumnName: col, RowNumber: row}
 	cellName, err := excelize.JoinCellName(col, row)
 	if err != nil {
