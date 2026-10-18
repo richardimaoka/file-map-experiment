@@ -65,6 +65,9 @@ func ReadExcelConfig(jsonPath string) (*ExcelConfig, error) {
 	if strings.TrimSpace(config.ExcelFileName) == "" {
 		return nil, fmt.Errorf("ReadExcelConfig: excel_file_name is not set")
 	}
+	if !strings.HasSuffix(config.ExcelFileName, ".xlsx") && !strings.HasSuffix(config.ExcelFileName, ".xlsm") {
+		return nil, fmt.Errorf("ReadExcelConfig: excel_file_name must end with .xlsx or .xlsm")
+	}
 
 	excelPath := filepath.Join(filepath.Dir(jsonPath), config.ExcelFileName)
 	if _, err := os.Stat(excelPath); err != nil {

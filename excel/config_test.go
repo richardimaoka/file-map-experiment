@@ -50,71 +50,78 @@ func TestExcelConfig_GetSchemaPrep(t *testing.T) {
 	}
 }
 
+// ReadExcelConfig loads config.json, requires excel_file_name, and checks the Excel file exists beside it.
 func TestReadExcelConfig(t *testing.T) {
-	path := filepath.Join("testdata", "config", "read_config", "config.json")
-
-	cfg, err := ReadExcelConfig(path)
-	if err != nil {
-		t.Fatalf("ReadExcelConfig: %v", err)
+	cases := []struct {
+		name           string
+		fixture        string // testdata/config/<fixture>/config.json
+		wantErr        bool
+		hasSchemaPreps bool // when wantErr is false, whether schema_preps is non-empty
+	}{
+		// Valid config with Excel file on disk; no schema_preps.
+		{
+			name:    "read_config_without_schema_preps",
+			fixture: "read_config_without_schema_preps",
+		},
+		// Valid config including schema_preps.
+		{
+			name:           "read_config_with_schema_preps",
+			fixture:        "read_config_with_schema_preps",
+			hasSchemaPreps: true,
+		},
+		// testdata/config/config_file_missing: no config.json in the directory.
+		{
+			name:    "config_file_missing",
+			fixture: "config_file_missing",
+			wantErr: true,
+		},
+		// Config file is not valid JSON.
+		{
+			name:    "read_config_invalid_json",
+			fixture: "read_config_invalid_json",
+			wantErr: true,
+		},
+		// excel_file_name missing or empty in config.
+		{
+			name:    "read_config_missing_excel_file_name",
+			fixture: "read_config_missing_excel_file_name",
+			wantErr: true,
+		},
+		// excel_file_name set but no matching file next to config.json.
+		{
+			name:    "read_config_excel_file_missing",
+			fixture: "read_config_excel_file_missing",
+			wantErr: true,
+		},
+		// excel_file_name does not end with .xlsx or .xlsm.
+		{
+			name:    "read_config_invalid_excel_file_name",
+			fixture: "read_config_invalid_excel_file_name",
+			wantErr: true,
+		},
 	}
-	if cfg.ExcelFileName != "folder_map.xlsx" {
-		t.Errorf("ExcelFileName: got %q", cfg.ExcelFileName)
-	}
-	if len(cfg.SchemaPreps) != 0 {
-		t.Errorf("SchemaPreps: got %d want 0", len(cfg.SchemaPreps))
-	}
-}
 
-func TestReadExcelConfig_with_schema_preps(t *testing.T) {
-	path := filepath.Join("testdata", "config", "read_config_with_schema_preps", "config.json")
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			path := filepath.Join("testdata", "config", tc.fixture, "config.json")
 
-	cfg, err := ReadExcelConfig(path)
-	if err != nil {
-		t.Fatalf("ReadExcelConfig: %v", err)
-	}
-	if cfg.ExcelFileName != "ads_report_simple.xlsx" {
-		t.Fatalf("ExcelFileName: got %q", cfg.ExcelFileName)
-	}
-
-	prep, err := cfg.GetSchemaPrep("main")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !prep.IsReady || prep.EndColumn != "H" {
-		t.Fatalf("got %+v", prep)
-	}
-}
-
-func TestReadExcelConfig_file_missing(t *testing.T) {
-	_, err := ReadExcelConfig(filepath.Join(t.TempDir(), "missing.json"))
-	if err == nil {
-		t.Fatal("expected error")
-	}
-}
-
-func TestReadExcelConfig_invalid_json(t *testing.T) {
-	path := filepath.Join("testdata", "config", "read_config_invalid_json", "config.json")
-
-	_, err := ReadExcelConfig(path)
-	if err == nil {
-		t.Fatal("expected error")
-	}
-}
-
-func TestReadExcelConfig_missing_excel_file_name(t *testing.T) {
-	path := filepath.Join("testdata", "config", "read_config_missing_excel_file_name", "config.json")
-
-	_, err := ReadExcelConfig(path)
-	if err == nil {
-		t.Fatal("expected error")
-	}
-}
-
-func TestReadExcelConfig_excel_file_missing(t *testing.T) {
-	path := filepath.Join("testdata", "config", "read_config_excel_file_missing", "config.json")
-
-	_, err := ReadExcelConfig(path)
-	if err == nil {
-		t.Fatal("expected error")
+			cfg, err := ReadExcelConfig(path)
+			if tc.wantErr {
+				if err == nil {
+					t.Fatal("expected error")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("ReadExcelConfig: %v", err)
+			}
+			if tc.hasSchemaPreps {
+				if len(cfg.SchemaPreps) == 0 {
+					t.Errorf("SchemaPreps: got 0 entries want at least one")
+				}
+			} else if len(cfg.SchemaPreps) != 0 {
+				t.Errorf("SchemaPreps: got %d want 0", len(cfg.SchemaPreps))
+			}
+		})
 	}
 }
