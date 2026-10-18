@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/richardimaoka/file-map-experiment/env"
@@ -52,4 +53,12 @@ func (p *PathResolver) SchemaCollectionPath() string {
 
 func (p *PathResolver) SchemaPath(schemaName string) string {
 	return filepath.Join(p.SchemaCollectionPath(), schemaName+".json")
+}
+
+func (p *PathResolver) ValidateDir() error {
+	_, err := ReadExcelConfig(p.ConfigPath())
+	if err != nil {
+		return fmt.Errorf("ValidateDir: %w", err)
+	}
+	return nil
 }

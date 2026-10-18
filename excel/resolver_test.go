@@ -7,7 +7,7 @@ import (
 
 // Case tree under APP_BASE_DIR/<dirPath>/ must match PathResolver's documented layout.
 func TestPathResolver_paths(t *testing.T) {
-	base := t.TempDir()
+	base := filepath.Join("testdata", "resolver", "ready")
 	t.Setenv("APP_BASE_DIR", base)
 
 	r := NewPathResolver("cases/client1")
@@ -40,7 +40,40 @@ func TestPathResolver_paths(t *testing.T) {
 	}
 }
 
-// NewPathResolver delegates to env.AppBaseDir, which panics if APP_BASE_DIR is empty.
+// ValidateDir delegates to ReadExcelConfig; config edge cases live in config_test.go.
+func TestPathResolver_ValidateDir(t *testing.T) {
+	const relPath = "cases/client1"
+
+	cases := []struct {
+		name    string
+		fixture string // testdata/resolver/<fixture> as APP_BASE_DIR
+		wantErr bool
+	}{
+		// Case tree has valid config.json and workbook.
+		{name: "ready", fixture: "ready"},
+		// Case directory exists but config.json is absent.
+		{name: "not_ready", fixture: "not_ready", wantErr: true},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Setenv("APP_BASE_DIR", filepath.Join("testdata", "resolver", tc.fixture))
+
+			err := NewPathResolver(relPath).ValidateDir()
+			if tc.wantErr {
+				if err == nil {
+					t.Fatal("expected error")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("ValidateDir: %v", err)
+			}
+		})
+	}
+}
+
+// NewPathResolver delegates to env.AppBaseDir, which panics if APP_BASE_DIR is unset.
 func TestNewPathResolver_panicsWithoutAppBaseDir(t *testing.T) {
 	t.Setenv("APP_BASE_DIR", "")
 
