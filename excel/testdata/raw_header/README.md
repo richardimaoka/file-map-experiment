@@ -1,6 +1,6 @@
 # Raw header layout fixtures
 
-Each case lives in its own directory with `workbook.xlsx` (single sheet named `Sheet1`). Layouts are defined in `raw_header_test.go`; regenerate fixtures with:
+Each case lives in its own directory with `workbook.xlsx` (single sheet named like the directory, e.g. `1-row-simple`; Excel allows at most 31 characters). All cases are also combined in `test_cases.xlsx` at this directory (one sheet per case, same names). Layouts are defined in `raw_header_test.go`; regenerate fixtures with:
 
 ```bash
 go test ./excel -run TestCreateRawHeaderFixturesInTestdata
@@ -20,5 +20,5 @@ Only header regions are filled; data rows below the header are intentionally emp
 | `2-row-vertical-merge`               | 2-row, vertical merge                |
 | `2-row-vertical-merge-repeated`      | 2-row, vertical merge repeated       |
 | `2-row-bidirectional-merge`          | 2-row, bidirectional merge           |
-| `2-row-bidirectional-merge-repeated` | 2-row, bidirectional merge repeated |
+| `2-row-bidirectional-merge-rep`      | 2-row, bidirectional merge repeated |
 | `2-row-mixed-merge`                  | 2-row, mixed merge                   |

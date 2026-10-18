@@ -9,15 +9,17 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// Header-only layout variants under excel/testdata/raw_header/<case>/workbook.xlsx (sheet Sheet1).
+// Header-only layout variants under excel/testdata/raw_header/<case>/workbook.xlsx
+// and combined excel/testdata/raw_header/test_cases.xlsx (one sheet per case).
 // Regenerate: go test ./excel -run TestCreateRawHeaderFixturesInTestdata
 
-func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
-	base := filepath.Join("testdata", "raw_header")
-	cases := []struct {
-		dir   string
-		write func(f *excelize.File, sheet string) error
-	}{
+type rawHeaderCase struct {
+	dir   string
+	write func(f *excelize.File, sheet string) error
+}
+
+func rawHeaderCases() []rawHeaderCase {
+	return []rawHeaderCase{
 		{"1-row-simple", writeRawHeader1RowSimple},
 		{"1-row-empty-header", writeRawHeader1RowEmptyHeader},
 		{"1-row-line-break", writeRawHeader1RowLineBreak},
@@ -28,9 +30,14 @@ func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
 		{"2-row-vertical-merge", writeRawHeader2RowVerticalMerge},
 		{"2-row-vertical-merge-repeated", writeRawHeader2RowVerticalMergeRepeated},
 		{"2-row-bidirectional-merge", writeRawHeader2RowBidirectionalMerge},
-		{"2-row-bidirectional-merge-repeated", writeRawHeader2RowBidirectionalMergeRepeated},
+		{"2-row-bidirectional-merge-rep", writeRawHeader2RowBidirectionalMergeRepeated},
 		{"2-row-mixed-merge", writeRawHeader2RowMixedMerge},
 	}
+}
+
+func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
+	base := filepath.Join("testdata", "raw_header")
+	cases := rawHeaderCases()
 
 	for _, tc := range cases {
 		t.Run(tc.dir, func(t *testing.T) {
@@ -39,33 +46,78 @@ func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 			path := filepath.Join(dir, "workbook.xlsx")
-
-			f := excelize.NewFile()
-			defer f.Close()
-
-			sheet := f.GetSheetName(0)
-			if sheet != "Sheet1" {
-				if err := f.SetSheetName(sheet, "Sheet1"); err != nil {
-					t.Fatal(err)
-				}
-				sheet = "Sheet1"
-			}
-
-			if err := tc.write(f, sheet); err != nil {
+			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write); err != nil {
 				t.Fatal(err)
-			}
-			if err := f.SaveAs(path); err != nil {
-				t.Fatal(err)
-			}
-			info, err := os.Stat(path)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if info.Size() == 0 {
-				t.Fatalf("%s was not written", path)
 			}
 		})
 	}
+
+	combinedPath := filepath.Join(base, "test_cases.xlsx")
+	if err := writeRawHeaderCombinedWorkbook(combinedPath, cases); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error) error {
+	f := excelize.NewFile()
+	defer f.Close()
+
+	if err := renameDefaultSheet(f, sheetName); err != nil {
+		return err
+	}
+	if err := write(f, sheetName); err != nil {
+		return err
+	}
+	if err := f.SaveAs(path); err != nil {
+		return err
+	}
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	if info.Size() == 0 {
+		return fmt.Errorf("%s was not written", path)
+	}
+	return nil
+}
+
+func writeRawHeaderCombinedWorkbook(path string, cases []rawHeaderCase) error {
+	f := excelize.NewFile()
+	defer f.Close()
+
+	for i, tc := range cases {
+		sheet := tc.dir
+		if i == 0 {
+			if err := renameDefaultSheet(f, sheet); err != nil {
+				return err
+			}
+		} else if _, err := f.NewSheet(sheet); err != nil {
+			return err
+		}
+		if err := tc.write(f, sheet); err != nil {
+			return err
+		}
+	}
+
+	if err := f.SaveAs(path); err != nil {
+		return err
+	}
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	if info.Size() == 0 {
+		return fmt.Errorf("%s was not written", path)
+	}
+	return nil
+}
+
+func renameDefaultSheet(f *excelize.File, name string) error {
+	defaultSheet := f.GetSheetName(0)
+	if defaultSheet == name {
+		return nil
+	}
+	return f.SetSheetName(defaultSheet, name)
 }
 
 func setRawHeaderCell(f *excelize.File, sheet, col string, row int, value string) error {
