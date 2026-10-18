@@ -24,6 +24,7 @@ UPDATE_RAW_HEADER_GOLDEN=1 go test ./excel -run TestReadRawColumns
 | `1-row-simple`                       | 1-row, simple                        |
 | `1-row-empty-header`                 | 1-row, empty header                  |
 | `1-row-line-break`                   | 1-row, line break                    |
+| `1-row-horizontal-merge`             | 1-row, horizontal merge (B–C)        |
 | `2-row-simple`                       | 2-row, simple                        |
 | `2-row-empty-cell`                   | 2-row, empty cell                    |
 | `2-row-horizontal-merge`             | 2-row, horizontal merge              |

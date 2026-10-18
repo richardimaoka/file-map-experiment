@@ -1,0 +1,9 @@
+{
+  "schema_name": "1-row-horizontal-merge",
+  "sheet_name": "1-row-horizontal-merge",
+  "is_ready": true,
+  "header_start_row": 1,
+  "header_end_row": 1,
+  "start_column": "A",
+  "end_column": "D"
+}
