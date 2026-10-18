@@ -140,6 +140,9 @@ func readCellValue(f *excelize.File, sheet, col string, row int, merges []Merged
 		merged = &mr
 		break
 	}
+	if merged != nil && col != merged.Range.UpperLeft.ColumnName {
+		value = ""
+	}
 
 	return CellValue{
 		Value:       value,

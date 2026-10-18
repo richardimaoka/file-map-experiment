@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
@@ -12,9 +13,10 @@ import (
 
 // readRawColumns golden files: testdata/raw_header/<case>/raw_columns.json
 func TestReadRawColumns(t *testing.T) {
-	t.Skip("testdata/raw_header golden cases disabled for now")
-
 	for _, dir := range rawHeaderCaseDirs() {
+		if !strings.HasPrefix(dir, "1-row-") {
+			continue
+		}
 		t.Run(dir, func(t *testing.T) {
 			caseDir := filepath.Join("testdata", "raw_header", dir)
 			prepPath := filepath.Join(caseDir, "schema_prep.json")
