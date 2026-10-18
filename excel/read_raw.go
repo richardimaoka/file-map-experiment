@@ -75,30 +75,13 @@ func readRawHeaders(excelPath string, prep SchemaPrep) ([]RawHeader, error) {
 			return nil, fmt.Errorf("readRawHeaders: %w", err)
 		}
 
-		var cellValues []CellValue
-		var include bool
-		if prep.HeaderStartRow == prep.HeaderEndRow {
-			// single-row header case
-			cv, err := readCellValue(f, sheet, colName, prep.HeaderStartRow, merges)
+		cellValues := make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
+		for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
+			cv, err := readCellValue(f, sheet, colName, row, merges)
 			if err != nil {
 				return nil, fmt.Errorf("readRawHeaders: %w", err)
 			}
-			include = include1RowRawHeaderColumn(cv)
-			cellValues = []CellValue{cv}
-		} else {
-			// multi-row header case
-			cellValues = make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
-			for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
-				cv, err := readCellValue(f, sheet, colName, row, merges)
-				if err != nil {
-					return nil, fmt.Errorf("readRawHeaders: %w", err)
-				}
-				cellValues = append(cellValues, cv)
-			}
-			include = includeMultiRowRawHeaderColumn(cellValues)
-		}
-		if !include {
-			continue
+			cellValues = append(cellValues, cv)
 		}
 
 		headers = append(headers, RawHeader{

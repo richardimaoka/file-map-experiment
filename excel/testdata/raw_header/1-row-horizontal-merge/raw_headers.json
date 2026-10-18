@@ -43,6 +43,34 @@
     ]
   },
   {
+    "excel_column": "C",
+    "header_start_row": 1,
+    "header_end_row": 1,
+    "cell_values": [
+      {
+        "value": "",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 1
+        },
+        "merged_range": {
+          "value": "headerBC",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 1
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 1
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
     "excel_column": "D",
     "header_start_row": 1,
     "header_end_row": 1,

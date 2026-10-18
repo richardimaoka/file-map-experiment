@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
@@ -65,9 +64,6 @@ func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
 
 func TestReadRawHeaders(t *testing.T) {
 	for _, dir := range rawHeaderCaseDirs() {
-		if !strings.HasPrefix(dir, "1-row-") {
-			continue
-		}
 		t.Run(dir, func(t *testing.T) {
 			caseDir := filepath.Join("testdata", "raw_header", dir)
 			prepPath := filepath.Join(caseDir, "schema_prep.json")
