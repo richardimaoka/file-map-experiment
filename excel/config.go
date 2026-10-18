@@ -1,11 +1,10 @@
 package excel
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
+
+	"github.com/richardimaoka/file-map-experiment/jsonfile"
 )
 
 // SchemaPrep is needed before reading Excel table schema
@@ -51,27 +50,28 @@ func InitConfig(excelFileName string) *ExcelConfig {
 	}
 }
 
+// Validate checks the config contents, but doesn't validate if the directory holding config.json
+// is in a good shape (e.g. if the Excel file exists).
+func (c *ExcelConfig) Validate() error {
+	if strings.TrimSpace(c.ExcelFileName) == "" {
+		return fmt.Errorf("ExcelConfig.Validate: excel_file_name is not set")
+	}
+	if !strings.HasSuffix(c.ExcelFileName, ".xlsx") && !strings.HasSuffix(c.ExcelFileName, ".xlsm") {
+		return fmt.Errorf("ExcelConfig.Validate: excel_file_name must end with .xlsx or .xlsm")
+	}
+
+	return nil
+}
+
 func ReadExcelConfig(jsonPath string) (*ExcelConfig, error) {
-	data, err := os.ReadFile(jsonPath)
+	var config ExcelConfig
+	err := jsonfile.Read(jsonPath, &config)
 	if err != nil {
 		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
 	}
 
-	var config ExcelConfig
-	if err := json.Unmarshal(data, &config); err != nil {
+	if err := config.Validate(); err != nil {
 		return nil, fmt.Errorf("ReadExcelConfig: %w", err)
-	}
-
-	if strings.TrimSpace(config.ExcelFileName) == "" {
-		return nil, fmt.Errorf("ReadExcelConfig: excel_file_name is not set")
-	}
-	if !strings.HasSuffix(config.ExcelFileName, ".xlsx") && !strings.HasSuffix(config.ExcelFileName, ".xlsm") {
-		return nil, fmt.Errorf("ReadExcelConfig: excel_file_name must end with .xlsx or .xlsm")
-	}
-
-	excelPath := filepath.Join(filepath.Dir(jsonPath), config.ExcelFileName)
-	if _, err := os.Stat(excelPath); err != nil {
-		return nil, fmt.Errorf("ReadExcelConfig: excel file %q: %w", config.ExcelFileName, err)
 	}
 
 	return &config, nil
