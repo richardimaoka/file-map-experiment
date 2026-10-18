@@ -1,0 +1,11 @@
+---
+description: Go test conventions for this repo (fixtures, comments)
+globs: "**/*_test.go"
+alwaysApply: false
+---
+
+# Go tests
+
+- Prefer **checked-in fixtures** under `<package>/testdata/` instead of `t.TempDir()` for inputs, unless the test specifically needs a writable target (e.g. copy-into-temp integration tests).
+- Add a **short comment** on each test function (and on table-driven case rows when intent is not obvious) explaining what scenario is exercised.
+- Mirror fixture directory names with subtest names when using table-driven tests.
