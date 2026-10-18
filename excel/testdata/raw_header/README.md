@@ -10,13 +10,13 @@ Only header regions are filled; data rows below the header are intentionally emp
 
 Each case directory also has:
 
-- `schema_prep.json` — `SchemaPrep` for the header region (`schema_name` and `sheet_name` match the directory name, `is_ready`: true). `start_column` / `end_column` bound the header area; wholly empty columns inside that range (e.g. column C in `1-row-empty-header`) are omitted from `readRawColumns` output.
-- `raw_columns.json` — golden output of `readRawColumns` (JSON array of `RawColumn`).
+- `schema_prep.json` — `SchemaPrep` for the header region (`schema_name` and `sheet_name` match the directory name, `is_ready`: true). `start_column` / `end_column` bound the header area; wholly empty columns inside that range (e.g. column C in `1-row-empty-header`) are omitted from `readRawHeaders` output.
+- `raw_headers.json` — golden output of `readRawHeaders` (JSON array of `RawHeader`).
 
-Regenerate `raw_columns.json` after changing layouts or reader behavior:
+Regenerate `raw_headers.json` after changing layouts or reader behavior:
 
 ```bash
-UPDATE_RAW_HEADER_GOLDEN=1 go test ./excel -run TestReadRawColumns
+UPDATE_RAW_HEADER_GOLDEN=1 go test ./excel -run TestReadRawHeaders
 ```
 
 | Directory                            | Description                          |

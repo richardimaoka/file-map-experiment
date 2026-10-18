@@ -1,0 +1,32 @@
+[
+  {
+    "excel_column": "A",
+    "header_start_row": 1,
+    "header_end_row": 1,
+    "cell_values": [
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 1
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "B",
+    "header_start_row": 1,
+    "header_end_row": 1,
+    "cell_values": [
+      {
+        "value": "this\nis a long\nheader with\nline breaks",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 1
+        }
+      }
+    ]
+  }
+]
