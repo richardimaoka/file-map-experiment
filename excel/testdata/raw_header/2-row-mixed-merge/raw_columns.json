@@ -11,8 +11,7 @@
           "position": {
             "column_name": "A",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerA",
@@ -20,8 +19,7 @@
           "position": {
             "column_name": "A",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -40,7 +38,6 @@
             "column_name": "B",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "headerB",
             "range": {
@@ -62,7 +59,6 @@
             "column_name": "B",
             "row_number": 2
           },
-          "is_merged": true,
           "merged_range": {
             "value": "headerB",
             "range": {
@@ -93,8 +89,7 @@
           "position": {
             "column_name": "C",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerC",
@@ -102,8 +97,7 @@
           "position": {
             "column_name": "C",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -121,8 +115,7 @@
           "position": {
             "column_name": "D",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerD",
@@ -130,8 +123,7 @@
           "position": {
             "column_name": "D",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -150,7 +142,6 @@
             "column_name": "E",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "groupA",
             "range": {
@@ -171,8 +162,7 @@
           "position": {
             "column_name": "E",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -191,7 +181,6 @@
             "column_name": "F",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "groupA",
             "range": {
@@ -212,8 +201,7 @@
           "position": {
             "column_name": "F",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -232,7 +220,6 @@
             "column_name": "G",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "groupB",
             "range": {
@@ -253,8 +240,7 @@
           "position": {
             "column_name": "G",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -273,7 +259,6 @@
             "column_name": "H",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "groupB",
             "range": {
@@ -294,8 +279,7 @@
           "position": {
             "column_name": "H",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -313,8 +297,7 @@
           "position": {
             "column_name": "I",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerI",
@@ -322,8 +305,7 @@
           "position": {
             "column_name": "I",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -342,7 +324,6 @@
             "column_name": "J",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "headerJ",
             "range": {
@@ -364,7 +345,6 @@
             "column_name": "J",
             "row_number": 2
           },
-          "is_merged": true,
           "merged_range": {
             "value": "headerJ",
             "range": {
@@ -396,7 +376,6 @@
             "column_name": "K",
             "row_number": 1
           },
-          "is_merged": true,
           "merged_range": {
             "value": "headerJ",
             "range": {
@@ -418,7 +397,6 @@
             "column_name": "K",
             "row_number": 2
           },
-          "is_merged": true,
           "merged_range": {
             "value": "headerJ",
             "range": {
@@ -449,8 +427,7 @@
           "position": {
             "column_name": "L",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerK",
@@ -458,8 +435,7 @@
           "position": {
             "column_name": "L",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },

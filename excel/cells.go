@@ -28,8 +28,11 @@ type CellValue struct {
 	Value       string       `json:"value"`
 	Formula     string       `json:"formula"`
 	Position    CellPosition `json:"position"`
-	IsMerged    bool         `json:"is_merged"`
-	MergedRange *MergedRange `json:"merged_range,omitempty"` //nil if not merged
+	MergedRange *MergedRange `json:"merged_range,omitempty"`
+}
+
+func (cv CellValue) IsMerged() bool {
+	return cv.MergedRange != nil
 }
 
 type CellRange struct {

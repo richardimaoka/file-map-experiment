@@ -14,11 +14,11 @@ func includeRawHeaderColumn(prep SchemaPrep, cellValues []CellValue) bool {
 func include1RowRawHeaderColumn(cellValues []CellValue) bool {
 	hasContent := false
 	for _, cv := range cellValues {
-		if cv.IsMerged || strings.TrimSpace(cv.Value) != "" {
+		if cv.IsMerged() || strings.TrimSpace(cv.Value) != "" {
 			hasContent = true
 		}
 		// Skip columns in a merged range except the left-most (e.g. C when B1:C1 is merged).
-		if cv.IsMerged && cv.MergedRange != nil && cv.Position.ColumnName != cv.MergedRange.Range.UpperLeft.ColumnName {
+		if cv.IsMerged() && cv.Position.ColumnName != cv.MergedRange.Range.UpperLeft.ColumnName {
 			return false
 		}
 	}
@@ -28,7 +28,7 @@ func include1RowRawHeaderColumn(cellValues []CellValue) bool {
 // includeMultiRowRawHeaderColumn skips columns with no content in any header row (merge rules TBD).
 func includeMultiRowRawHeaderColumn(cellValues []CellValue) bool {
 	for _, cv := range cellValues {
-		if cv.IsMerged || strings.TrimSpace(cv.Value) != "" {
+		if cv.IsMerged() || strings.TrimSpace(cv.Value) != "" {
 			return true
 		}
 	}

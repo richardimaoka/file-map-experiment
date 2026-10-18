@@ -11,8 +11,7 @@
           "position": {
             "column_name": "A",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerA",
@@ -20,8 +19,7 @@
           "position": {
             "column_name": "A",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -39,8 +37,7 @@
           "position": {
             "column_name": "B",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerB",
@@ -48,8 +45,7 @@
           "position": {
             "column_name": "B",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },
@@ -67,8 +63,7 @@
           "position": {
             "column_name": "C",
             "row_number": 1
-          },
-          "is_merged": false
+          }
         },
         {
           "value": "headerC",
@@ -76,8 +71,7 @@
           "position": {
             "column_name": "C",
             "row_number": 2
-          },
-          "is_merged": false
+          }
         }
       ]
     },

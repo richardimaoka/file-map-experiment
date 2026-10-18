@@ -117,17 +117,13 @@ func readHeaderCellValue(f *excelize.File, sheet, col string, row int, merges []
 	}
 
 	var merged *MergedRange
-	isMerged := false
 	for _, m := range merges {
 		if !isCellInMergeRange(pos, m) {
 			continue
 		}
-		isMerged = true
+		// Copy before taking a pointer so we don't alias the range loop variable.
 		mr := m
 		merged = &mr
-		if value == "" {
-			value = m.Value
-		}
 		break
 	}
 
@@ -135,7 +131,6 @@ func readHeaderCellValue(f *excelize.File, sheet, col string, row int, merges []
 		Value:       value,
 		Formula:     formula,
 		Position:    pos,
-		IsMerged:    isMerged,
 		MergedRange: merged,
 	}, nil
 }
