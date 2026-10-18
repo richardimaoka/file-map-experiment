@@ -9,33 +9,31 @@ import (
 	"github.com/richardimaoka/file-map-experiment/fs"
 )
 
-// BuildExcelDir creates targetDirPath, copies the workbook if absent, and writes config.json from InitConfig when missing.
-func BuildExcelDir(excelPath string, targetDirPath string) error {
-	excelName := filepath.Base(excelPath)
+// BuildExcelDir creates the case directory under APP_BASE_DIR at relPath, copies (overwrites) the workbook,
+// and writes config.json from InitConfig only when config.json is missing.
+func BuildExcelDir(sourceExcelPath string, relPath string) error {
+	resolver := NewPathResolver(relPath)
+
+	excelName := filepath.Base(sourceExcelPath)
 	if excelName == "." || excelName == "/" || excelName == "" {
-		return fmt.Errorf("BuildExcelDir: invalid excel path %q", excelPath)
+		return fmt.Errorf("BuildExcelDir: invalid excel path %q", sourceExcelPath)
 	}
 
-	if err := os.MkdirAll(targetDirPath, 0o755); err != nil {
+	if err := os.MkdirAll(resolver.DirPath(), 0o755); err != nil {
 		return fmt.Errorf("BuildExcelDir: %w", err)
 	}
 
-	destExcel := filepath.Join(targetDirPath, excelName)
-	if _, err := os.Stat(destExcel); err != nil {
-		if !os.IsNotExist(err) {
-			return fmt.Errorf("BuildExcelDir: %w", err)
-		}
-		if err := fs.CopyFile(excelPath, destExcel); err != nil {
-			return fmt.Errorf("BuildExcelDir: %w", err)
-		}
+	cfg := InitConfig(excelName)
+	destExcel := resolver.ExcelPath(cfg)
+	if err := fs.CopyFile(sourceExcelPath, destExcel); err != nil {
+		return fmt.Errorf("BuildExcelDir: %w", err)
 	}
 
-	configPath := filepath.Join(targetDirPath, "config.json")
+	configPath := resolver.ConfigPath()
 	if _, err := os.Stat(configPath); err != nil {
 		if !os.IsNotExist(err) {
 			return fmt.Errorf("BuildExcelDir: %w", err)
 		}
-		cfg := InitConfig(excelName)
 		data, err := json.Marshal(cfg)
 		if err != nil {
 			return fmt.Errorf("BuildExcelDir: %w", err)
@@ -43,6 +41,10 @@ func BuildExcelDir(excelPath string, targetDirPath string) error {
 		if err := os.WriteFile(configPath, data, 0o644); err != nil {
 			return fmt.Errorf("BuildExcelDir: %w", err)
 		}
+	}
+
+	if _, err := ReadExcelConfig(configPath); err != nil {
+		return fmt.Errorf("BuildExcelDir: %w", err)
 	}
 
 	return nil

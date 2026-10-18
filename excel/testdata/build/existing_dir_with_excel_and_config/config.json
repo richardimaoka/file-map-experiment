@@ -1,1 +1,14 @@
-{"excel_file_name":"do-not-replace.xlsx"}
+{
+  "excel_file_name": "ads_report_simple.xlsx",
+  "schema_preps": [
+    {
+      "schema_name": "preserved_marker",
+      "is_ready": false,
+      "header_start_row": 0,
+      "header_end_row": 0,
+      "data_start_row": 0,
+      "start_column": "",
+      "end_column": ""
+    }
+  ]
+}
