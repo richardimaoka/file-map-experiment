@@ -59,6 +59,11 @@ func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
 	}
 }
 
+type fixtureSheetCase struct {
+	dir   string
+	write func(f *excelize.File, sheet string) error
+}
+
 func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error) error {
 	f := excelize.NewFile()
 	defer f.Close()
@@ -83,6 +88,14 @@ func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File,
 }
 
 func writeRawHeaderCombinedWorkbook(path string, cases []rawHeaderCase) error {
+	sheets := make([]fixtureSheetCase, len(cases))
+	for i, tc := range cases {
+		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.write}
+	}
+	return writeFixtureCombinedWorkbook(path, sheets)
+}
+
+func writeFixtureCombinedWorkbook(path string, cases []fixtureSheetCase) error {
 	f := excelize.NewFile()
 	defer f.Close()
 
