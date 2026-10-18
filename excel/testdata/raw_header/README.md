@@ -1,6 +1,10 @@
 # Raw header layout fixtures
 
-Each case lives in its own directory with `workbook.xlsx` (single sheet named `Sheet1`). Edit those files directly; they are the source of truth for tests.
+Each case lives in its own directory with `workbook.xlsx` (single sheet named `Sheet1`). Layouts are defined in `raw_header_test.go`; regenerate fixtures with:
+
+```bash
+go test ./excel -run TestCreateRawHeaderFixturesInTestdata
+```
 
 Only header regions are filled; data rows below the header are intentionally empty.
 
