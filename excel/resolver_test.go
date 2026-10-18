@@ -3,15 +3,17 @@ package excel
 import (
 	"path/filepath"
 	"testing"
+
+	"github.com/richardimaoka/file-map-experiment/env"
 )
 
-// Case tree under APP_BASE_DIR/<dirPath>/ must match PathResolver's documented layout.
-func TestPathResolver_paths(t *testing.T) {
-	base := filepath.Join("testdata", "resolver", "ready")
-	t.Setenv("APP_BASE_DIR", base)
+const readyCaseRelPath = "excel/testdata/resolver/ready/cases/client1"
 
-	r := NewPathResolver("cases/client1")
-	caseDir := filepath.Join(base, "cases", "client1")
+// Case tree under APP_BASE_DIR/<relPath>/ must match PathResolver's documented layout.
+// APP_BASE_DIR comes from .env (see TestMain) or defaults to the module root.
+func TestPathResolver_paths(t *testing.T) {
+	r := NewPathResolver(readyCaseRelPath)
+	caseDir := filepath.Join(env.AppBaseDir(), readyCaseRelPath)
 
 	if r.DirPath() != caseDir {
 		t.Fatalf("case root: got %q want %q", r.DirPath(), caseDir)
@@ -42,24 +44,24 @@ func TestPathResolver_paths(t *testing.T) {
 
 // ValidateDir delegates to ReadExcelConfig; config edge cases live in config_test.go.
 func TestPathResolver_ValidateDir(t *testing.T) {
-	const relPath = "cases/client1"
-
 	cases := []struct {
 		name    string
-		fixture string // testdata/resolver/<fixture> as APP_BASE_DIR
+		relPath string // under APP_BASE_DIR
 		wantErr bool
 	}{
 		// Case tree has valid config.json and workbook.
-		{name: "ready", fixture: "ready"},
+		{name: "ready", relPath: readyCaseRelPath},
 		// Case directory exists but config.json is absent.
-		{name: "not_ready", fixture: "not_ready", wantErr: true},
+		{
+			name:    "not_ready",
+			relPath: "excel/testdata/resolver/not_ready/cases/client1",
+			wantErr: true,
+		},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			t.Setenv("APP_BASE_DIR", filepath.Join("testdata", "resolver", tc.fixture))
-
-			err := NewPathResolver(relPath).ValidateDir()
+			err := NewPathResolver(tc.relPath).ValidateDir()
 			if tc.wantErr {
 				if err == nil {
 					t.Fatal("expected error")
