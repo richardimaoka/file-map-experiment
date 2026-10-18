@@ -28,6 +28,41 @@ func TestSchemaPrep_HeaderRange(t *testing.T) {
 	}
 }
 
+func TestSchemaPrep_Validate(t *testing.T) {
+	valid := SchemaPrep{
+		SchemaName:     "1-row-simple",
+		SheetName:      "1-row-simple",
+		HeaderStartRow: 1,
+		HeaderEndRow:   1,
+		StartColumn:    "A",
+		EndColumn:      "C",
+	}
+	if err := valid.Validate(); err != nil {
+		t.Fatalf("valid prep: %v", err)
+	}
+
+	if err := (SchemaPrep{SheetName: "x", StartColumn: "A", EndColumn: "B", HeaderStartRow: 1, HeaderEndRow: 1}).Validate(); err == nil {
+		t.Fatal("expected error when schema_name is missing")
+	}
+	if err := (SchemaPrep{SchemaName: "x", StartColumn: "A", EndColumn: "B", HeaderStartRow: 1, HeaderEndRow: 1}).Validate(); err == nil {
+		t.Fatal("expected error when sheet_name is missing")
+	}
+	if err := (SchemaPrep{
+		SchemaName: "x", SheetName: "x",
+		StartColumn: "C", EndColumn: "A",
+		HeaderStartRow: 1, HeaderEndRow: 1,
+	}).Validate(); err == nil {
+		t.Fatal("expected error when start_column after end_column")
+	}
+	if err := (SchemaPrep{
+		SchemaName: "x", SheetName: "x",
+		StartColumn: "A", EndColumn: "B",
+		HeaderStartRow: 3, HeaderEndRow: 1,
+	}).Validate(); err == nil {
+		t.Fatal("expected error when header_start_row after header_end_row")
+	}
+}
+
 func TestExcelConfig_GetSchemaPrep(t *testing.T) {
 	cfg := &ExcelConfig{
 		SchemaPreps: []SchemaPrep{

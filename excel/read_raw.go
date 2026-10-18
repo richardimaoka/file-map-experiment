@@ -65,11 +65,8 @@ func isCellInMergeRange(pos CellPosition, m MergedRange) bool {
 }
 
 func readRawColumns(excelPath string, prep SchemaPrep) ([]RawColumn, error) {
-	if strings.TrimSpace(prep.SchemaName) == "" {
-		return nil, fmt.Errorf("readRawColumns: schema_name is not set")
-	}
-	if strings.TrimSpace(prep.SheetName) == "" {
-		return nil, fmt.Errorf("readRawColumns: sheet_name is not set")
+	if err := prep.Validate(); err != nil {
+		return nil, fmt.Errorf("readRawColumns: %w", err)
 	}
 
 	f, err := excelize.OpenFile(excelPath)
@@ -95,12 +92,6 @@ func readRawColumns(excelPath string, prep SchemaPrep) ([]RawColumn, error) {
 	endCol, err := excelize.ColumnNameToNumber(prep.EndColumn)
 	if err != nil {
 		return nil, fmt.Errorf("readRawColumns: end_column: %w", err)
-	}
-	if endCol < startCol {
-		return nil, fmt.Errorf("readRawColumns: end_column before start_column")
-	}
-	if prep.HeaderStartRow < 1 || prep.HeaderEndRow < prep.HeaderStartRow {
-		return nil, fmt.Errorf("readRawColumns: invalid header row range")
 	}
 
 	columns := make([]RawColumn, 0, endCol-startCol+1)

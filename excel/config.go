@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/xuri/excelize/v2"
 )
 
 // SchemaPrep is needed before reading Excel table schema
@@ -19,13 +20,45 @@ type SchemaPrep struct {
 	EndColumn      string `json:"end_column"`
 }
 
-func (c *SchemaPrep) HeaderRange() CellRange {
+func (p SchemaPrep) HeaderRange() CellRange {
 	return NewCellRange(
-		c.StartColumn,
-		c.HeaderStartRow,
-		c.EndColumn,
-		c.HeaderEndRow,
+		p.StartColumn,
+		p.HeaderStartRow,
+		p.EndColumn,
+		p.HeaderEndRow,
 	)
+}
+
+func (p SchemaPrep) Validate() error {
+	if strings.TrimSpace(p.SchemaName) == "" {
+		return fmt.Errorf("SchemaPrep.Validate: schema_name is not set")
+	}
+	if strings.TrimSpace(p.SheetName) == "" {
+		return fmt.Errorf("SchemaPrep.Validate: sheet_name is not set")
+	}
+
+	startCol, err := excelize.ColumnNameToNumber(p.StartColumn)
+	if err != nil {
+		return fmt.Errorf("SchemaPrep.Validate: start_column: %w", err)
+	}
+	endCol, err := excelize.ColumnNameToNumber(p.EndColumn)
+	if err != nil {
+		return fmt.Errorf("SchemaPrep.Validate: end_column: %w", err)
+	}
+	if startCol > endCol {
+		return fmt.Errorf("SchemaPrep.Validate: start_column must be <= end_column")
+	}
+	if p.HeaderStartRow < 1 {
+		return fmt.Errorf("SchemaPrep.Validate: header_start_row must be >= 1")
+	}
+	if p.HeaderEndRow < 1 {
+		return fmt.Errorf("SchemaPrep.Validate: header_end_row must be >= 1")
+	}
+	if p.HeaderStartRow > p.HeaderEndRow {
+		return fmt.Errorf("SchemaPrep.Validate: header_start_row must be <= header_end_row")
+	}
+
+	return nil
 }
 
 type ExcelConfig struct {
