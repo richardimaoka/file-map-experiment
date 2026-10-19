@@ -2,16 +2,18 @@ package excel
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/xuri/excelize/v2"
 )
 
 // Schema header fixtures (1-row) under excel/testdata/schema_header_1row/<case>/.
-// Layouts match excel/testdata/raw_header for the same case names (copied reference goldens).
+// Header layout matches raw_header for the same case name; data band is filled with r{row}c{col} literals.
 //
 // Regenerate workbooks and sync schema_prep.json / raw_headers.json from raw_header:
 //
@@ -21,13 +23,47 @@ import (
 //
 //	go test ./excel -update -run TestReadSchemaInternal1Row
 
-func schemaHeader1RowCases() []rawHeaderCase {
-	return []rawHeaderCase{
-		{"1-row-simple", writeRawHeader1RowSimple},
-		{"1-row-empty-header", writeRawHeader1RowEmptyHeader},
-		{"1-row-line-break", writeRawHeader1RowLineBreak},
-		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge},
+type schemaHeader1RowCase struct {
+	dir         string
+	headerWrite func(f *excelize.File, sheet string) error
+	dataBand    CellRange
+	// data in a column with no schema header name (RowData key) must fail readSchemaInternal.
+	wantSchemaErr bool
+	// omit data band cells for these columns (e.g. empty header column with no RowData key).
+	skipDataColumns map[string]bool
+	// copy schema_prep.json / raw_headers.json from this raw_header case (default: same as dir).
+	rawHeaderFixture string
+}
+
+func schemaHeader1RowCases() []schemaHeader1RowCase {
+	return []schemaHeader1RowCase{
+		{"1-row-simple", writeRawHeader1RowSimple, NewCellRange("A", 2, "C", 4), false, nil, ""},
+		{"1-row-empty-header", writeRawHeader1RowEmptyHeader, NewCellRange("A", 2, "D", 4), true, nil, ""},
+		{
+			"1-row-empty-header-valid",
+			writeRawHeader1RowEmptyHeader,
+			NewCellRange("A", 2, "D", 4),
+			false,
+			map[string]bool{"C": true},
+			"1-row-empty-header",
+		},
+		{"1-row-line-break", writeRawHeader1RowLineBreak, NewCellRange("A", 2, "B", 4), false, nil, ""},
+		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge, NewCellRange("A", 2, "D", 4), true, nil, ""},
 	}
+}
+
+func (tc schemaHeader1RowCase) writeWorkbook(f *excelize.File, sheet string) error {
+	if err := tc.headerWrite(f, sheet); err != nil {
+		return err
+	}
+	return fillSchemaHeader1RowDataBand(f, sheet, tc.dataBand, tc.skipDataColumns)
+}
+
+func (tc schemaHeader1RowCase) rawHeaderSourceDir() string {
+	if tc.rawHeaderFixture != "" {
+		return tc.rawHeaderFixture
+	}
+	return tc.dir
 }
 
 func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
@@ -43,22 +79,23 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 			}
 
 			workbookPath := filepath.Join(destDir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.write); err != nil {
+			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.writeWorkbook); err != nil {
 				t.Fatal(err)
 			}
 
-			srcDir := filepath.Join(srcBase, tc.dir)
-			for _, name := range []string{"schema_prep.json", "raw_headers.json"} {
-				if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, name), filepath.Join(destDir, name)); err != nil {
-					t.Fatal(err)
-				}
+			srcDir := filepath.Join(srcBase, tc.rawHeaderSourceDir())
+			if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, "raw_headers.json"), filepath.Join(destDir, "raw_headers.json")); err != nil {
+				t.Fatal(err)
+			}
+			if err := writeSchemaPrepForCase(destDir, tc); err != nil {
+				t.Fatal(err)
 			}
 		})
 	}
 
 	sheets := make([]fixtureSheetCase, len(cases))
 	for i, tc := range cases {
-		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.write}
+		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.writeWorkbook}
 	}
 	combinedPath := filepath.Join(destBase, "test_cases.xlsx")
 	if err := writeFixtureCombinedWorkbook(combinedPath, sheets); err != nil {
@@ -83,6 +120,12 @@ func TestReadSchemaInternal1Row(t *testing.T) {
 			}
 
 			got, err := readSchemaInternal(excelPath, prep)
+			if tc.wantSchemaErr {
+				if err == nil {
+					t.Fatal("readSchemaInternal: expected error")
+				}
+				return
+			}
 			if err != nil {
 				t.Fatalf("readSchemaInternal: %v", err)
 			}
@@ -118,6 +161,52 @@ func writeTableSchemaGolden(t *testing.T, path string, schema TableSchema) {
 	if err := os.WriteFile(path, data, 0o644); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func writeSchemaPrepForCase(destDir string, tc schemaHeader1RowCase) error {
+	srcPath := filepath.Join("testdata", "raw_header", tc.rawHeaderSourceDir(), "schema_prep.json")
+	var prep SchemaPrep
+	if err := jsonfile.Read(srcPath, &prep); err != nil {
+		return err
+	}
+	prep.SchemaName = tc.dir
+	prep.SheetName = tc.dir
+	data, err := json.MarshalIndent(prep, "", "  ")
+	if err != nil {
+		return err
+	}
+	data = append(data, '\n')
+	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+}
+
+func fillSchemaHeader1RowDataBand(f *excelize.File, sheet string, band CellRange, skipColumns map[string]bool) error {
+	startRow := band.StartRowNumber()
+	endRow := band.EndRowNumber()
+	startCol, err := band.StartColumnNumber()
+	if err != nil {
+		return err
+	}
+	endCol, err := band.EndColumnNumber()
+	if err != nil {
+		return err
+	}
+
+	for colNum := startCol; colNum <= endCol; colNum++ {
+		colName, err := excelize.ColumnNumberToName(colNum)
+		if err != nil {
+			return err
+		}
+		if skipColumns != nil && skipColumns[colName] {
+			continue
+		}
+		for row := startRow; row <= endRow; row++ {
+			val := fmt.Sprintf("r%dc%s", row, colName)
+			if err := setRawHeaderCell(f, sheet, colName, row, val); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func copySchemaHeaderFixtureFile(src, dest string) error {

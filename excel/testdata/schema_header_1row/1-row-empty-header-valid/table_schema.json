@@ -1,5 +1,5 @@
 {
-  "schema_name": "1-row-empty-header",
+  "schema_name": "1-row-empty-header-valid",
   "data_start_row": 2,
   "start_column": "A",
   "end_column": "D",

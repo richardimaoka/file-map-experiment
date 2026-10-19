@@ -34,6 +34,10 @@ func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) 
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
 	}
 
+	if err := validateDataColumnsHaveRowDataKeys(columns, raw.DataVerticals); err != nil {
+		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
+	}
+
 	return TableSchema{
 		SchemaName:   prep.SchemaName,
 		DataStartRow: prep.DataStartRow,
@@ -51,6 +55,10 @@ func columnSchemasFromHeader(prep SchemaPrep, verticals []RawVertical) ([]Column
 }
 
 func columnSchemasFromSingleRowHeader(verticals []RawVertical, headerRow int) ([]ColumnSchema, error) {
+	if err := rejectMultiCellMergesInSingleRowHeader(verticals, headerRow); err != nil {
+		return nil, err
+	}
+
 	columns := make([]ColumnSchema, 0, len(verticals))
 	for _, v := range verticals {
 		cv, err := headerCellValueAtRow(v, headerRow)
@@ -74,6 +82,32 @@ func columnSchemasFromSingleRowHeader(verticals []RawVertical, headerRow int) ([
 	return columns, nil
 }
 
+func rejectMultiCellMergesInSingleRowHeader(verticals []RawVertical, headerRow int) error {
+	for _, v := range verticals {
+		cv, err := headerCellValueAtRow(v, headerRow)
+		if err != nil {
+			return err
+		}
+		if cv.MergedRange == nil {
+			continue
+		}
+		if !mergeSpansMultipleCells(*cv.MergedRange) {
+			continue
+		}
+		return fmt.Errorf(
+			"merged header cells are not allowed for single-row headers (merge %s)",
+			mergeRangeLabel(cv.MergedRange.Range),
+		)
+	}
+	return nil
+}
+
+func mergeSpansMultipleCells(m MergedRange) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.ColumnName != br.ColumnName || ul.RowNumber != br.RowNumber
+}
+
 func columnSchemasFromMultiRowHeader(prep SchemaPrep, verticals []RawVertical) ([]ColumnSchema, error) {
 	return nil, fmt.Errorf("columnSchemasFromMultiRowHeader: not implemented")
 }
@@ -93,6 +127,38 @@ func isMergeAnchorCell(cv CellValue) bool {
 	}
 	ul := cv.MergedRange.Range.UpperLeft
 	return cv.Position.ColumnName == ul.ColumnName && cv.Position.RowNumber == ul.RowNumber
+}
+
+// Every Excel column with non-empty data cells must map to a ColumnSchema with a non-empty
+// header_name so rows can be encoded as RowData (flat string map keyed by header).
+func validateDataColumnsHaveRowDataKeys(columns []ColumnSchema, dataVerticals []RawVertical) error {
+	byExcelColumn := make(map[string]ColumnSchema, len(columns))
+	for _, c := range columns {
+		byExcelColumn[c.ExcelColumn] = c
+	}
+
+	for _, dv := range dataVerticals {
+		if !rawVerticalHasNonEmptyCell(dv) {
+			continue
+		}
+		col, ok := byExcelColumn[dv.ExcelColumn]
+		if !ok || col.HeaderName == "" {
+			return fmt.Errorf(
+				"column %s has data cells but no header name for RowData key",
+				dv.ExcelColumn,
+			)
+		}
+	}
+	return nil
+}
+
+func rawVerticalHasNonEmptyCell(v RawVertical) bool {
+	for _, cv := range v.CellValues {
+		if cv.Value != "" {
+			return true
+		}
+	}
+	return false
 }
 
 func validateExcelAgainstSchema(resolver PathResolver, schemaName string) (TableSchema, error) {
