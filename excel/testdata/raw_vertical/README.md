@@ -1,9 +1,9 @@
-# Raw vertical range fixtures (`readRawRange`)
+# Raw vertical range fixtures (`readRawVerticals`)
 
 Each case lives in `excel/testdata/raw_vertical/<case>/` with:
 
 - `workbook.xlsx` — single sheet named like the case directory (≤31 characters)
-- `read_range.json` — `sheet_name` and `range` (`CellRange`) passed to `readRawRange`
+- `read_range.json` — `sheet_name` and `range` (`CellRange`) passed to `readRawVerticals`
 - `raw_verticals.json` — golden `[]RawVertical`
 
 Case directory names use a **prefix** that matches one **combined workbook** (several sheets, one per case in that group). Combined files sit in this directory:
@@ -28,7 +28,7 @@ go test ./excel -run TestCreateRawVerticalFixturesInTestdata
 Regenerate `raw_verticals.json`:
 
 ```bash
-go test ./excel -update -run TestReadRawRange
+go test ./excel -update -run TestReadRawVerticals
 ```
 
 Cell value semantics (formula, types, whitespace, etc.) are covered under `testdata/raw_cells`.

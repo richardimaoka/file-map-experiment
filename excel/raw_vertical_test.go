@@ -21,7 +21,7 @@ import (
 //
 // Regenerate raw_verticals.json:
 //
-//	go test ./excel -update -run TestReadRawRange
+//	go test ./excel -update -run TestReadRawVerticals
 
 type rawVerticalCase struct {
 	dir       string
@@ -137,8 +137,8 @@ func TestCreateRawVerticalFixturesInTestdata(t *testing.T) {
 	}
 }
 
-// Exercises readRawRange against each prefixed case and its read_range.json golden.
-func TestReadRawRange(t *testing.T) {
+// Exercises readRawVerticals against each prefixed case and its read_range.json golden.
+func TestReadRawVerticals(t *testing.T) {
 	for _, tc := range rawVerticalCases() {
 		t.Run(tc.dir, func(t *testing.T) {
 			caseDir := filepath.Join("testdata", "raw_vertical", tc.dir)
@@ -151,9 +151,9 @@ func TestReadRawRange(t *testing.T) {
 				t.Fatalf("read read_range: %v", err)
 			}
 
-			got, err := readRawRange(excelPath, spec.SheetName, spec.Range)
+			got, err := readRawVerticals(excelPath, spec.SheetName, spec.Range)
 			if err != nil {
-				t.Fatalf("readRawRange: %v", err)
+				t.Fatalf("readRawVerticals: %v", err)
 			}
 
 			if updateGoldens() {

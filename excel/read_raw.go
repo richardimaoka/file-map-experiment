@@ -37,6 +37,29 @@ type RawColumn struct {
 	Data   *RawDataColumn `json:"data"`
 }
 
+type RawTable struct {
+	HeaderVerticals []RawVertical `json:"header_verticals"`
+	DataVerticals   []RawVertical `json:"data_verticals"`
+}
+
+func readRawTable(excelPath string, sheetName string, hRange, dRange CellRange) (RawTable, error) {
+	h, err := readRawVerticals(excelPath, sheetName, hRange)
+	if err != nil {
+		return RawTable{}, fmt.Errorf("readRawTable: failed to read header verticals: %w", err)
+	}
+
+	d, err := readRawVerticals(excelPath, sheetName, dRange)
+	if err != nil {
+		return RawTable{}, fmt.Errorf("readRawTable: failed to read data verticals: %w", err)
+	}
+
+	return RawTable{
+		HeaderVerticals: h,
+		DataVerticals:   d,
+	}, nil
+
+}
+
 type RawVertical struct {
 	ExcelColumn string      `json:"excel_column"`
 	StartRow    int         `json:"start_row"`
@@ -44,41 +67,41 @@ type RawVertical struct {
 	CellValues  []CellValue `json:"cell_values"`
 }
 
-func readRawRange(excelPath string, sheetName string, r CellRange) ([]RawVertical, error) {
+func readRawVerticals(excelPath string, sheetName string, r CellRange) ([]RawVertical, error) {
 	f, err := excelize.OpenFile(excelPath)
 	if err != nil {
-		return nil, fmt.Errorf("readRawRange: %w", err)
+		return nil, fmt.Errorf("readRawVerticals: %w", err)
 	}
 	defer f.Close()
 
 	merges, err := loadMergedRanges(f, sheetName)
 	if err != nil {
-		return nil, fmt.Errorf("readRawRange: %w", err)
+		return nil, fmt.Errorf("readRawVerticals: %w", err)
 	}
 
 	startRow := r.StartRowNumber()
 	endRow := r.EndRowNumber()
 	startCol, err := r.StartColumnNumber()
 	if err != nil {
-		return nil, fmt.Errorf("readRawRange: start_column: %w", err)
+		return nil, fmt.Errorf("readRawVerticals: start_column: %w", err)
 	}
 	endCol, err := r.EndColumnNumber()
 	if err != nil {
-		return nil, fmt.Errorf("readRawRange: end_column: %w", err)
+		return nil, fmt.Errorf("readRawVerticals: end_column: %w", err)
 	}
 
 	verticals := make([]RawVertical, 0, endCol-startCol+1)
 	for colNum := startCol; colNum <= endCol; colNum++ {
 		colName, err := excelize.ColumnNumberToName(colNum)
 		if err != nil {
-			return nil, fmt.Errorf("readRawRange: %w", err)
+			return nil, fmt.Errorf("readRawVerticals: %w", err)
 		}
 
 		cellValues := make([]CellValue, 0, endRow-startRow+1)
 		for row := startRow; row <= endRow; row++ {
 			cv, err := readCellValue(f, sheetName, colName, row, merges)
 			if err != nil {
-				return nil, fmt.Errorf("readRawRange: %w", err)
+				return nil, fmt.Errorf("readRawVerticals: %w", err)
 			}
 			cellValues = append(cellValues, cv)
 		}
