@@ -55,7 +55,7 @@ func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
 		})
 	}
 
-	combinedPath := filepath.Join(base, "test_cases.xlsx")
+	combinedPath := fixtureCombinedWorkbookPath(base)
 	if err := writeRawHeaderCombinedWorkbook(combinedPath, cases); err != nil {
 		t.Fatal(err)
 	}
@@ -124,6 +124,11 @@ func writeRawHeadersGolden(t *testing.T, path string, headers []RawHeader) {
 type fixtureSheetCase struct {
 	dir   string
 	write func(f *excelize.File, sheet string) error
+}
+
+// Combined workbook for a testdata tree: <dir_name>_tests.xlsx (e.g. raw_header_tests.xlsx).
+func fixtureCombinedWorkbookPath(testdataDir string) string {
+	return filepath.Join(testdataDir, filepath.Base(testdataDir)+"_tests.xlsx")
 }
 
 func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error) error {

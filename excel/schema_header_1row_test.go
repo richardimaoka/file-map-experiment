@@ -97,7 +97,7 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 	for i, tc := range cases {
 		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.writeWorkbook}
 	}
-	combinedPath := filepath.Join(destBase, "test_cases.xlsx")
+	combinedPath := fixtureCombinedWorkbookPath(destBase)
 	if err := writeFixtureCombinedWorkbook(combinedPath, sheets); err != nil {
 		t.Fatal(err)
 	}

@@ -11,7 +11,7 @@ Per case:
 - `table_schema.json` — golden `TableSchema` from `readSchemaInternal` (passing cases only)
 - `raw_headers.json` — optional copy from `raw_header` for comparison only (not tested here)
 
-Combined workbook: `test_cases.xlsx` (one sheet per case).
+Combined workbook: `schema_header_1row_tests.xlsx` (one sheet per case).
 
 | Directory | Description |
 |-----------|-------------|

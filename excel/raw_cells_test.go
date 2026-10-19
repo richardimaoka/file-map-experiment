@@ -60,7 +60,7 @@ func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
 	for i, tc := range cases {
 		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.write}
 	}
-	combinedPath := filepath.Join(base, "test_cases.xlsx")
+	combinedPath := fixtureCombinedWorkbookPath(base)
 	if err := writeFixtureCombinedWorkbook(combinedPath, sheets); err != nil {
 		t.Fatal(err)
 	}

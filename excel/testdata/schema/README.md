@@ -24,7 +24,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | [`schema_header_1row/`](schema_header_1row/README.md) | **In progress** | Header track: one header row |
 | `schema_header_2row/` | Planned | Header track: two header rows |
 | `schema_header_3row/` | Planned | Header track: three header rows |
-| `schema_data/` | Planned | Data track: fixed simple header, vary data band |
+| [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band |
 | `schema_coupling/` (name TBD) | Planned | Few cases where header + data rules interact |
 
 Legacy: [`raw_header/`](../raw_header/README.md) may be removed once schema trees subsume it.
@@ -71,16 +71,21 @@ Reuse header layouts from `testdata/raw_header` where names match.
 
 ---
 
-## Planned: `schema_data` (~5–8 cases)
+## Current: `schema_data` (4 cases; more planned)
 
-**Same header everywhere** (e.g. copy `1-row-simple` header + `schema_prep` bounds). Vary only the data band.
+See [schema_data/README.md](schema_data/README.md).
 
-| Suggested case | Focus |
-|----------------|--------|
-| `data-all-string` | Baseline string values |
-| `data-mixed-types` | Number vs text per column (display strings) |
-| `data-empty-cell` | Sparse values inside the grid |
-| `data-empty-column` | One column blank for all data rows |
+| Case | Result |
+|------|--------|
+| `data-all-string` | Pass |
+| `data-empty-column` | Pass (header C, no data in C) |
+| `data-empty-cell` | Pass |
+| `data-mixed-types` | Pass |
+
+**Same header everywhere** (`1-row-simple`). Vary only the data band.
+
+| Planned case | Focus |
+|--------------|--------|
 | `data-vertical-merge` | Row grouping in **data** → drives `IsRowGrouped` when implemented |
 | `data-horizontal-merge` | Only if schema / row read must see data merges |
 | `data-formula` / `data-error` | Only if schema exposes them (else `raw_cells`) |
@@ -110,9 +115,13 @@ Not part of the initial “clean” pass; add when real `.xlsx` files require th
 ## Test commands
 
 ```bash
-# 1-row header fixtures (today)
+# 1-row header fixtures
 go test ./excel -run TestCreateSchemaHeader1RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal1Row
+
+# data band fixtures
+go test ./excel -run TestCreateSchemaDataFixturesInTestdata
+go test ./excel -update -run TestReadSchemaInternalData
 ```
 
 Future packages will mirror this pattern (`TestCreateSchemaHeader2RowFixturesInTestdata`, etc.).

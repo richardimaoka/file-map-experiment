@@ -1,0 +1,23 @@
+{
+  "schema_name": "data-all-string",
+  "data_start_row": 2,
+  "start_column": "A",
+  "end_column": "C",
+  "columns": [
+    {
+      "header_name": "headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    }
+  ]
+}

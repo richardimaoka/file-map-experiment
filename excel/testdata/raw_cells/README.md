@@ -6,7 +6,7 @@ Each case is `excel/testdata/raw_cells/<case>/` with:
 - `merged_ranges.json` — golden `[]MergedRange` from `loadMergedRanges`
 - `<cell>.json` — golden `CellValue` from `readCellValue` (e.g. `B1.json`)
 
-All cases are also combined in `test_cases.xlsx` at this directory (one sheet per case, same names).
+All cases are also combined in `raw_cells_tests.xlsx` at this directory (one sheet per case, same names).
 
 Regenerate workbooks:
 
