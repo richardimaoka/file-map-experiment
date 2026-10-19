@@ -15,11 +15,6 @@
       "is_row_grouped": false
     },
     {
-      "header_name": "headerBC",
-      "excel_column": "C",
-      "is_row_grouped": false
-    },
-    {
       "header_name": "headerD",
       "excel_column": "D",
       "is_row_grouped": false
