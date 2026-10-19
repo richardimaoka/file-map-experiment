@@ -1,0 +1,13 @@
+{
+  "sheet_name": "bound-merge-below",
+  "range": {
+    "upper_left": {
+      "column_name": "A",
+      "row_number": 1
+    },
+    "bottom_right": {
+      "column_name": "A",
+      "row_number": 2
+    }
+  }
+}

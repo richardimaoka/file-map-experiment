@@ -1,0 +1,13 @@
+{
+  "sheet_name": "sparse-1-row-gap-column",
+  "range": {
+    "upper_left": {
+      "column_name": "A",
+      "row_number": 1
+    },
+    "bottom_right": {
+      "column_name": "D",
+      "row_number": 1
+    }
+  }
+}

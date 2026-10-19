@@ -1,0 +1,13 @@
+{
+  "sheet_name": "ext-3-row-simple",
+  "range": {
+    "upper_left": {
+      "column_name": "A",
+      "row_number": 1
+    },
+    "bottom_right": {
+      "column_name": "C",
+      "row_number": 3
+    }
+  }
+}

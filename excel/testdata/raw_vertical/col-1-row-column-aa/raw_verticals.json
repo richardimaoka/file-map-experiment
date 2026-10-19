@@ -1,0 +1,32 @@
+[
+  {
+    "excel_column": "Z",
+    "start_row": 1,
+    "end_row": 1,
+    "cell_values": [
+      {
+        "value": "r1cZ",
+        "formula": "",
+        "position": {
+          "column_name": "Z",
+          "row_number": 1
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "AA",
+    "start_row": 1,
+    "end_row": 1,
+    "cell_values": [
+      {
+        "value": "r1cAA",
+        "formula": "",
+        "position": {
+          "column_name": "AA",
+          "row_number": 1
+        }
+      }
+    ]
+  }
+]

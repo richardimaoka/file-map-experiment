@@ -1,0 +1,13 @@
+{
+  "sheet_name": "ext-1x1-single-cell",
+  "range": {
+    "upper_left": {
+      "column_name": "B",
+      "row_number": 2
+    },
+    "bottom_right": {
+      "column_name": "B",
+      "row_number": 2
+    }
+  }
+}

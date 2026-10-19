@@ -1,0 +1,13 @@
+{
+  "sheet_name": "col-1-row-column-aa",
+  "range": {
+    "upper_left": {
+      "column_name": "Z",
+      "row_number": 1
+    },
+    "bottom_right": {
+      "column_name": "AA",
+      "row_number": 1
+    }
+  }
+}
