@@ -1,0 +1,28 @@
+{
+  "schema_name": "1-row-horizontal-merge",
+  "data_start_row": 2,
+  "start_column": "A",
+  "end_column": "D",
+  "columns": [
+    {
+      "header_name": "headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerBC",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerBC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerD",
+      "excel_column": "D",
+      "is_row_grouped": false
+    }
+  ]
+}
