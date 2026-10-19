@@ -17,15 +17,82 @@ type TableSchema struct {
 }
 
 func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) {
+	if err := prep.Validate(); err != nil {
+		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
+	}
+
 	hRange := prep.HeaderRange()
 	dRange := prep.DataRange()
 
-	_, err := readRawTable(excelPath, prep.SheetName, hRange, dRange)
+	raw, err := readRawTable(excelPath, prep.SheetName, hRange, dRange)
 	if err != nil {
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
 	}
 
-	return TableSchema{}, fmt.Errorf("readSchemaInternal: not implemented")
+	columns, err := columnSchemasFromHeader(prep, raw.HeaderVerticals)
+	if err != nil {
+		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
+	}
+
+	return TableSchema{
+		SchemaName:   prep.SchemaName,
+		DataStartRow: prep.DataStartRow,
+		StartColumn:  prep.StartColumn,
+		EndColumn:    prep.EndColumn,
+		Columns:      columns,
+	}, nil
+}
+
+func columnSchemasFromHeader(prep SchemaPrep, verticals []RawVertical) ([]ColumnSchema, error) {
+	if prep.HeaderStartRow == prep.HeaderEndRow {
+		return columnSchemasFromSingleRowHeader(verticals, prep.HeaderEndRow)
+	}
+	return columnSchemasFromMultiRowHeader(prep, verticals)
+}
+
+func columnSchemasFromSingleRowHeader(verticals []RawVertical, headerRow int) ([]ColumnSchema, error) {
+	columns := make([]ColumnSchema, 0, len(verticals))
+	for _, v := range verticals {
+		cv, err := headerCellValueAtRow(v, headerRow)
+		if err != nil {
+			return nil, err
+		}
+		if cv.Value == "" {
+			continue
+		}
+		if cv.MergedRange != nil && !isMergeAnchorCell(cv) {
+			continue
+		}
+
+		columns = append(columns, ColumnSchema{
+			HeaderName:   cv.Value,
+			ExcelColumn:  v.ExcelColumn,
+			IsRowGrouped: false, // data-range row merge grouping; set when data schema is implemented
+		})
+	}
+
+	return columns, nil
+}
+
+func columnSchemasFromMultiRowHeader(prep SchemaPrep, verticals []RawVertical) ([]ColumnSchema, error) {
+	return nil, fmt.Errorf("columnSchemasFromMultiRowHeader: not implemented")
+}
+
+func headerCellValueAtRow(v RawVertical, row int) (CellValue, error) {
+	for _, cv := range v.CellValues {
+		if cv.Position.RowNumber == row {
+			return cv, nil
+		}
+	}
+	return CellValue{}, fmt.Errorf("headerCellValueAtRow: row %d not in vertical %s", row, v.ExcelColumn)
+}
+
+func isMergeAnchorCell(cv CellValue) bool {
+	if cv.MergedRange == nil {
+		return true
+	}
+	ul := cv.MergedRange.Range.UpperLeft
+	return cv.Position.ColumnName == ul.ColumnName && cv.Position.RowNumber == ul.RowNumber
 }
 
 func validateExcelAgainstSchema(resolver PathResolver, schemaName string) (TableSchema, error) {
