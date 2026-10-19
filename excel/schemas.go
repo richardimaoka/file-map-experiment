@@ -1,6 +1,9 @@
 package excel
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type ColumnSchema struct {
 	HeaderName   string `json:"header_name"`
@@ -109,7 +112,38 @@ func mergeSpansMultipleCells(m MergedRange) bool {
 }
 
 func columnSchemasFromMultiRowHeader(prep SchemaPrep, verticals []RawVertical) ([]ColumnSchema, error) {
-	return nil, fmt.Errorf("columnSchemasFromMultiRowHeader: not implemented")
+	columns := make([]ColumnSchema, 0, len(verticals))
+	for _, v := range verticals {
+		name := resolvedMultiRowHeaderName(v, prep.HeaderStartRow, prep.HeaderEndRow)
+		if name == "" {
+			continue
+		}
+		columns = append(columns, ColumnSchema{
+			HeaderName:   name,
+			ExcelColumn:  v.ExcelColumn,
+			IsRowGrouped: false,
+		})
+	}
+	return columns, nil
+}
+
+// RowData keys join each header row's label top-to-bottom with " > ", using merge anchors only.
+func resolvedMultiRowHeaderName(v RawVertical, headerStartRow, headerEndRow int) string {
+	parts := make([]string, 0, headerEndRow-headerStartRow+1)
+	for row := headerStartRow; row <= headerEndRow; row++ {
+		cv, err := headerCellValueAtRow(v, row)
+		if err != nil {
+			continue
+		}
+		if cv.Value == "" {
+			continue
+		}
+		if cv.MergedRange != nil && !isMergeAnchorCell(cv) {
+			continue
+		}
+		parts = append(parts, cv.Value)
+	}
+	return strings.Join(parts, " > ")
 }
 
 func headerCellValueAtRow(v RawVertical, row int) (CellValue, error) {

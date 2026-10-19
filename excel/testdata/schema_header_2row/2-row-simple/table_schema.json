@@ -1,0 +1,23 @@
+{
+  "schema_name": "2-row-simple",
+  "data_start_row": 3,
+  "start_column": "A",
+  "end_column": "C",
+  "columns": [
+    {
+      "header_name": "group1 > headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group2 > headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group3 > headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    }
+  ]
+}

@@ -10,7 +10,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 |------|----------------|
 | Any Excel column with **non-empty data** must appear in `TableSchema.Columns` with a **non-empty** `header_name` | `validateDataColumnsHaveRowDataKeys` |
 | **Single-row headers:** no **multi-cell** merges in the header row (e.g. B1:C1) | `rejectMultiCellMergesInSingleRowHeader` |
-| **Multi-row headers:** merge logic not implemented yet (`columnSchemasFromMultiRowHeader`) | — |
+| **Multi-row headers:** `header_name` = header row labels joined with ` > ` (top to bottom, merge anchor per row) | `resolvedMultiRowHeaderName` |
 | `IsRowGrouped` | Hardcoded `false` until data-band row-merge grouping is defined |
 | Merges overlapping a read range must lie **entirely** inside it | `readRawVerticals` (see `testdata/raw_vertical`) |
 | Cell semantics (formula, types, whitespace) | `testdata/raw_cells`, not schema fixtures |
@@ -22,7 +22,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | Directory | Status | Role |
 |-----------|--------|------|
 | [`schema_header_1row/`](schema_header_1row/README.md) | **In progress** | Header track: one header row |
-| `schema_header_2row/` | Planned | Header track: two header rows |
+| [`schema_header_2row/`](schema_header_2row/README.md) | **In progress** | Header track: two header rows |
 | `schema_header_3row/` | Planned | Header track: three header rows |
 | [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band |
 | `schema_coupling/` (name TBD) | Planned | Few cases where header + data rules interact |
@@ -45,20 +45,20 @@ See [schema_header_1row/README.md](schema_header_1row/README.md).
 
 ---
 
-## Planned: `schema_header_2row` (~5–6 cases)
+## Current: `schema_header_2row` (6 cases)
 
-Boring data band (empty or uniform `r{row}c{col}`). Header-focused.
+See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (or A–G for repeated merge).
 
-| Suggested case | Focus |
-|----------------|--------|
-| `2-row-simple` | Two header rows, plain names |
-| `2-row-empty-cell` | Empty cell in header grid |
-| `2-row-horizontal-merge` | Group row merge across columns |
-| `2-row-vertical-merge` | Vertical merge in header (one column) |
-| `2-row-bidirectional-merge` | One 2D header merge |
-| `2-row-horizontal-merge-repeated` | Optional: many columns / repeated pattern |
+| Case | Result |
+|------|--------|
+| `2-row-simple` | Pass |
+| `2-row-empty-cell` | Pass |
+| `2-row-horizontal-merge` | Pass |
+| `2-row-vertical-merge` | Pass |
+| `2-row-bidirectional-merge` | Pass (B omitted from schema; no data in B) |
+| `2-row-horizontal-merge-repeated` | Pass |
 
-Reuse header layouts from `testdata/raw_header` where names match.
+Planned later from `raw_header`: `2-row-vertical-merge-repeated`, `2-row-bidirectional-merge-rep`, `2-row-mixed-merge`.
 
 ---
 
@@ -122,6 +122,10 @@ go test ./excel -update -run TestReadSchemaInternal1Row
 # data band fixtures
 go test ./excel -run TestCreateSchemaDataFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternalData
+
+# 2-row header fixtures
+go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
+go test ./excel -update -run TestReadSchemaInternal2Row
 ```
 
 Future packages will mirror this pattern (`TestCreateSchemaHeader2RowFixturesInTestdata`, etc.).

@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"reflect"
@@ -14,16 +15,28 @@ func updateGoldens() bool {
 	return *updateGoldensFlag
 }
 
+// Golden files are UTF-8 text for humans; do not HTML-escape >, &, < in strings.
+func marshalJSONGoldenIndent(v interface{}) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(v); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
 func fatalIfJSONGoldenMismatch(t *testing.T, got, want interface{}) {
 	t.Helper()
 	if reflect.DeepEqual(got, want) {
 		return
 	}
-	gotJSON, err := json.MarshalIndent(got, "", "  ")
+	gotJSON, err := marshalJSONGoldenIndent(got)
 	if err != nil {
 		t.Fatalf("marshal got: %v", err)
 	}
-	wantJSON, err := json.MarshalIndent(want, "", "  ")
+	wantJSON, err := marshalJSONGoldenIndent(want)
 	if err != nil {
 		t.Fatalf("marshal want: %v", err)
 	}
