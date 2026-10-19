@@ -10,7 +10,7 @@
       "is_row_grouped": false
     },
     {
-      "header_name": "headerB",
+      "header_name": "group1 > headerB",
       "excel_column": "B",
       "is_row_grouped": false
     },

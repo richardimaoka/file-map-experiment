@@ -10,7 +10,8 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 |------|----------------|
 | Any Excel column with **non-empty data** must appear in `TableSchema.Columns` with a **non-empty** `header_name` | `validateDataColumnsHaveRowDataKeys` |
 | **Single-row headers:** no **multi-cell** merges in the header row (e.g. B1:C1) | `rejectMultiCellMergesInSingleRowHeader` |
-| **Multi-row headers:** `header_name` = header row labels joined with ` > ` (top to bottom, merge anchor per row) | `resolvedMultiRowHeaderName` |
+| **Multi-row headers:** `header_name` = row labels joined with ` > `; horizontal group-row merges propagate on non-leaf rows | `resolvedMultiRowHeaderName` |
+| **Multi-row headers:** no **multi-column** merge may intersect `header_end_row` (leaf row) | `rejectMultiColumnMergesIntersectingHeaderEndRow` |
 | `IsRowGrouped` | Hardcoded `false` until data-band row-merge grouping is defined |
 | Merges overlapping a read range must lie **entirely** inside it | `readRawVerticals` (see `testdata/raw_vertical`) |
 | Cell semantics (formula, types, whitespace) | `testdata/raw_cells`, not schema fixtures |
@@ -55,7 +56,7 @@ See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{
 | `2-row-empty-cell` | Pass |
 | `2-row-horizontal-merge` | Pass |
 | `2-row-vertical-merge` | Pass |
-| `2-row-bidirectional-merge` | Pass (B omitted from schema; no data in B) |
+| `2-row-bidirectional-merge` | Error (multi-column merge on leaf row) |
 | `2-row-horizontal-merge-repeated` | Pass |
 
 Planned later from `raw_header`: `2-row-vertical-merge-repeated`, `2-row-bidirectional-merge-rep`, `2-row-mixed-merge`.

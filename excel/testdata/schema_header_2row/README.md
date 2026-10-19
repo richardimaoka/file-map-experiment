@@ -13,7 +13,9 @@ Per case:
 
 Combined workbook: `schema_header_2row_tests.xlsx` (one sheet per case).
 
-`header_name` joins each header row’s label top-to-bottom with ` > ` (merge **anchor** cells only per row). Example: `group1 > headerA`. Columns with no resolvable labels are omitted (e.g. `2-row-bidirectional-merge` column B inside a 2D merge); that case leaves column B empty in the data band.
+`header_name` joins each header row’s label top-to-bottom with ` > `. Per row: unmerged cells and merge anchors count; non-anchor cells count only for **horizontal** merges on that row (so `group1` applies to every column under A1:B1). Example: `group1 > headerA`.
+
+**Merge rule:** any merge spanning more than one column that touches the **leaf** header row (`header_end_row`) fails schema (e.g. `2-row-bidirectional-merge`). Group-row-only merges such as `2-row-horizontal-merge` are allowed.
 
 | Directory | Description |
 |-----------|-------------|
@@ -21,7 +23,7 @@ Combined workbook: `schema_header_2row_tests.xlsx` (one sheet per case).
 | `2-row-empty-cell` | Empty cell in row 1, column B |
 | `2-row-horizontal-merge` | Group merge A–B on row 1 |
 | `2-row-vertical-merge` | Vertical merge in column A |
-| `2-row-bidirectional-merge` | 2D merge A–B; schema columns A and C only |
+| `2-row-bidirectional-merge` | 2D merge A–B — **errors** (multi-column merge on leaf row) |
 | `2-row-horizontal-merge-repeated` | Multiple horizontal group merges, A–G |
 
 Regenerate workbooks:

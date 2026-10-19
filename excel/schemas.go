@@ -111,7 +111,53 @@ func mergeSpansMultipleCells(m MergedRange) bool {
 	return ul.ColumnName != br.ColumnName || ul.RowNumber != br.RowNumber
 }
 
+func mergeSpansMultipleColumns(m MergedRange) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.ColumnName != br.ColumnName
+}
+
+func mergeIntersectsRow(m MergedRange, row int) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.RowNumber <= row && row <= br.RowNumber
+}
+
+// Leaf header row must name each column; a merge across columns on that row (or a 2D merge
+// that includes it) makes RowData keys ambiguous.
+func rejectMultiColumnMergesIntersectingHeaderEndRow(verticals []RawVertical, headerEndRow int) error {
+	seen := make(map[string]bool)
+	for _, v := range verticals {
+		for _, cv := range v.CellValues {
+			if cv.MergedRange == nil {
+				continue
+			}
+			m := *cv.MergedRange
+			if !mergeSpansMultipleColumns(m) {
+				continue
+			}
+			if !mergeIntersectsRow(m, headerEndRow) {
+				continue
+			}
+			label := mergeRangeLabel(m.Range)
+			if seen[label] {
+				continue
+			}
+			seen[label] = true
+			return fmt.Errorf(
+				"multi-column header merge intersects the leaf header row (merge %s)",
+				label,
+			)
+		}
+	}
+	return nil
+}
+
 func columnSchemasFromMultiRowHeader(prep SchemaPrep, verticals []RawVertical) ([]ColumnSchema, error) {
+	if err := rejectMultiColumnMergesIntersectingHeaderEndRow(verticals, prep.HeaderEndRow); err != nil {
+		return nil, err
+	}
+
 	columns := make([]ColumnSchema, 0, len(verticals))
 	for _, v := range verticals {
 		name := resolvedMultiRowHeaderName(v, prep.HeaderStartRow, prep.HeaderEndRow)
@@ -127,7 +173,7 @@ func columnSchemasFromMultiRowHeader(prep SchemaPrep, verticals []RawVertical) (
 	return columns, nil
 }
 
-// RowData keys join each header row's label top-to-bottom with " > ", using merge anchors only.
+// RowData keys join each header row's label top-to-bottom with " > ".
 func resolvedMultiRowHeaderName(v RawVertical, headerStartRow, headerEndRow int) string {
 	parts := make([]string, 0, headerEndRow-headerStartRow+1)
 	for row := headerStartRow; row <= headerEndRow; row++ {
@@ -135,15 +181,30 @@ func resolvedMultiRowHeaderName(v RawVertical, headerStartRow, headerEndRow int)
 		if err != nil {
 			continue
 		}
-		if cv.Value == "" {
-			continue
-		}
-		if cv.MergedRange != nil && !isMergeAnchorCell(cv) {
+		if !headerRowLabelIncluded(cv) {
 			continue
 		}
 		parts = append(parts, cv.Value)
 	}
 	return strings.Join(parts, " > ")
+}
+
+// Unmerged cells and merge anchors always count. Non-anchor cells count only for horizontal
+// merges on that row (group labels spanning columns). Vertical / 2D merge fill cells are skipped.
+func headerRowLabelIncluded(cv CellValue) bool {
+	if cv.Value == "" {
+		return false
+	}
+	if cv.MergedRange == nil || isMergeAnchorCell(cv) {
+		return true
+	}
+	return mergeIsHorizontalOnRow(*cv.MergedRange, cv.Position.RowNumber)
+}
+
+func mergeIsHorizontalOnRow(m MergedRange, row int) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.RowNumber == row && br.RowNumber == row && ul.ColumnName != br.ColumnName
 }
 
 func headerCellValueAtRow(v RawVertical, row int) (CellValue, error) {

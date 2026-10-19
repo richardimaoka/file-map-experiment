@@ -10,7 +10,7 @@
       "is_row_grouped": false
     },
     {
-      "header_name": "headerB",
+      "header_name": "group1 > headerB",
       "excel_column": "B",
       "is_row_grouped": false
     },
@@ -25,12 +25,12 @@
       "is_row_grouped": false
     },
     {
-      "header_name": "headerE",
+      "header_name": "group 3 > headerE",
       "excel_column": "E",
       "is_row_grouped": false
     },
     {
-      "header_name": "headerF",
+      "header_name": "group 3 > headerF",
       "excel_column": "F",
       "is_row_grouped": false
     },

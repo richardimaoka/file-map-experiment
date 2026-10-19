@@ -40,8 +40,8 @@ func schemaHeader2RowCases() []schemaHeader2RowCase {
 			"2-row-bidirectional-merge",
 			writeRawHeader2RowBidirectionalMerge,
 			NewCellRange("A", 3, "C", 5),
-			false,
-			map[string]bool{"B": true},
+			true,
+			nil,
 			"",
 		},
 		{
