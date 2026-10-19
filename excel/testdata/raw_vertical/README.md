@@ -1,5 +1,7 @@
 # Raw vertical range fixtures (`readRawVerticals`)
 
+Any merge that overlaps the read range must lie **entirely** inside it; otherwise `readRawVerticals` returns an error. That keeps schema/header prep responsible for choosing ranges that fully contain merged headers.
+
 Each case lives in `excel/testdata/raw_vertical/<case>/` with:
 
 - `workbook.xlsx` — single sheet named like the case directory (≤31 characters)
@@ -13,7 +15,7 @@ Case directory names use a **prefix** that matches one **combined workbook** (se
 | `combined_extent.xlsx` | `ext-` | `ext-1-row-simple`, `ext-3-row-simple`, `ext-1x1-single-cell` |
 | `combined_sparse.xlsx` | `sparse-` | `sparse-3-row-empty-cell`, `sparse-3-row-empty-column`, `sparse-1-row-gap-column` |
 | `combined_merge.xlsx` | `merge-` | `merge-1-row-horizontal`, `merge-2-row-vertical`, `merge-2-row-block`, `merge-2-row-bidirectional`, `merge-1-row-two-horizontal` |
-| `combined_merge_boundary.xlsx` | `bound-` | `bound-merge-above`, `bound-merge-below`, `bound-merge-left`, `bound-merge-right` |
+| `combined_merge_boundary.xlsx` | `bound-` | Merge extends outside `read_range` — `readRawVerticals` must **error** (no `raw_verticals.json`) |
 | `combined_hidden.xlsx` | `hidden-` | `hidden-3-row-hidden-row`, `hidden-3-row-hidden-column` |
 | `combined_column.xlsx` | `col-` | `col-1-row-wide`, `col-1-row-column-aa` |
 | `combined_range.xlsx` | `range-` | `range-3-row-all-empty`, `range-3-row-below-used` |

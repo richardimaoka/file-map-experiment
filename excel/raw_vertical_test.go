@@ -27,6 +27,8 @@ type rawVerticalCase struct {
 	dir       string
 	readRange CellRange
 	write     func(f *excelize.File, sheet string) error
+	// merge crosses read range boundary; readRawVerticals must error.
+	wantMergeCrossesRangeErr bool
 }
 
 type rawVerticalGroup struct {
@@ -39,63 +41,63 @@ func rawVerticalGroups() []rawVerticalGroup {
 		{
 			combinedWorkbook: "combined_extent.xlsx",
 			cases: []rawVerticalCase{
-				{"ext-1-row-simple", NewCellRange("A", 1, "C", 1), writeRawVerticalExt1RowSimple},
-				{"ext-3-row-simple", NewCellRange("A", 1, "C", 3), writeRawVerticalExt3RowSimple},
-				{"ext-1x1-single-cell", NewCellRange("B", 2, "B", 2), writeRawVerticalExt1x1},
+				{"ext-1-row-simple", NewCellRange("A", 1, "C", 1), writeRawVerticalExt1RowSimple, false},
+				{"ext-3-row-simple", NewCellRange("A", 1, "C", 3), writeRawVerticalExt3RowSimple, false},
+				{"ext-1x1-single-cell", NewCellRange("B", 2, "B", 2), writeRawVerticalExt1x1, false},
 			},
 		},
 		{
 			combinedWorkbook: "combined_sparse.xlsx",
 			cases: []rawVerticalCase{
-				{"sparse-3-row-empty-cell", NewCellRange("A", 1, "C", 3), writeRawVerticalSparseEmptyCell},
-				{"sparse-3-row-empty-column", NewCellRange("A", 1, "C", 3), writeRawVerticalSparseEmptyColumn},
-				{"sparse-1-row-gap-column", NewCellRange("A", 1, "D", 1), writeRawVerticalSparseGapColumn},
+				{"sparse-3-row-empty-cell", NewCellRange("A", 1, "C", 3), writeRawVerticalSparseEmptyCell, false},
+				{"sparse-3-row-empty-column", NewCellRange("A", 1, "C", 3), writeRawVerticalSparseEmptyColumn, false},
+				{"sparse-1-row-gap-column", NewCellRange("A", 1, "D", 1), writeRawVerticalSparseGapColumn, false},
 			},
 		},
 		{
 			combinedWorkbook: "combined_merge.xlsx",
 			cases: []rawVerticalCase{
-				{"merge-1-row-horizontal", NewCellRange("A", 1, "C", 1), writeRawVerticalMerge1RowHorizontal},
-				{"merge-2-row-vertical", NewCellRange("A", 1, "B", 2), writeRawVerticalMerge2RowVertical},
-				{"merge-2-row-block", NewCellRange("A", 1, "C", 2), writeRawVerticalMerge2RowBlock},
-				{"merge-2-row-bidirectional", NewCellRange("A", 1, "C", 2), writeRawVerticalMerge2RowBidirectional},
-				{"merge-1-row-two-horizontal", NewCellRange("A", 1, "E", 1), writeRawVerticalMerge1RowTwoHorizontal},
+				{"merge-1-row-horizontal", NewCellRange("A", 1, "C", 1), writeRawVerticalMerge1RowHorizontal, false},
+				{"merge-2-row-vertical", NewCellRange("A", 1, "B", 2), writeRawVerticalMerge2RowVertical, false},
+				{"merge-2-row-block", NewCellRange("A", 1, "C", 2), writeRawVerticalMerge2RowBlock, false},
+				{"merge-2-row-bidirectional", NewCellRange("A", 1, "C", 2), writeRawVerticalMerge2RowBidirectional, false},
+				{"merge-1-row-two-horizontal", NewCellRange("A", 1, "E", 1), writeRawVerticalMerge1RowTwoHorizontal, false},
 			},
 		},
 		{
 			combinedWorkbook: "combined_merge_boundary.xlsx",
 			cases: []rawVerticalCase{
-				{"bound-merge-above", NewCellRange("A", 2, "A", 3), writeRawVerticalBoundMergeAbove},
-				{"bound-merge-below", NewCellRange("A", 1, "A", 2), writeRawVerticalBoundMergeBelow},
-				{"bound-merge-left", NewCellRange("B", 1, "C", 1), writeRawVerticalBoundMergeLeft},
-				{"bound-merge-right", NewCellRange("A", 1, "B", 1), writeRawVerticalBoundMergeRight},
+				{"bound-merge-above", NewCellRange("A", 2, "A", 3), writeRawVerticalBoundMergeAbove, true},
+				{"bound-merge-below", NewCellRange("A", 1, "A", 2), writeRawVerticalBoundMergeBelow, true},
+				{"bound-merge-left", NewCellRange("B", 1, "C", 1), writeRawVerticalBoundMergeLeft, true},
+				{"bound-merge-right", NewCellRange("A", 1, "B", 1), writeRawVerticalBoundMergeRight, true},
 			},
 		},
 		{
 			combinedWorkbook: "combined_hidden.xlsx",
 			cases: []rawVerticalCase{
-				{"hidden-3-row-hidden-row", NewCellRange("A", 1, "C", 3), writeRawVerticalHiddenRow},
-				{"hidden-3-row-hidden-column", NewCellRange("A", 1, "C", 3), writeRawVerticalHiddenColumn},
+				{"hidden-3-row-hidden-row", NewCellRange("A", 1, "C", 3), writeRawVerticalHiddenRow, false},
+				{"hidden-3-row-hidden-column", NewCellRange("A", 1, "C", 3), writeRawVerticalHiddenColumn, false},
 			},
 		},
 		{
 			combinedWorkbook: "combined_column.xlsx",
 			cases: []rawVerticalCase{
-				{"col-1-row-wide", NewCellRange("A", 1, "G", 1), writeRawVerticalCol1RowWide},
-				{"col-1-row-column-aa", NewCellRange("Z", 1, "AA", 1), writeRawVerticalCol1RowColumnAA},
+				{"col-1-row-wide", NewCellRange("A", 1, "G", 1), writeRawVerticalCol1RowWide, false},
+				{"col-1-row-column-aa", NewCellRange("Z", 1, "AA", 1), writeRawVerticalCol1RowColumnAA, false},
 			},
 		},
 		{
 			combinedWorkbook: "combined_range.xlsx",
 			cases: []rawVerticalCase{
-				{"range-3-row-all-empty", NewCellRange("A", 1, "C", 3), writeRawVerticalRange3RowAllEmpty},
-				{"range-3-row-below-used", NewCellRange("A", 10, "C", 12), writeRawVerticalRange3RowBelowUsed},
+				{"range-3-row-all-empty", NewCellRange("A", 1, "C", 3), writeRawVerticalRange3RowAllEmpty, false},
+				{"range-3-row-below-used", NewCellRange("A", 10, "C", 12), writeRawVerticalRange3RowBelowUsed, false},
 			},
 		},
 		{
 			combinedWorkbook: "combined_stress.xlsx",
 			cases: []rawVerticalCase{
-				{"stress-2-row-many-merge", NewCellRange("A", 1, "H", 2), writeRawVerticalStress2RowManyMerge},
+				{"stress-2-row-many-merge", NewCellRange("A", 1, "H", 2), writeRawVerticalStress2RowManyMerge, false},
 			},
 		},
 	}
@@ -152,6 +154,12 @@ func TestReadRawVerticals(t *testing.T) {
 			}
 
 			got, err := readRawVerticals(excelPath, spec.SheetName, spec.Range)
+			if tc.wantMergeCrossesRangeErr {
+				if err == nil {
+					t.Fatal("readRawVerticals: expected error when merge crosses read range")
+				}
+				return
+			}
 			if err != nil {
 				t.Fatalf("readRawVerticals: %v", err)
 			}

@@ -78,6 +78,9 @@ func readRawVerticals(excelPath string, sheetName string, r CellRange) ([]RawVer
 	if err != nil {
 		return nil, fmt.Errorf("readRawVerticals: %w", err)
 	}
+	if err := rejectMergesCrossingCellRange(merges, r); err != nil {
+		return nil, err
+	}
 
 	startRow := r.StartRowNumber()
 	endRow := r.EndRowNumber()
@@ -115,6 +118,37 @@ func readRawVerticals(excelPath string, sheetName string, r CellRange) ([]RawVer
 	}
 
 	return verticals, nil
+}
+
+func rejectMergesCrossingCellRange(merges []MergedRange, r CellRange) error {
+	for _, m := range merges {
+		hits, err := r.Intersects(m.Range)
+		if err != nil {
+			return fmt.Errorf("readRawVerticals: %w", err)
+		}
+		if !hits {
+			continue
+		}
+		inside, err := r.Contains(m.Range)
+		if err != nil {
+			return fmt.Errorf("readRawVerticals: %w", err)
+		}
+		if inside {
+			continue
+		}
+		return fmt.Errorf(
+			"readRawVerticals: merged range %s must lie entirely inside read range %s",
+			mergeRangeLabel(m.Range),
+			mergeRangeLabel(r),
+		)
+	}
+	return nil
+}
+
+func mergeRangeLabel(r CellRange) string {
+	ul := r.UpperLeft
+	br := r.BottomRight
+	return fmt.Sprintf("%s%d:%s%d", ul.ColumnName, ul.RowNumber, br.ColumnName, br.RowNumber)
 }
 
 func readRawHeaders(excelPath string, prep SchemaPrep) ([]RawHeader, error) {

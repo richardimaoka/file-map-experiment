@@ -85,6 +85,62 @@ func (c *CellRange) EndColumnNumber() (int, error) {
 	return n, nil
 }
 
+// Intersects reports whether any cell lies in both ranges (inclusive edges).
+func (c CellRange) Intersects(other CellRange) (bool, error) {
+	a0, err := c.StartColumnNumber()
+	if err != nil {
+		return false, err
+	}
+	a1, err := c.EndColumnNumber()
+	if err != nil {
+		return false, err
+	}
+	b0, err := other.StartColumnNumber()
+	if err != nil {
+		return false, err
+	}
+	b1, err := other.EndColumnNumber()
+	if err != nil {
+		return false, err
+	}
+
+	if a1 < b0 || b1 < a0 {
+		return false, nil
+	}
+	if c.EndRowNumber() < other.StartRowNumber() || other.EndRowNumber() < c.StartRowNumber() {
+		return false, nil
+	}
+	return true, nil
+}
+
+// Contains reports whether every cell in other lies in c (inclusive edges).
+func (c CellRange) Contains(other CellRange) (bool, error) {
+	ok, err := c.Intersects(other)
+	if err != nil || !ok {
+		return false, err
+	}
+	a0, err := c.StartColumnNumber()
+	if err != nil {
+		return false, err
+	}
+	a1, err := c.EndColumnNumber()
+	if err != nil {
+		return false, err
+	}
+	b0, err := other.StartColumnNumber()
+	if err != nil {
+		return false, err
+	}
+	b1, err := other.EndColumnNumber()
+	if err != nil {
+		return false, err
+	}
+
+	return b0 >= a0 && b1 <= a1 &&
+		other.StartRowNumber() >= c.StartRowNumber() &&
+		other.EndRowNumber() <= c.EndRowNumber(), nil
+}
+
 type MergedRange struct {
 	Value string    `json:"value"`
 	Range CellRange `json:"range"`
