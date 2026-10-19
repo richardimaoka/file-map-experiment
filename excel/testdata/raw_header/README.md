@@ -10,7 +10,7 @@ Only header regions are filled; data rows below the header are intentionally emp
 
 Each case directory also has:
 
-- `schema_prep.json` — `SchemaPrep` for the header region (`schema_name` and `sheet_name` match the directory name, `is_ready`: true). `start_column` / `end_column` bound the header area; every column in that range appears in `readRawHeaders` output (including empty cells).
+- `schema_prep.json` — full `SchemaPrep` (`schema_name` and `sheet_name` match the directory name, `is_ready`: true). Header rows use `header_start_row` / `header_end_row`; `start_column` / `end_column` bound both header and data. Data rows use `data_start_row` / `data_end_row` (first row after the header through a short empty band below it). Every column in range appears in `readRawHeaders` output (including empty cells).
 - `raw_headers.json` — golden output of `readRawHeaders` (JSON array of `RawHeader`).
 
 Regenerate `raw_headers.json` after changing layouts or reader behavior:

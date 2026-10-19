@@ -16,6 +16,7 @@ type SchemaPrep struct {
 	HeaderStartRow int    `json:"header_start_row"`
 	HeaderEndRow   int    `json:"header_end_row"`
 	DataStartRow   int    `json:"data_start_row"`
+	DataEndRow     int    `json:"data_end_row"`
 	StartColumn    string `json:"start_column"`
 	EndColumn      string `json:"end_column"`
 }
@@ -26,6 +27,15 @@ func (p SchemaPrep) HeaderRange() CellRange {
 		p.HeaderStartRow,
 		p.EndColumn,
 		p.HeaderEndRow,
+	)
+}
+
+func (p SchemaPrep) DataRange() CellRange {
+	return NewCellRange(
+		p.StartColumn,
+		p.DataStartRow,
+		p.EndColumn,
+		p.DataEndRow,
 	)
 }
 
@@ -56,6 +66,18 @@ func (p SchemaPrep) Validate() error {
 	}
 	if p.HeaderStartRow > p.HeaderEndRow {
 		return fmt.Errorf("SchemaPrep.Validate: header_start_row must be <= header_end_row")
+	}
+
+	if p.DataStartRow != 0 || p.DataEndRow != 0 {
+		if p.DataStartRow < 1 {
+			return fmt.Errorf("SchemaPrep.Validate: data_start_row must be >= 1")
+		}
+		if p.DataEndRow < 1 {
+			return fmt.Errorf("SchemaPrep.Validate: data_end_row must be >= 1")
+		}
+		if p.DataStartRow > p.DataEndRow {
+			return fmt.Errorf("SchemaPrep.Validate: data_start_row must be <= data_end_row")
+		}
 	}
 
 	return nil

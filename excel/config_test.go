@@ -28,6 +28,19 @@ func TestSchemaPrep_HeaderRange(t *testing.T) {
 	}
 }
 
+func TestSchemaPrep_DataRange(t *testing.T) {
+	prep := SchemaPrep{
+		StartColumn:  "B",
+		DataStartRow: 3,
+		EndColumn:    "G",
+		DataEndRow:   10,
+	}
+	want := NewCellRange("B", 3, "G", 10)
+	if got := prep.DataRange(); got != want {
+		t.Errorf("DataRange: got %v want %v", got, want)
+	}
+}
+
 func TestSchemaPrep_Validate(t *testing.T) {
 	valid := SchemaPrep{
 		SchemaName:     "1-row-simple",
@@ -60,6 +73,22 @@ func TestSchemaPrep_Validate(t *testing.T) {
 		HeaderStartRow: 3, HeaderEndRow: 1,
 	}).Validate(); err == nil {
 		t.Fatal("expected error when header_start_row after header_end_row")
+	}
+	if err := (SchemaPrep{
+		SchemaName: "x", SheetName: "x",
+		StartColumn: "A", EndColumn: "B",
+		HeaderStartRow: 1, HeaderEndRow: 1,
+		DataStartRow: 5, DataEndRow: 3,
+	}).Validate(); err == nil {
+		t.Fatal("expected error when data_start_row after data_end_row")
+	}
+	if err := (SchemaPrep{
+		SchemaName: "x", SheetName: "x",
+		StartColumn: "A", EndColumn: "B",
+		HeaderStartRow: 1, HeaderEndRow: 1,
+		DataStartRow: 2,
+	}).Validate(); err == nil {
+		t.Fatal("expected error when data_end_row is unset but data_start_row is set")
 	}
 }
 
