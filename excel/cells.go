@@ -69,20 +69,20 @@ func (c *CellRange) EndColumnName() string {
 	return c.BottomRight.ColumnName
 }
 
-func (c *CellRange) StartColumnNumber() int {
+func (c *CellRange) StartColumnNumber() (int, error) {
 	n, err := excelize.ColumnNameToNumber(c.StartColumnName())
 	if err != nil {
-		panic("CellRange.StartColumnNumber: " + err.Error())
+		return 0, fmt.Errorf("CellRange.StartColumnNumber: %w", err)
 	}
-	return n
+	return n, nil
 }
 
-func (c *CellRange) EndColumnNumber() int {
+func (c *CellRange) EndColumnNumber() (int, error) {
 	n, err := excelize.ColumnNameToNumber(c.EndColumnName())
 	if err != nil {
-		panic("CellRange.StartColumnNumber: " + err.Error())
+		return 0, fmt.Errorf("CellRange.EndColumnNumber: %w", err)
 	}
-	return n
+	return n, nil
 }
 
 type MergedRange struct {

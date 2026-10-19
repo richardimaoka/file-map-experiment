@@ -25,7 +25,6 @@ type RawDataColumn struct {
 	ExcelColumn  string      `json:"excel_column"`
 	DataStartRow int         `json:"data_start_row"`
 	DataEndRow   int         `json:"data_end_row"`
-	IsMerged     bool        `json:"is_merged"`
 	CellValues   []CellValue `json:"cell_values"`
 }
 
@@ -36,6 +35,63 @@ func (c *RawDataColumn) Type() (string, error) {
 type RawColumn struct {
 	Header *RawHeader     `json:"header"`
 	Data   *RawDataColumn `json:"data"`
+}
+
+type RawVertical struct {
+	ExcelColumn string      `json:"excel_column"`
+	StartRow    int         `json:"start_row"`
+	EndRow      int         `json:"end_row"`
+	CellValues  []CellValue `json:"cell_values"`
+}
+
+func readRawRange(excelPath string, sheetName string, r CellRange) ([]RawVertical, error) {
+	f, err := excelize.OpenFile(excelPath)
+	if err != nil {
+		return nil, fmt.Errorf("readRawRange: %w", err)
+	}
+	defer f.Close()
+
+	merges, err := loadMergedRanges(f, sheetName)
+	if err != nil {
+		return nil, fmt.Errorf("readRawRange: %w", err)
+	}
+
+	startRow := r.StartRowNumber()
+	endRow := r.EndRowNumber()
+	startCol, err := r.StartColumnNumber()
+	if err != nil {
+		return nil, fmt.Errorf("readRawRange: start_column: %w", err)
+	}
+	endCol, err := r.EndColumnNumber()
+	if err != nil {
+		return nil, fmt.Errorf("readRawRange: end_column: %w", err)
+	}
+
+	verticals := make([]RawVertical, 0, endCol-startCol+1)
+	for colNum := startCol; colNum <= endCol; colNum++ {
+		colName, err := excelize.ColumnNumberToName(colNum)
+		if err != nil {
+			return nil, fmt.Errorf("readRawRange: %w", err)
+		}
+
+		cellValues := make([]CellValue, 0, endRow-startRow+1)
+		for row := startRow; row <= endRow; row++ {
+			cv, err := readCellValue(f, sheetName, colName, row, merges)
+			if err != nil {
+				return nil, fmt.Errorf("readRawRange: %w", err)
+			}
+			cellValues = append(cellValues, cv)
+		}
+
+		verticals = append(verticals, RawVertical{
+			ExcelColumn: colName,
+			StartRow:    startRow,
+			EndRow:      endRow,
+			CellValues:  cellValues,
+		})
+	}
+
+	return verticals, nil
 }
 
 func readRawHeaders(excelPath string, prep SchemaPrep) ([]RawHeader, error) {

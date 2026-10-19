@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"sort"
 	"testing"
+	"time"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
 	"github.com/xuri/excelize/v2"
@@ -29,6 +30,13 @@ func rawCellsCases() []rawCellsCase {
 		{"vertical", writeRawCellsVertical, []string{"A1", "A2", "B1"}},
 		{"block", writeRawCellsBlock, []string{"A1", "B1", "C1", "B2", "C2"}},
 		{"two-horizontal", writeRawCellsTwoHorizontal, []string{"A1", "B1", "C1", "D1", "E1"}},
+		{"formula", writeRawCellsFormula, []string{"A1"}},
+		{"error", writeRawCellsError, []string{"A1"}},
+		{"typed-number", writeRawCellsTypedNumber, []string{"A1"}},
+		{"typed-date", writeRawCellsTypedDate, []string{"A1"}},
+		{"text-number", writeRawCellsTextNumber, []string{"A1"}},
+		{"line-break", writeRawCellsLineBreak, []string{"A1"}},
+		{"whitespace", writeRawCellsWhitespace, []string{"A1"}},
 	}
 }
 
@@ -212,6 +220,52 @@ func writeRawCellsTwoHorizontal(f *excelize.File, sheet string) error {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "D", 1, "E", 1)
+}
+
+func writeRawCellsFormula(f *excelize.File, sheet string) error {
+	return f.SetCellFormula(sheet, "A1", "1+2")
+}
+
+func writeRawCellsError(f *excelize.File, sheet string) error {
+	return f.SetCellFormula(sheet, "A1", "1/0")
+}
+
+func writeRawCellsTypedNumber(f *excelize.File, sheet string) error {
+	return f.SetCellValue(sheet, "A1", 1234.5)
+}
+
+func writeRawCellsTypedDate(f *excelize.File, sheet string) error {
+	const cell = "A1"
+	customFmt := "yyyy-mm-dd"
+	styleID, err := f.NewStyle(&excelize.Style{CustomNumFmt: &customFmt})
+	if err != nil {
+		return err
+	}
+	if err := f.SetCellStyle(sheet, cell, cell, styleID); err != nil {
+		return err
+	}
+	return f.SetCellValue(sheet, cell, time.Date(2024, 3, 15, 0, 0, 0, 0, time.UTC))
+}
+
+func writeRawCellsTextNumber(f *excelize.File, sheet string) error {
+	const cell = "A1"
+	textFmt := "@"
+	styleID, err := f.NewStyle(&excelize.Style{CustomNumFmt: &textFmt})
+	if err != nil {
+		return err
+	}
+	if err := f.SetCellStyle(sheet, cell, cell, styleID); err != nil {
+		return err
+	}
+	return f.SetCellValue(sheet, cell, "00123")
+}
+
+func writeRawCellsLineBreak(f *excelize.File, sheet string) error {
+	return setRawHeaderCell(f, sheet, "A", 1, "line\none\ntwo")
+}
+
+func writeRawCellsWhitespace(f *excelize.File, sheet string) error {
+	return setRawHeaderCell(f, sheet, "A", 1, "  padded  ")
 }
 
 func sortMergedRanges(merges []MergedRange) {

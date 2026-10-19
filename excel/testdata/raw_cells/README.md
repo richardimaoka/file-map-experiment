@@ -27,3 +27,10 @@ go test ./excel -update -run 'TestLoadMergedRanges|TestReadCellValue'
 | `vertical`       | One column, A1:A2                    |
 | `block`          | Rectangle B1:C2                      |
 | `two-horizontal` | Two separate row merges (A1:B1, D1:E1) |
+| `formula`        | Formula `1+2` (no cached result in file) |
+| `error`          | Formula `1/0` (`GetCellValue` empty; formula set) |
+| `typed-number`   | Numeric cell `1234.5`                |
+| `typed-date`     | Date with `yyyy-mm-dd` format        |
+| `text-number`    | Text format, value `00123`           |
+| `line-break`     | Multiline string in one cell         |
+| `whitespace`     | Leading and trailing spaces          |
