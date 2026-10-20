@@ -37,6 +37,9 @@ func rawHeaderCases() []rawHeaderCase {
 		{"2-row-bidirectional-merge", writeRawHeader2RowBidirectionalMerge},
 		{"2-row-bidirectional-merge-rep", writeRawHeader2RowBidirectionalMergeRepeated},
 		{"2-row-mixed-merge", writeRawHeader2RowMixedMerge},
+		{"3-row-simple", writeRawHeader3RowSimple},
+		{"3-row-bidirectional-merge", writeRawHeader3RowBidirectionalMerge},
+		{"3-row-mixed-merge", writeRawHeader3RowMixedMerge},
 	}
 }
 
@@ -468,4 +471,72 @@ func writeRawHeader2RowMixedMerge(f *excelize.File, sheet string) error {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "G", 1, "H", 1)
+}
+
+func writeRawHeader3RowSimple(f *excelize.File, sheet string) error {
+	if err := setRawHeaderRow(f, sheet, 1, []string{"A", "B", "C"}, []string{"group1", "group2", "group3"}); err != nil {
+		return err
+	}
+	if err := setRawHeaderRow(f, sheet, 2, []string{"A", "B", "C"}, []string{"subgroup1", "subgroup2", "subgroup3"}); err != nil {
+		return err
+	}
+	return setRawHeaderRow(f, sheet, 3, []string{"A", "B", "C"}, []string{"headerA", "headerB", "headerC"})
+}
+
+// 2D merge A1:B3 intersects the leaf header row across multiple columns.
+func writeRawHeader3RowBidirectionalMerge(f *excelize.File, sheet string) error {
+	if err := setRawHeaderCell(f, sheet, "A", 1, "tierA"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "C", 1, "group3"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "C", 2, "subgroup3"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "C", 3, "headerC"); err != nil {
+		return err
+	}
+	return mergeRawHeader(f, sheet, "A", 1, "B", 3)
+}
+
+// Horizontal group/subgroup merges (A–C, D–E) plus vertical leaf merges (F–H); data band only in A–C.
+func writeRawHeader3RowMixedMerge(f *excelize.File, sheet string) error {
+	if err := setRawHeaderCell(f, sheet, "A", 1, "group1"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "D", 1, "group2"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "A", 2, "subgroup1"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "B", 2, "subgroup2"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "D", 2, "subgroup1"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "E", 2, "subgroup2"); err != nil {
+		return err
+	}
+	if err := setRawHeaderRow(f, sheet, 2, []string{"F", "G", "H"}, []string{"headerA", "headerB", "headerC"}); err != nil {
+		return err
+	}
+	if err := setRawHeaderRow(f, sheet, 3, []string{"A", "B", "C", "D", "E"}, []string{"headerA", "headerB", "headerC", "headerA", "headerB"}); err != nil {
+		return err
+	}
+	if err := mergeRawHeader(f, sheet, "A", 1, "C", 1); err != nil {
+		return err
+	}
+	if err := mergeRawHeader(f, sheet, "B", 2, "C", 2); err != nil {
+		return err
+	}
+	if err := mergeRawHeader(f, sheet, "F", 2, "F", 3); err != nil {
+		return err
+	}
+	if err := mergeRawHeader(f, sheet, "G", 2, "G", 3); err != nil {
+		return err
+	}
+	return mergeRawHeader(f, sheet, "H", 2, "H", 3)
 }

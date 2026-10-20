@@ -32,7 +32,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
 | [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
 | [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band (4 cases) |
-| `schema_header_3row/` | **Planned** | Header track: three header rows |
+| [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
 | `schema_coupling/` (name TBD) | **Planned** | Few cases where header + data rules interact |
 
 Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (passing cases only). `raw_header` remains for `readRawHeaders` goldens and may shrink once only schema trees are needed.
@@ -73,12 +73,15 @@ See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{
 
 ---
 
-## Planned: `schema_header_3row` (~2–3 cases)
+## `schema_header_3row` (3 cases) — initial pass complete
 
-| Suggested case | Focus |
-|----------------|--------|
-| `3-row-simple` | Three header rows |
-| `3-row-*-merge` | One “nasty” merge case (not a full matrix) |
+See [schema_header_3row/README.md](schema_header_3row/README.md). Data band: `r{row}c{col}` on rows 4–6 (column span matches each case’s `end_column`). Error cases have no `table_schema.json`.
+
+| Case | Result |
+|------|--------|
+| `3-row-simple` | Pass |
+| `3-row-bidirectional-merge` | Error (multi-column merge on leaf row) |
+| `3-row-mixed-merge` | Pass (horizontal group/subgroup + vertical leaf merges; prep and data A–H) |
 
 ---
 
@@ -138,9 +141,11 @@ go test ./excel -update -run TestReadSchemaInternalData
 # 2-row header fixtures
 go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal2Row
-```
 
-`schema_header_3row` will follow the same pattern (`TestCreateSchemaHeader3RowFixturesInTestdata`, `TestReadSchemaInternal3Row`, etc.) when added.
+# 3-row header fixtures
+go test ./excel -run TestCreateSchemaHeader3RowFixturesInTestdata
+go test ./excel -update -run TestReadSchemaInternal3Row
+```
 
 ## Related read-layer fixtures
 

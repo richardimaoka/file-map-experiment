@@ -1,0 +1,95 @@
+[
+  {
+    "excel_column": "A",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group1",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "subgroup1",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "B",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group2",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "subgroup2",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "C",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group3",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "subgroup3",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "headerC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 3
+        }
+      }
+    ]
+  }
+]

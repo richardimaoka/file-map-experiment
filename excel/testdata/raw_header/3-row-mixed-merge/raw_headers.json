@@ -1,0 +1,393 @@
+[
+  {
+    "excel_column": "A",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group1",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 1
+        },
+        "merged_range": {
+          "value": "group1",
+          "range": {
+            "upper_left": {
+              "column_name": "A",
+              "row_number": 1
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 1
+            }
+          }
+        }
+      },
+      {
+        "value": "subgroup1",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "B",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group1",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 1
+        },
+        "merged_range": {
+          "value": "group1",
+          "range": {
+            "upper_left": {
+              "column_name": "A",
+              "row_number": 1
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 1
+            }
+          }
+        }
+      },
+      {
+        "value": "subgroup2",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "subgroup2",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 2
+            }
+          }
+        }
+      },
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "C",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group1",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 1
+        },
+        "merged_range": {
+          "value": "group1",
+          "range": {
+            "upper_left": {
+              "column_name": "A",
+              "row_number": 1
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 1
+            }
+          }
+        }
+      },
+      {
+        "value": "subgroup2",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "subgroup2",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 2
+            }
+          }
+        }
+      },
+      {
+        "value": "headerC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "D",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "group2",
+        "formula": "",
+        "position": {
+          "column_name": "D",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "subgroup1",
+        "formula": "",
+        "position": {
+          "column_name": "D",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "D",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "E",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "",
+        "formula": "",
+        "position": {
+          "column_name": "E",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "subgroup2",
+        "formula": "",
+        "position": {
+          "column_name": "E",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "E",
+          "row_number": 3
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "F",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "",
+        "formula": "",
+        "position": {
+          "column_name": "F",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "F",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "headerA",
+          "range": {
+            "upper_left": {
+              "column_name": "F",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "F",
+              "row_number": 3
+            }
+          }
+        }
+      },
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "F",
+          "row_number": 3
+        },
+        "merged_range": {
+          "value": "headerA",
+          "range": {
+            "upper_left": {
+              "column_name": "F",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "F",
+              "row_number": 3
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "G",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "",
+        "formula": "",
+        "position": {
+          "column_name": "G",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "G",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "headerB",
+          "range": {
+            "upper_left": {
+              "column_name": "G",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "G",
+              "row_number": 3
+            }
+          }
+        }
+      },
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "G",
+          "row_number": 3
+        },
+        "merged_range": {
+          "value": "headerB",
+          "range": {
+            "upper_left": {
+              "column_name": "G",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "G",
+              "row_number": 3
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "H",
+    "header_start_row": 1,
+    "header_end_row": 3,
+    "cell_values": [
+      {
+        "value": "",
+        "formula": "",
+        "position": {
+          "column_name": "H",
+          "row_number": 1
+        }
+      },
+      {
+        "value": "headerC",
+        "formula": "",
+        "position": {
+          "column_name": "H",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "headerC",
+          "range": {
+            "upper_left": {
+              "column_name": "H",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "H",
+              "row_number": 3
+            }
+          }
+        }
+      },
+      {
+        "value": "headerC",
+        "formula": "",
+        "position": {
+          "column_name": "H",
+          "row_number": 3
+        },
+        "merged_range": {
+          "value": "headerC",
+          "range": {
+            "upper_left": {
+              "column_name": "H",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "H",
+              "row_number": 3
+            }
+          }
+        }
+      }
+    ]
+  }
+]

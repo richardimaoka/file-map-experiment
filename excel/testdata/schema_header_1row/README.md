@@ -1,6 +1,6 @@
 # Schema fixtures: 1-row headers
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (6 cases). Next header track in the plan: `schema_header_3row`. Data-band work continues under [../schema_data/README.md](../schema_data/README.md).
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (6 cases). Data-band work continues under [../schema_data/README.md](../schema_data/README.md).
 
 Cases for `readSchemaInternal` (header track, single header row). Header cells match the same-named case under `testdata/raw_header/`; the data band (`data_start_row`–`data_end_row`, every column in `start_column`–`end_column`) is filled with values like `r2cA` for use when header and data verticals are read together.
 

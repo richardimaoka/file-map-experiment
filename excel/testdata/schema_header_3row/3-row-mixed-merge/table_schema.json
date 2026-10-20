@@ -1,0 +1,48 @@
+{
+  "schema_name": "3-row-mixed-merge",
+  "data_start_row": 4,
+  "start_column": "A",
+  "end_column": "H",
+  "columns": [
+    {
+      "header_name": "group1 > subgroup1 > headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group1 > subgroup2 > headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group1 > subgroup2 > headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group2 > subgroup1 > headerA",
+      "excel_column": "D",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "subgroup2 > headerB",
+      "excel_column": "E",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerA",
+      "excel_column": "F",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerB",
+      "excel_column": "G",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerC",
+      "excel_column": "H",
+      "is_row_grouped": false
+    }
+  ]
+}

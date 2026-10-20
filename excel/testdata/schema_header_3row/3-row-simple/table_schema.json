@@ -1,0 +1,23 @@
+{
+  "schema_name": "3-row-simple",
+  "data_start_row": 4,
+  "start_column": "A",
+  "end_column": "C",
+  "columns": [
+    {
+      "header_name": "group1 > subgroup1 > headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group2 > subgroup2 > headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group3 > subgroup3 > headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    }
+  ]
+}
