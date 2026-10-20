@@ -1,0 +1,33 @@
+{
+  "schema_name": "2-row-vertical-merge-repeated",
+  "data_start_row": 3,
+  "start_column": "A",
+  "end_column": "E",
+  "columns": [
+    {
+      "header_name": "headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group2 > headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerD",
+      "excel_column": "D",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "headerE",
+      "excel_column": "E",
+      "is_row_grouped": false
+    }
+  ]
+}

@@ -25,6 +25,9 @@ Combined workbook: `schema_header_2row_tests.xlsx` (one sheet per case).
 | `2-row-vertical-merge` | Vertical merge in column A |
 | `2-row-bidirectional-merge` | 2D merge A–B — **errors** (multi-column merge on leaf row) |
 | `2-row-horizontal-merge-repeated` | Multiple horizontal group merges, A–G |
+| `2-row-vertical-merge-repeated` | Vertical merges on columns A, C, D |
+| `2-row-bidirectional-merge-rep` | Repeated A1:B2-style blocks — **errors** |
+| `2-row-mixed-merge` | Horizontal group row + vertical + bidirectional J:K — **errors** |
 
 Regenerate workbooks:
 

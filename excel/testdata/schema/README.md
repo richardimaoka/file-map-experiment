@@ -46,9 +46,9 @@ See [schema_header_1row/README.md](schema_header_1row/README.md).
 
 ---
 
-## Current: `schema_header_2row` (6 cases)
+## Current: `schema_header_2row` (9 cases)
 
-See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (or A–G for repeated merge).
+See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (column span matches each case’s `end_column`).
 
 | Case | Result |
 |------|--------|
@@ -58,8 +58,9 @@ See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{
 | `2-row-vertical-merge` | Pass |
 | `2-row-bidirectional-merge` | Error (multi-column merge on leaf row) |
 | `2-row-horizontal-merge-repeated` | Pass |
-
-Planned later from `raw_header`: `2-row-vertical-merge-repeated`, `2-row-bidirectional-merge-rep`, `2-row-mixed-merge`.
+| `2-row-vertical-merge-repeated` | Pass |
+| `2-row-bidirectional-merge-rep` | Error (multi-column merge on leaf row) |
+| `2-row-mixed-merge` | Error (multi-column merge on leaf row) |
 
 ---
 

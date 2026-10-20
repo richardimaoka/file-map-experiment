@@ -52,6 +52,30 @@ func schemaHeader2RowCases() []schemaHeader2RowCase {
 			nil,
 			"",
 		},
+		{
+			"2-row-vertical-merge-repeated",
+			writeRawHeader2RowVerticalMergeRepeated,
+			NewCellRange("A", 3, "E", 5),
+			false,
+			nil,
+			"",
+		},
+		{
+			"2-row-bidirectional-merge-rep",
+			writeRawHeader2RowBidirectionalMergeRepeated,
+			NewCellRange("A", 3, "I", 5),
+			true,
+			nil,
+			"",
+		},
+		{
+			"2-row-mixed-merge",
+			writeRawHeader2RowMixedMerge,
+			NewCellRange("A", 3, "L", 5),
+			true,
+			nil,
+			"",
+		},
 	}
 }
 
