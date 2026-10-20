@@ -9,6 +9,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | Rule | Where enforced |
 |------|----------------|
 | Any Excel column with **non-empty data** must appear in `TableSchema.Columns` with a **non-empty** `header_name` | `validateDataColumnsHaveRowDataKeys` |
+| **Non-empty `header_name` values must be unique** across columns (RowData keys) | `rejectDuplicateHeaderNames` |
 | **Single-row headers:** no **multi-cell** merges in the header row (e.g. B1:C1) | `rejectMultiCellMergesInSingleRowHeader` |
 | **Multi-row headers:** `header_name` = row labels joined with ` > `; horizontal group-row merges propagate on non-leaf rows | `resolvedMultiRowHeaderName` |
 | **Multi-row headers:** no **multi-column** merge may intersect `header_end_row` (leaf row) | `rejectMultiColumnMergesIntersectingHeaderEndRow` |
@@ -32,7 +33,7 @@ Legacy: [`raw_header/`](../raw_header/README.md) may be removed once schema tree
 
 ---
 
-## Current: `schema_header_1row` (~5 cases)
+## Current: `schema_header_1row` (6 cases)
 
 See [schema_header_1row/README.md](schema_header_1row/README.md).
 
@@ -43,6 +44,7 @@ See [schema_header_1row/README.md](schema_header_1row/README.md).
 | `1-row-empty-header-valid` | Pass (empty header C, no data in C) |
 | `1-row-empty-header` | Error (data in C, no RowData key) |
 | `1-row-horizontal-merge` | Error (merged single-row header disallowed) |
+| `1-row-duplicate-header` | Error (duplicate header name) |
 
 ---
 

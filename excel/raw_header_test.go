@@ -26,6 +26,7 @@ func rawHeaderCases() []rawHeaderCase {
 		{"1-row-empty-header", writeRawHeader1RowEmptyHeader},
 		{"1-row-line-break", writeRawHeader1RowLineBreak},
 		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge},
+		{"1-row-duplicate-header", writeRawHeader1RowDuplicateHeader},
 		{"2-row-simple", writeRawHeader2RowSimple},
 		{"2-row-empty-cell", writeRawHeader2RowEmptyCell},
 		{"2-row-horizontal-merge", writeRawHeader2RowHorizontalMerge},
@@ -272,6 +273,17 @@ func writeRawHeader1RowHorizontalMerge(f *excelize.File, sheet string) error {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "B", 1, "C", 1)
+}
+
+// Columns B and C share the same header text (duplicate RowData keys).
+func writeRawHeader1RowDuplicateHeader(f *excelize.File, sheet string) error {
+	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
+		return err
+	}
+	if err := setRawHeaderCell(f, sheet, "B", 1, "headerB"); err != nil {
+		return err
+	}
+	return setRawHeaderCell(f, sheet, "C", 1, "headerB")
 }
 
 func writeRawHeader2RowSimple(f *excelize.File, sheet string) error {

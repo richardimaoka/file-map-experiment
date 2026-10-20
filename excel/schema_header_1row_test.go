@@ -49,6 +49,7 @@ func schemaHeader1RowCases() []schemaHeader1RowCase {
 		},
 		{"1-row-line-break", writeRawHeader1RowLineBreak, NewCellRange("A", 2, "B", 4), false, nil, ""},
 		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge, NewCellRange("A", 2, "D", 4), true, nil, ""},
+		{"1-row-duplicate-header", writeRawHeader1RowDuplicateHeader, NewCellRange("A", 2, "C", 4), true, nil, ""},
 	}
 }
 

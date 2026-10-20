@@ -25,6 +25,7 @@ go test ./excel -update -run TestReadRawHeaders
 | `1-row-empty-header`                 | 1-row, empty header                  |
 | `1-row-line-break`                   | 1-row, line break                    |
 | `1-row-horizontal-merge`             | 1-row, horizontal merge (B–C)        |
+| `1-row-duplicate-header`             | 1-row, duplicate header text (B, C)  |
 | `2-row-simple`                       | 2-row, simple                        |
 | `2-row-empty-cell`                   | 2-row, empty cell                    |
 | `2-row-horizontal-merge`             | 2-row, horizontal merge              |

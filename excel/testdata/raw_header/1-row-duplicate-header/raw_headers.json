@@ -1,0 +1,47 @@
+[
+  {
+    "excel_column": "A",
+    "header_start_row": 1,
+    "header_end_row": 1,
+    "cell_values": [
+      {
+        "value": "headerA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 1
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "B",
+    "header_start_row": 1,
+    "header_end_row": 1,
+    "cell_values": [
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 1
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "C",
+    "header_start_row": 1,
+    "header_end_row": 1,
+    "cell_values": [
+      {
+        "value": "headerB",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 1
+        }
+      }
+    ]
+  }
+]

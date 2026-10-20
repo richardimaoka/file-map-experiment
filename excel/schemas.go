@@ -37,6 +37,10 @@ func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) 
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
 	}
 
+	if err := rejectDuplicateHeaderNames(columns); err != nil {
+		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
+	}
+
 	if err := validateDataColumnsHaveRowDataKeys(columns, raw.DataVerticals); err != nil {
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
 	}
@@ -222,6 +226,24 @@ func isMergeAnchorCell(cv CellValue) bool {
 	}
 	ul := cv.MergedRange.Range.UpperLeft
 	return cv.Position.ColumnName == ul.ColumnName && cv.Position.RowNumber == ul.RowNumber
+}
+
+// RowData keys are header names; two columns with the same non-empty name are ambiguous.
+func rejectDuplicateHeaderNames(columns []ColumnSchema) error {
+	byName := make(map[string]string, len(columns))
+	for _, c := range columns {
+		if c.HeaderName == "" {
+			continue
+		}
+		if firstCol, ok := byName[c.HeaderName]; ok {
+			return fmt.Errorf(
+				"duplicate header name %q (columns %s and %s)",
+				c.HeaderName, firstCol, c.ExcelColumn,
+			)
+		}
+		byName[c.HeaderName] = c.ExcelColumn
+	}
+	return nil
 }
 
 // Every Excel column with non-empty data cells must map to a ColumnSchema with a non-empty

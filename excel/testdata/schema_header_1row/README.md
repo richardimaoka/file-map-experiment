@@ -20,6 +20,7 @@ Combined workbook: `schema_header_1row_tests.xlsx` (one sheet per case).
 | `1-row-empty-header-valid` | Same header; column C has no data — **passes** (A, B, D only in schema) |
 | `1-row-line-break` | Multiline header text in B |
 | `1-row-horizontal-merge` | Horizontal merge B–C in header — **errors** (merged headers disallowed for single-row) |
+| `1-row-duplicate-header` | Columns B and C both `headerB` — **errors** (duplicate RowData key) |
 
 Data band: rows 2–4, all in-range columns.
 
