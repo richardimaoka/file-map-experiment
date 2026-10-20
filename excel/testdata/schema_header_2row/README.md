@@ -20,6 +20,7 @@ Combined workbook: `schema_header_2row_tests.xlsx` (one sheet per case).
 | Directory | Description |
 |-----------|-------------|
 | `2-row-simple` | Group row + leaf headers on A–C |
+| `2-row-duplicate-header` | B and C both `group2 > headerB` — **errors** (duplicate RowData key) |
 | `2-row-empty-cell` | Empty cell in row 1, column B |
 | `2-row-horizontal-merge` | Group merge A–B on row 1 |
 | `2-row-vertical-merge` | Vertical merge in column A |

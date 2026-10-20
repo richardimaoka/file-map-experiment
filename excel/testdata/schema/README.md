@@ -48,13 +48,14 @@ See [schema_header_1row/README.md](schema_header_1row/README.md).
 
 ---
 
-## Current: `schema_header_2row` (9 cases)
+## Current: `schema_header_2row` (10 cases)
 
 See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (column span matches each case’s `end_column`).
 
 | Case | Result |
 |------|--------|
 | `2-row-simple` | Pass |
+| `2-row-duplicate-header` | Error (duplicate header name) |
 | `2-row-empty-cell` | Pass |
 | `2-row-horizontal-merge` | Pass |
 | `2-row-vertical-merge` | Pass |

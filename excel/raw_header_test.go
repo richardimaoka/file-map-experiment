@@ -28,6 +28,7 @@ func rawHeaderCases() []rawHeaderCase {
 		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge},
 		{"1-row-duplicate-header", writeRawHeader1RowDuplicateHeader},
 		{"2-row-simple", writeRawHeader2RowSimple},
+		{"2-row-duplicate-header", writeRawHeader2RowDuplicateHeader},
 		{"2-row-empty-cell", writeRawHeader2RowEmptyCell},
 		{"2-row-horizontal-merge", writeRawHeader2RowHorizontalMerge},
 		{"2-row-horizontal-merge-repeated", writeRawHeader2RowHorizontalMergeRepeated},
@@ -291,6 +292,14 @@ func writeRawHeader2RowSimple(f *excelize.File, sheet string) error {
 		return err
 	}
 	return setRawHeaderRow(f, sheet, 2, []string{"A", "B", "C"}, []string{"headerA", "headerB", "headerC"})
+}
+
+// Columns B and C both resolve to group2 > headerB (duplicate RowData keys).
+func writeRawHeader2RowDuplicateHeader(f *excelize.File, sheet string) error {
+	if err := setRawHeaderRow(f, sheet, 1, []string{"A", "B", "C"}, []string{"group1", "group2", "group2"}); err != nil {
+		return err
+	}
+	return setRawHeaderRow(f, sheet, 2, []string{"A", "B", "C"}, []string{"headerA", "headerB", "headerB"})
 }
 
 func writeRawHeader2RowEmptyCell(f *excelize.File, sheet string) error {

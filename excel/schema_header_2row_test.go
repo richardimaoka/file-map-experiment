@@ -33,6 +33,14 @@ type schemaHeader2RowCase struct {
 func schemaHeader2RowCases() []schemaHeader2RowCase {
 	return []schemaHeader2RowCase{
 		{"2-row-simple", writeRawHeader2RowSimple, NewCellRange("A", 3, "C", 5), false, nil, ""},
+		{
+			"2-row-duplicate-header",
+			writeRawHeader2RowDuplicateHeader,
+			NewCellRange("A", 3, "C", 5),
+			true,
+			nil,
+			"",
+		},
 		{"2-row-empty-cell", writeRawHeader2RowEmptyCell, NewCellRange("A", 3, "C", 5), false, nil, ""},
 		{"2-row-horizontal-merge", writeRawHeader2RowHorizontalMerge, NewCellRange("A", 3, "C", 5), false, nil, ""},
 		{"2-row-vertical-merge", writeRawHeader2RowVerticalMerge, NewCellRange("A", 3, "C", 5), false, nil, ""},
