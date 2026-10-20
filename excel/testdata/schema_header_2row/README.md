@@ -1,6 +1,6 @@
 # Schema fixtures: 2-row headers
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md).
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (10 cases).
 
 Cases for `readSchemaInternal` (header track, two header rows). Header cells match the same-named case under `testdata/raw_header/`; the data band (`data_start_row`–`data_end_row`) is filled with values like `r3cA`.
 
@@ -8,7 +8,7 @@ Per case:
 
 - `workbook.xlsx` — sheet name matches the directory name
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
-- `table_schema.json` — golden `TableSchema` from `readSchemaInternal`
+- `table_schema.json` — golden `TableSchema` from `readSchemaInternal` (**passing cases only**; error cases omit this file)
 - `raw_headers.json` — optional copy from `raw_header` for comparison only
 
 Combined workbook: `schema_header_2row_tests.xlsx` (one sheet per case).

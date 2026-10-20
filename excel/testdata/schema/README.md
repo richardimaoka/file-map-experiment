@@ -19,21 +19,27 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 
 **Clean cases first:** supported layouts only; ambiguous Excel (empty header + data, merged 1-row header, data under non-anchor merge column) are separate **error** fixtures or deferred until real files require them.
 
-## Fixture layout (planned trees)
+## Fixture layout
+
+| Status | Meaning |
+|--------|---------|
+| **Complete (initial pass)** | All cases listed for that track are implemented, with tests and goldens; no further cases planned for this pass (deferred/edge items stay in the bucket below). |
+| **In progress** | Some cases exist; more are listed under that track or here as planned. |
+| **Planned** | Tree not started yet. |
 
 | Directory | Status | Role |
 |-----------|--------|------|
-| [`schema_header_1row/`](schema_header_1row/README.md) | **In progress** | Header track: one header row |
-| [`schema_header_2row/`](schema_header_2row/README.md) | **In progress** | Header track: two header rows |
-| `schema_header_3row/` | Planned | Header track: three header rows |
-| [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band |
-| `schema_coupling/` (name TBD) | Planned | Few cases where header + data rules interact |
+| [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
+| [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
+| [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band (4 cases) |
+| `schema_header_3row/` | **Planned** | Header track: three header rows |
+| `schema_coupling/` (name TBD) | **Planned** | Few cases where header + data rules interact |
 
-Legacy: [`raw_header/`](../raw_header/README.md) may be removed once schema trees subsume it.
+Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (passing cases only). `raw_header` remains for `readRawHeaders` goldens and may shrink once only schema trees are needed.
 
 ---
 
-## Current: `schema_header_1row` (6 cases)
+## `schema_header_1row` (6 cases) — initial pass complete
 
 See [schema_header_1row/README.md](schema_header_1row/README.md).
 
@@ -48,9 +54,9 @@ See [schema_header_1row/README.md](schema_header_1row/README.md).
 
 ---
 
-## Current: `schema_header_2row` (10 cases)
+## `schema_header_2row` (10 cases) — initial pass complete
 
-See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (column span matches each case’s `end_column`).
+See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (column span matches each case’s `end_column`). Error cases have no `table_schema.json`.
 
 | Case | Result |
 |------|--------|
@@ -76,7 +82,7 @@ See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{
 
 ---
 
-## Current: `schema_data` (4 cases; more planned)
+## `schema_data` (4 cases) — in progress
 
 See [schema_data/README.md](schema_data/README.md).
 
@@ -134,7 +140,7 @@ go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal2Row
 ```
 
-Future packages will mirror this pattern (`TestCreateSchemaHeader2RowFixturesInTestdata`, etc.).
+`schema_header_3row` will follow the same pattern (`TestCreateSchemaHeader3RowFixturesInTestdata`, `TestReadSchemaInternal3Row`, etc.) when added.
 
 ## Related read-layer fixtures
 

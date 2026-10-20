@@ -1,6 +1,6 @@
 # Schema fixtures: data band
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md).
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **In progress** — 4 cases checked in; planned cases (`data-vertical-merge`, etc.) are listed in the schema index.
 
 Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1); `schema_prep` bounds match that layout. Only rows 2–4 in A–C vary.
 

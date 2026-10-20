@@ -1,5 +1,7 @@
 # Raw header layout fixtures
 
+Layouts shared with [schema_header_1row](../schema_header_1row/README.md) and [schema_header_2row](../schema_header_2row/README.md) (same directory names; schema cases add a data band and `readSchemaInternal` goldens). See [../schema/README.md](../schema/README.md) for the full schema matrix.
+
 Each case lives in its own directory with `workbook.xlsx` (single sheet named like the directory, e.g. `1-row-simple`; Excel allows at most 31 characters). All cases are also combined in `raw_header_tests.xlsx` at this directory (one sheet per case, same names). Layouts are defined in `raw_header_test.go`; regenerate fixtures with:
 
 ```bash
