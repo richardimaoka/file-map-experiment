@@ -105,6 +105,7 @@ Only where implementation **joins** header and data (not the full cross-product 
 
 ## Deferred / edge bucket (later or error-only)
 
+For the initial development phase, when in doubt, prefer explicit schema creation failure rather than guesswork to make it up.
 Not part of the initial “clean” pass; add when real `.xlsx` files require them or to document errors:
 
 - Single-row header merge with data **only** on anchor column B (pass) vs **only** on C (fail) — policy may stay “no 1-row header merges” instead
