@@ -53,17 +53,30 @@ func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
 			if err := os.MkdirAll(dir, 0o755); err != nil {
 				t.Fatal(err)
 			}
+			prepPath := filepath.Join(dir, "schema_prep.json")
+			prep, err := readSchemaPrepFixture(prepPath)
+			if err != nil {
+				t.Fatal(err)
+			}
 			path := filepath.Join(dir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write); err != nil {
+			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write, prep); err != nil {
 				t.Fatal(err)
 			}
 		})
 	}
 
 	combinedPath := fixtureCombinedWorkbookPath(base)
-	if err := writeRawHeaderCombinedWorkbook(combinedPath, cases); err != nil {
+	if err := writeRawHeaderCombinedWorkbook(combinedPath, base, cases); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func readSchemaPrepFixture(path string) (*SchemaPrep, error) {
+	var prep SchemaPrep
+	if err := jsonfile.Read(path, &prep); err != nil {
+		return nil, err
+	}
+	return &prep, nil
 }
 
 func TestReadRawHeaders(t *testing.T) {
@@ -129,6 +142,7 @@ func writeRawHeadersGolden(t *testing.T, path string, headers []RawHeader) {
 type fixtureSheetCase struct {
 	dir   string
 	write func(f *excelize.File, sheet string) error
+	prep  *SchemaPrep
 }
 
 // Combined workbook for a testdata tree: <dir_name>_tests.xlsx (e.g. raw_header_tests.xlsx).
@@ -136,7 +150,7 @@ func fixtureCombinedWorkbookPath(testdataDir string) string {
 	return filepath.Join(testdataDir, filepath.Base(testdataDir)+"_tests.xlsx")
 }
 
-func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error) error {
+func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error, prep *SchemaPrep) error {
 	f := excelize.NewFile()
 	defer f.Close()
 
@@ -145,6 +159,11 @@ func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File,
 	}
 	if err := write(f, sheetName); err != nil {
 		return err
+	}
+	if prep != nil {
+		if err := applyFixtureWorkbookStyle(f, sheetName, *prep); err != nil {
+			return err
+		}
 	}
 	if err := f.SaveAs(path); err != nil {
 		return err
@@ -159,10 +178,14 @@ func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File,
 	return nil
 }
 
-func writeRawHeaderCombinedWorkbook(path string, cases []rawHeaderCase) error {
+func writeRawHeaderCombinedWorkbook(path, prepBaseDir string, cases []rawHeaderCase) error {
 	sheets := make([]fixtureSheetCase, len(cases))
 	for i, tc := range cases {
-		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.write}
+		prep, err := readSchemaPrepFixture(filepath.Join(prepBaseDir, tc.dir, "schema_prep.json"))
+		if err != nil {
+			return err
+		}
+		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.write, prep: prep}
 	}
 	return writeFixtureCombinedWorkbook(path, sheets)
 }
@@ -182,6 +205,11 @@ func writeFixtureCombinedWorkbook(path string, cases []fixtureSheetCase) error {
 		}
 		if err := tc.write(f, sheet); err != nil {
 			return err
+		}
+		if tc.prep != nil {
+			if err := applyFixtureWorkbookStyle(f, sheet, *tc.prep); err != nil {
+				return err
+			}
 		}
 	}
 

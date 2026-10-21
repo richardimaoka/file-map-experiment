@@ -79,11 +79,6 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			workbookPath := filepath.Join(destDir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.writeWorkbook); err != nil {
-				t.Fatal(err)
-			}
-
 			srcDir := filepath.Join(srcBase, tc.rawHeaderSourceDir())
 			if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, "raw_headers.json"), filepath.Join(destDir, "raw_headers.json")); err != nil {
 				t.Fatal(err)
@@ -91,12 +86,24 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 			if err := writeSchemaPrepForCase(destDir, tc); err != nil {
 				t.Fatal(err)
 			}
+			prep, err := readSchemaPrepFixture(filepath.Join(destDir, "schema_prep.json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			workbookPath := filepath.Join(destDir, "workbook.xlsx")
+			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
+				t.Fatal(err)
+			}
 		})
 	}
 
 	sheets := make([]fixtureSheetCase, len(cases))
 	for i, tc := range cases {
-		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.writeWorkbook}
+		prep, err := readSchemaPrepFixture(filepath.Join(destBase, tc.dir, "schema_prep.json"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.writeWorkbook, prep: prep}
 	}
 	combinedPath := fixtureCombinedWorkbookPath(destBase)
 	if err := writeFixtureCombinedWorkbook(combinedPath, sheets); err != nil {

@@ -50,7 +50,7 @@ func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 			path := filepath.Join(dir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write); err != nil {
+			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write, nil); err != nil {
 				t.Fatal(err)
 			}
 		})
