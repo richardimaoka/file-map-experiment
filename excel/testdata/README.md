@@ -19,4 +19,4 @@ Requires `APP_BASE_DIR` (see module `.env` / `excel/testmain_test.go`).
 | [`schema_coupling/`](schema_coupling/README.md) | Header + data interaction | **Complete** (initial pass, 3 cases) |
 | [`samples/`](samples/) | Realistic `.xlsx` samples (not golden-driven) | Ad hoc |
 
-Schema design rules and the full case matrix: [schema/README.md](schema/README.md).
+Schema design rules, track index, and regenerate commands: [schema/README.md](schema/README.md).

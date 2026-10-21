@@ -38,85 +38,17 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 
 All tracks above are implemented for the initial `readSchemaInternal` fixture pass; further cases belong in the [deferred / edge](#deferred--edge-bucket-later-or-error-only) bucket unless real files require otherwise.
 
-Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (passing cases only). `raw_header` remains for `readRawHeaders` goldens and may shrink once only schema trees are needed.
+Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it). `raw_header` remains for `readRawHeaders` goldens and may shrink once only schema trees are needed.
 
----
+## Tracks (case tables)
 
-## `schema_header_1row` (6 cases) — initial pass complete
+Case names, layouts, and pass/error notes live in each track README (not duplicated here):
 
-See [schema_header_1row/README.md](schema_header_1row/README.md).
-
-| Case | Result |
-|------|--------|
-| `1-row-simple` | Pass |
-| `1-row-line-break` | Pass |
-| `1-row-empty-header-valid` | Pass (empty header C, no data in C) |
-| `1-row-empty-header` | Error (data in C, no RowData key) |
-| `1-row-horizontal-merge` | Error (merged single-row header disallowed) |
-| `1-row-duplicate-header` | Error (duplicate header name) |
-
----
-
-## `schema_header_2row` (10 cases) — initial pass complete
-
-See [schema_header_2row/README.md](schema_header_2row/README.md). Data band: `r{row}c{col}` on rows 3–5 (column span matches each case’s `end_column`). Error cases have no `table_schema.json`.
-
-| Case | Result |
-|------|--------|
-| `2-row-simple` | Pass |
-| `2-row-duplicate-header` | Error (duplicate header name) |
-| `2-row-empty-cell` | Pass |
-| `2-row-horizontal-merge` | Pass |
-| `2-row-vertical-merge` | Pass |
-| `2-row-bidirectional-merge` | Error (multi-column merge on leaf row) |
-| `2-row-horizontal-merge-repeated` | Pass |
-| `2-row-vertical-merge-repeated` | Pass |
-| `2-row-bidirectional-merge-rep` | Error (multi-column merge on leaf row) |
-| `2-row-mixed-merge` | Error (multi-column merge on leaf row) |
-
----
-
-## `schema_header_3row` (3 cases) — initial pass complete
-
-See [schema_header_3row/README.md](schema_header_3row/README.md). Data band: `r{row}c{col}` on rows 4–6 (column span matches each case’s `end_column`). Error cases have no `table_schema.json`.
-
-| Case | Result |
-|------|--------|
-| `3-row-simple` | Pass |
-| `3-row-bidirectional-merge` | Error (multi-column merge on leaf row) |
-| `3-row-mixed-merge` | Pass (horizontal group/subgroup + vertical leaf merges; prep and data A–H) |
-
----
-
-## `schema_data` (9 cases) — initial pass complete
-
-See [schema_data/README.md](schema_data/README.md).
-
-| Case | Result |
-|------|--------|
-| `data-all-string` | Pass |
-| `data-empty-column` | Pass (header C, no data in C) |
-| `data-empty-cell` | Pass |
-| `data-mixed-types` | Pass |
-| `data-vertical-merge` | Pass (column A `is_row_grouped` true) |
-| `data-vmerge-a6-b3` | Pass (A 6×2 + B 3×4 row groups, rows 2–13) |
-| `data-vmerge-b6-c3` | Pass (B 6×2 + C 3×4 row groups, rows 2–13) |
-| `data-horizontal-merge` | Error (multi-column merge in data band) |
-| `data-formula` | Pass (`table_schema` unchanged; formula in `raw_data.json`) |
-
-**Same header everywhere** (`1-row-simple`). Vary only the data band. Formula **errors** (`#DIV/0!`, etc.) stay under `raw_cells`.
-
----
-
-## `schema_coupling` (3 cases) — initial pass complete
-
-See [schema_coupling/README.md](schema_coupling/README.md). Data band: `r{row}c{col}` on rows 3–5 (2-row header prep). Error case has no `table_schema.json`.
-
-| Case | Result |
-|------|--------|
-| `coupling-2row-data-vmerge` | Pass (`is_row_grouped` on A) |
-| `coupling-2row-hdr-data-vmerge` | Pass (vertical header + vertical data merge on A) |
-| `coupling-2row-empty-header-data` | Error (data in C, no RowData key) |
+- [schema_header_1row/README.md](../schema_header_1row/README.md)
+- [schema_header_2row/README.md](../schema_header_2row/README.md)
+- [schema_header_3row/README.md](../schema_header_3row/README.md)
+- [schema_data/README.md](../schema_data/README.md)
+- [schema_coupling/README.md](../schema_coupling/README.md)
 
 ---
 
