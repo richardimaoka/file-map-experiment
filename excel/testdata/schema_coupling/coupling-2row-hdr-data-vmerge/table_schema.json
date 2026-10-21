@@ -1,0 +1,23 @@
+{
+  "schema_name": "coupling-2row-hdr-data-vmerge",
+  "data_start_row": 3,
+  "start_column": "A",
+  "end_column": "C",
+  "columns": [
+    {
+      "header_name": "headerA",
+      "excel_column": "A",
+      "is_row_grouped": true
+    },
+    {
+      "header_name": "group2 > headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group3 > headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    }
+  ]
+}

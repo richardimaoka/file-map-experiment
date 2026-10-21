@@ -34,7 +34,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
 | [`schema_data/`](schema_data/README.md) | **Complete (initial pass)** | Data track: fixed simple header, vary data band (7 cases) |
 | [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
-| `schema_coupling/` (name TBD) | **Planned** | Few cases where header + data rules interact |
+| [`schema_coupling/`](schema_coupling/README.md) | **Complete (initial pass)** | Header + data interaction (3 cases) |
 
 Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (passing cases only). `raw_header` remains for `readRawHeaders` goldens and may shrink once only schema trees are needed.
 
@@ -104,12 +104,15 @@ See [schema_data/README.md](schema_data/README.md).
 
 ---
 
-## Planned: coupling (~2–3 cases)
+## `schema_coupling` (3 cases) — initial pass complete
 
-Only where implementation **joins** header and data (not the full cross-product of header × data cases). Examples:
+See [schema_coupling/README.md](schema_coupling/README.md). Data band: `r{row}c{col}` on rows 3–5 (2-row header prep). Error case has no `table_schema.json`.
 
-- Grouped multi-row header + specific data merge pattern
-- Column in prep range with header omitted but data present (explicit error case, if not already covered)
+| Case | Result |
+|------|--------|
+| `coupling-2row-data-vmerge` | Pass (`is_row_grouped` on A) |
+| `coupling-2row-hdr-data-vmerge` | Pass (vertical header + vertical data merge on A) |
+| `coupling-2row-empty-header-data` | Error (data in C, no RowData key) |
 
 ---
 
@@ -144,6 +147,10 @@ go test ./excel -update -run TestReadSchemaInternal2Row
 # 3-row header fixtures
 go test ./excel -run TestCreateSchemaHeader3RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal3Row
+
+# coupling fixtures
+go test ./excel -run TestCreateSchemaCouplingFixturesInTestdata
+go test ./excel -update -run TestReadSchemaInternalCoupling
 ```
 
 ## Related read-layer fixtures

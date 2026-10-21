@@ -16,7 +16,7 @@ Requires `APP_BASE_DIR` (see module `.env` / `excel/testmain_test.go`).
 | [`schema_header_2row/`](schema_header_2row/README.md) | Header track (2 rows) | **Complete** (initial pass, 10 cases) |
 | [`schema_header_3row/`](schema_header_3row/README.md) | Header track (3 rows) | **Complete** (initial pass, 3 cases) |
 | [`schema_data/`](schema_data/README.md) | Data band track | **Complete** (initial pass, 7 cases) |
-| `schema_coupling/` | Header + data interaction | Planned |
+| [`schema_coupling/`](schema_coupling/README.md) | Header + data interaction | **Complete** (initial pass, 3 cases) |
 | [`samples/`](samples/) | Realistic `.xlsx` samples (not golden-driven) | Ad hoc |
 
 Schema design rules and the full case matrix: [schema/README.md](schema/README.md).
