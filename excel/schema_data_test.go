@@ -31,21 +31,38 @@ type schemaDataCase struct {
 	dir           string
 	dataWrite     func(f *excelize.File, sheet string) error
 	wantSchemaErr bool
+	// dataBand overrides default rows 2–4 when set (e.g. multi-group vertical merges).
+	dataBand *CellRange
 }
 
 func schemaDataBand() CellRange {
 	return NewCellRange("A", 2, "C", 4)
 }
 
+// Twelve data rows (2–13): supports 2×6-row and 4×3-row vertical merge groups.
+func schemaDataBand12Rows() CellRange {
+	return NewCellRange("A", 2, "C", 13)
+}
+
+func (tc schemaDataCase) effectiveDataBand() CellRange {
+	if tc.dataBand != nil {
+		return *tc.dataBand
+	}
+	return schemaDataBand()
+}
+
 func schemaDataCases() []schemaDataCase {
+	band12 := schemaDataBandPtr(schemaDataBand12Rows())
 	return []schemaDataCase{
-		{"data-all-string", writeSchemaDataAllString, false},
-		{"data-empty-column", writeSchemaDataEmptyColumn, false},
-		{"data-empty-cell", writeSchemaDataEmptyCell, false},
-		{"data-mixed-types", writeSchemaDataMixedTypes, false},
-		{"data-vertical-merge", writeSchemaDataVerticalMerge, false},
-		{"data-horizontal-merge", writeSchemaDataHorizontalMerge, true},
-		{"data-formula", writeSchemaDataFormula, false},
+		{dir: "data-all-string", dataWrite: writeSchemaDataAllString},
+		{dir: "data-empty-column", dataWrite: writeSchemaDataEmptyColumn},
+		{dir: "data-empty-cell", dataWrite: writeSchemaDataEmptyCell},
+		{dir: "data-mixed-types", dataWrite: writeSchemaDataMixedTypes},
+		{dir: "data-vertical-merge", dataWrite: writeSchemaDataVerticalMerge},
+		{dir: "data-vmerge-a6-b3", dataWrite: writeSchemaDataVerticalMergeA6B3, dataBand: band12},
+		{dir: "data-vmerge-b6-c3", dataWrite: writeSchemaDataVerticalMergeB6C3, dataBand: band12},
+		{dir: "data-horizontal-merge", dataWrite: writeSchemaDataHorizontalMerge, wantSchemaErr: true},
+		{dir: "data-formula", dataWrite: writeSchemaDataFormula},
 	}
 }
 
@@ -77,6 +94,45 @@ func writeSchemaDataVerticalMerge(f *excelize.File, sheet string) error {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "A", 2, "A", 3)
+}
+
+func schemaDataBandPtr(b CellRange) *CellRange {
+	return &b
+}
+
+// Column A: two vertical merges of six rows each; column B: four merges of three rows each.
+func writeSchemaDataVerticalMergeA6B3(f *excelize.File, sheet string) error {
+	band := schemaDataBand12Rows()
+	if err := fillSchemaHeader1RowDataBand(f, sheet, band, nil); err != nil {
+		return err
+	}
+	if err := mergeDataColumnVerticalGroups(f, sheet, "A", band.StartRowNumber(), 6, 2); err != nil {
+		return err
+	}
+	return mergeDataColumnVerticalGroups(f, sheet, "B", band.StartRowNumber(), 3, 4)
+}
+
+// Same grouping pattern on columns B (6×2) and C (3×4).
+func writeSchemaDataVerticalMergeB6C3(f *excelize.File, sheet string) error {
+	band := schemaDataBand12Rows()
+	if err := fillSchemaHeader1RowDataBand(f, sheet, band, nil); err != nil {
+		return err
+	}
+	if err := mergeDataColumnVerticalGroups(f, sheet, "B", band.StartRowNumber(), 6, 2); err != nil {
+		return err
+	}
+	return mergeDataColumnVerticalGroups(f, sheet, "C", band.StartRowNumber(), 3, 4)
+}
+
+func mergeDataColumnVerticalGroups(f *excelize.File, sheet, col string, startRow, rowsPerGroup, groupCount int) error {
+	for g := 0; g < groupCount; g++ {
+		top := startRow + g*rowsPerGroup
+		bottom := top + rowsPerGroup - 1
+		if err := mergeRawHeader(f, sheet, col, top, col, bottom); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Horizontal merge B2:C2 in the data band — readSchemaInternal errors (multi-column data merge).
@@ -291,16 +347,17 @@ func TestReadSchemaInternalData(t *testing.T) {
 }
 
 func writeSchemaPrepForDataCase(destDir string, tc schemaDataCase) error {
+	band := tc.effectiveDataBand()
 	prep := SchemaPrep{
 		SchemaName:     tc.dir,
 		SheetName:      tc.dir,
 		IsReady:        true,
 		HeaderStartRow: 1,
 		HeaderEndRow:   1,
-		DataStartRow:   2,
-		DataEndRow:     4,
-		StartColumn:    "A",
-		EndColumn:      "C",
+		DataStartRow:   band.StartRowNumber(),
+		DataEndRow:     band.EndRowNumber(),
+		StartColumn:    band.StartColumnName(),
+		EndColumn:      band.EndColumnName(),
 	}
 	data, err := json.MarshalIndent(prep, "", "  ")
 	if err != nil {

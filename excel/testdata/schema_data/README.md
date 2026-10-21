@@ -1,8 +1,8 @@
 # Schema fixtures: data band
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (7 cases).
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **9 cases** (initial pass plus multi-group vertical merges).
 
-Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1); `schema_prep` bounds match that layout. Only rows 2–4 in A–C vary.
+Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1). Most cases use data rows 2–4; multi-group vertical-merge cases use rows 2–13.
 
 Per case:
 
@@ -21,6 +21,8 @@ Combined workbook: `schema_data_tests.xlsx` (one sheet per case).
 | `data-empty-cell` | Hole at B3; other cells filled |
 | `data-mixed-types` | Column A strings, B numbers, C dates (display strings when read later) |
 | `data-vertical-merge` | Vertical merge A2:A3 — column A `is_row_grouped` true |
+| `data-vmerge-a6-b3` | Rows 2–13: A two×6-row merges, B four×3-row merges — A and B `is_row_grouped` |
+| `data-vmerge-b6-c3` | Same band: B two×6-row merges, C four×3-row merges — B and C `is_row_grouped` |
 | `data-horizontal-merge` | Horizontal merge B2:C2 — **errors** (multi-column merge in data band) |
 | `data-formula` | Formula in B3 (`B2&"-calc"`); `table_schema` unchanged, see `raw_data.json` |
 

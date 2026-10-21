@@ -1,0 +1,623 @@
+[
+  {
+    "excel_column": "A",
+    "data_start_row": 2,
+    "data_end_row": 13,
+    "cell_values": [
+      {
+        "value": "r2cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 2
+        }
+      },
+      {
+        "value": "r3cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 3
+        }
+      },
+      {
+        "value": "r4cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 4
+        }
+      },
+      {
+        "value": "r5cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 5
+        }
+      },
+      {
+        "value": "r6cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 6
+        }
+      },
+      {
+        "value": "r7cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 7
+        }
+      },
+      {
+        "value": "r8cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 8
+        }
+      },
+      {
+        "value": "r9cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 9
+        }
+      },
+      {
+        "value": "r10cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 10
+        }
+      },
+      {
+        "value": "r11cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 11
+        }
+      },
+      {
+        "value": "r12cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 12
+        }
+      },
+      {
+        "value": "r13cA",
+        "formula": "",
+        "position": {
+          "column_name": "A",
+          "row_number": 13
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "B",
+    "data_start_row": 2,
+    "data_end_row": 13,
+    "cell_values": [
+      {
+        "value": "r2cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "r2cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 3
+        },
+        "merged_range": {
+          "value": "r2cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 4
+        },
+        "merged_range": {
+          "value": "r2cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 5
+        },
+        "merged_range": {
+          "value": "r2cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 6
+        },
+        "merged_range": {
+          "value": "r2cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 7
+        },
+        "merged_range": {
+          "value": "r2cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 8
+        },
+        "merged_range": {
+          "value": "r8cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 9
+        },
+        "merged_range": {
+          "value": "r8cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 10
+        },
+        "merged_range": {
+          "value": "r8cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 11
+        },
+        "merged_range": {
+          "value": "r8cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 12
+        },
+        "merged_range": {
+          "value": "r8cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cB",
+        "formula": "",
+        "position": {
+          "column_name": "B",
+          "row_number": 13
+        },
+        "merged_range": {
+          "value": "r8cB",
+          "range": {
+            "upper_left": {
+              "column_name": "B",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "B",
+              "row_number": 13
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "excel_column": "C",
+    "data_start_row": 2,
+    "data_end_row": 13,
+    "cell_values": [
+      {
+        "value": "r2cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 2
+        },
+        "merged_range": {
+          "value": "r2cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 4
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 3
+        },
+        "merged_range": {
+          "value": "r2cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 4
+            }
+          }
+        }
+      },
+      {
+        "value": "r2cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 4
+        },
+        "merged_range": {
+          "value": "r2cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 2
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 4
+            }
+          }
+        }
+      },
+      {
+        "value": "r5cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 5
+        },
+        "merged_range": {
+          "value": "r5cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 5
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r5cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 6
+        },
+        "merged_range": {
+          "value": "r5cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 5
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r5cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 7
+        },
+        "merged_range": {
+          "value": "r5cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 5
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 7
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 8
+        },
+        "merged_range": {
+          "value": "r8cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 10
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 9
+        },
+        "merged_range": {
+          "value": "r8cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 10
+            }
+          }
+        }
+      },
+      {
+        "value": "r8cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 10
+        },
+        "merged_range": {
+          "value": "r8cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 8
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 10
+            }
+          }
+        }
+      },
+      {
+        "value": "r11cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 11
+        },
+        "merged_range": {
+          "value": "r11cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 11
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r11cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 12
+        },
+        "merged_range": {
+          "value": "r11cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 11
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 13
+            }
+          }
+        }
+      },
+      {
+        "value": "r11cC",
+        "formula": "",
+        "position": {
+          "column_name": "C",
+          "row_number": 13
+        },
+        "merged_range": {
+          "value": "r11cC",
+          "range": {
+            "upper_left": {
+              "column_name": "C",
+              "row_number": 11
+            },
+            "bottom_right": {
+              "column_name": "C",
+              "row_number": 13
+            }
+          }
+        }
+      }
+    ]
+  }
+]

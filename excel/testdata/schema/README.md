@@ -32,7 +32,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 |-----------|--------|------|
 | [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
 | [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
-| [`schema_data/`](schema_data/README.md) | **Complete (initial pass)** | Data track: fixed simple header, vary data band (7 cases) |
+| [`schema_data/`](schema_data/README.md) | — | Data track: fixed simple header, vary data band (9 cases) |
 | [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
 | [`schema_coupling/`](schema_coupling/README.md) | **Complete (initial pass)** | Header + data interaction (3 cases) |
 
@@ -86,7 +86,7 @@ See [schema_header_3row/README.md](schema_header_3row/README.md). Data band: `r{
 
 ---
 
-## `schema_data` (7 cases) — initial pass complete
+## `schema_data` (9 cases)
 
 See [schema_data/README.md](schema_data/README.md).
 
@@ -97,6 +97,8 @@ See [schema_data/README.md](schema_data/README.md).
 | `data-empty-cell` | Pass |
 | `data-mixed-types` | Pass |
 | `data-vertical-merge` | Pass (column A `is_row_grouped` true) |
+| `data-vmerge-a6-b3` | Pass (A 6×2 + B 3×4 row groups, rows 2–13) |
+| `data-vmerge-b6-c3` | Pass (B 6×2 + C 3×4 row groups, rows 2–13) |
 | `data-horizontal-merge` | Error (multi-column merge in data band) |
 | `data-formula` | Pass (`table_schema` unchanged; formula in `raw_data.json`) |
 
