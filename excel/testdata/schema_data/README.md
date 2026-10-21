@@ -1,6 +1,6 @@
 # Schema fixtures: data band
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **In progress** — 4 cases checked in; planned cases (`data-vertical-merge`, etc.) are listed in the schema index.
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (7 cases).
 
 Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1); `schema_prep` bounds match that layout. Only rows 2–4 in A–C vary.
 
@@ -21,6 +21,8 @@ Combined workbook: `schema_data_tests.xlsx` (one sheet per case).
 | `data-empty-cell` | Hole at B3; other cells filled |
 | `data-mixed-types` | Column A strings, B numbers, C dates (display strings when read later) |
 | `data-vertical-merge` | Vertical merge A2:A3 — column A `is_row_grouped` true |
+| `data-horizontal-merge` | Horizontal merge B2:C2 — **errors** (multi-column merge in data band) |
+| `data-formula` | Formula in B3 (`B2&"-calc"`); `table_schema` unchanged, see `raw_data.json` |
 
 Regenerate workbooks:
 

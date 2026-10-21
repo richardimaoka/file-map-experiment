@@ -32,6 +32,10 @@ func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) 
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
 	}
 
+	if err := rejectMultiColumnMergesIntersectingDataBand(raw.DataVerticals, prep.DataStartRow, prep.DataEndRow); err != nil {
+		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
+	}
+
 	columns, err := columnSchemasFromHeader(prep, raw.HeaderVerticals)
 	if err != nil {
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
@@ -128,6 +132,41 @@ func mergeIntersectsRow(m MergedRange, row int) bool {
 	ul := m.Range.UpperLeft
 	br := m.Range.BottomRight
 	return ul.RowNumber <= row && row <= br.RowNumber
+}
+
+// Each data row must map to one column at the finest granularity; multi-column merges in the data band are ambiguous.
+func rejectMultiColumnMergesIntersectingDataBand(verticals []RawVertical, dataStartRow, dataEndRow int) error {
+	seen := make(map[string]bool)
+	for _, v := range verticals {
+		for _, cv := range v.CellValues {
+			if cv.MergedRange == nil {
+				continue
+			}
+			m := *cv.MergedRange
+			if !mergeSpansMultipleColumns(m) {
+				continue
+			}
+			if !mergeIntersectsRowRange(m, dataStartRow, dataEndRow) {
+				continue
+			}
+			label := mergeRangeLabel(m.Range)
+			if seen[label] {
+				continue
+			}
+			seen[label] = true
+			return fmt.Errorf(
+				"multi-column merge intersects the data band (merge %s)",
+				label,
+			)
+		}
+	}
+	return nil
+}
+
+func mergeIntersectsRowRange(m MergedRange, startRow, endRow int) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.RowNumber <= endRow && br.RowNumber >= startRow
 }
 
 // Leaf header row must name each column; a merge across columns on that row (or a 2D merge

@@ -13,6 +13,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | **Single-row headers:** no **multi-cell** merges in the header row (e.g. B1:C1) | `rejectMultiCellMergesInSingleRowHeader` |
 | **Multi-row headers:** `header_name` = row labels joined with ` > `; horizontal group-row merges propagate on non-leaf rows | `resolvedMultiRowHeaderName` |
 | **Multi-row headers:** no **multi-column** merge may intersect `header_end_row` (leaf row) | `rejectMultiColumnMergesIntersectingHeaderEndRow` |
+| **Data band:** no **multi-column** merge may intersect `data_start_row`–`data_end_row` (finest column per row) | `rejectMultiColumnMergesIntersectingDataBand` |
 | `IsRowGrouped` | `true` when the data band has a **single-column** merge spanning multiple rows in that column | `dataColumnIsRowGrouped` |
 | Merges overlapping a read range must lie **entirely** inside it | `readRawVerticals` (see `testdata/raw_vertical`) |
 | Cell semantics (formula, types, whitespace) | `testdata/raw_cells`, not schema fixtures |
@@ -31,7 +32,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 |-----------|--------|------|
 | [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
 | [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
-| [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band (5 cases) |
+| [`schema_data/`](schema_data/README.md) | **Complete (initial pass)** | Data track: fixed simple header, vary data band (7 cases) |
 | [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
 | `schema_coupling/` (name TBD) | **Planned** | Few cases where header + data rules interact |
 
@@ -85,7 +86,7 @@ See [schema_header_3row/README.md](schema_header_3row/README.md). Data band: `r{
 
 ---
 
-## `schema_data` (5 cases) — in progress
+## `schema_data` (7 cases) — initial pass complete
 
 See [schema_data/README.md](schema_data/README.md).
 
@@ -96,13 +97,10 @@ See [schema_data/README.md](schema_data/README.md).
 | `data-empty-cell` | Pass |
 | `data-mixed-types` | Pass |
 | `data-vertical-merge` | Pass (column A `is_row_grouped` true) |
+| `data-horizontal-merge` | Error (multi-column merge in data band) |
+| `data-formula` | Pass (`table_schema` unchanged; formula in `raw_data.json`) |
 
-**Same header everywhere** (`1-row-simple`). Vary only the data band.
-
-| Planned case | Focus |
-|--------------|--------|
-| `data-horizontal-merge` | Only if schema / row read must see data merges |
-| `data-formula` / `data-error` | Only if schema exposes them (else `raw_cells`) |
+**Same header everywhere** (`1-row-simple`). Vary only the data band. Formula **errors** (`#DIV/0!`, etc.) stay under `raw_cells`.
 
 ---
 

@@ -28,8 +28,9 @@ import (
 //	go test ./excel -update -run TestReadRawDataSchemaData
 
 type schemaDataCase struct {
-	dir       string
-	dataWrite func(f *excelize.File, sheet string) error
+	dir           string
+	dataWrite     func(f *excelize.File, sheet string) error
+	wantSchemaErr bool
 }
 
 func schemaDataBand() CellRange {
@@ -38,11 +39,13 @@ func schemaDataBand() CellRange {
 
 func schemaDataCases() []schemaDataCase {
 	return []schemaDataCase{
-		{"data-all-string", writeSchemaDataAllString},
-		{"data-empty-column", writeSchemaDataEmptyColumn},
-		{"data-empty-cell", writeSchemaDataEmptyCell},
-		{"data-mixed-types", writeSchemaDataMixedTypes},
-		{"data-vertical-merge", writeSchemaDataVerticalMerge},
+		{"data-all-string", writeSchemaDataAllString, false},
+		{"data-empty-column", writeSchemaDataEmptyColumn, false},
+		{"data-empty-cell", writeSchemaDataEmptyCell, false},
+		{"data-mixed-types", writeSchemaDataMixedTypes, false},
+		{"data-vertical-merge", writeSchemaDataVerticalMerge, false},
+		{"data-horizontal-merge", writeSchemaDataHorizontalMerge, true},
+		{"data-formula", writeSchemaDataFormula, false},
 	}
 }
 
@@ -74,6 +77,26 @@ func writeSchemaDataVerticalMerge(f *excelize.File, sheet string) error {
 		return err
 	}
 	return mergeRawHeader(f, sheet, "A", 2, "A", 3)
+}
+
+// Horizontal merge B2:C2 in the data band — readSchemaInternal errors (multi-column data merge).
+func writeSchemaDataHorizontalMerge(f *excelize.File, sheet string) error {
+	if err := fillSchemaHeader1RowDataBand(f, sheet, schemaDataBand(), nil); err != nil {
+		return err
+	}
+	return mergeRawHeader(f, sheet, "B", 2, "C", 2)
+}
+
+// Formula in B3; schema columns unchanged (formula semantics live in raw_data / raw_cells).
+func writeSchemaDataFormula(f *excelize.File, sheet string) error {
+	if err := fillSchemaHeader1RowDataBand(f, sheet, schemaDataBand(), nil); err != nil {
+		return err
+	}
+	cell, err := excelize.JoinCellName("B", 3)
+	if err != nil {
+		return err
+	}
+	return f.SetCellFormula(sheet, cell, "B2&\"-calc\"")
 }
 
 func writeSchemaDataMixedTypes(f *excelize.File, sheet string) error {
@@ -243,6 +266,12 @@ func TestReadSchemaInternalData(t *testing.T) {
 			}
 
 			got, err := readSchemaInternal(excelPath, prep)
+			if tc.wantSchemaErr {
+				if err == nil {
+					t.Fatal("readSchemaInternal: expected error")
+				}
+				return
+			}
 			if err != nil {
 				t.Fatalf("readSchemaInternal: %v", err)
 			}
