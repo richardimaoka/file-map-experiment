@@ -22,6 +22,10 @@ import (
 // Regenerate table_schema.json:
 //
 //	go test ./excel -update -run TestReadSchemaInternalData
+//
+// Regenerate raw_data.json:
+//
+//	go test ./excel -update -run TestReadRawDataSchemaData
 
 type schemaDataCase struct {
 	dir       string
@@ -38,6 +42,7 @@ func schemaDataCases() []schemaDataCase {
 		{"data-empty-column", writeSchemaDataEmptyColumn},
 		{"data-empty-cell", writeSchemaDataEmptyCell},
 		{"data-mixed-types", writeSchemaDataMixedTypes},
+		{"data-vertical-merge", writeSchemaDataVerticalMerge},
 	}
 }
 
@@ -61,6 +66,14 @@ func writeSchemaDataEmptyCell(f *excelize.File, sheet string) error {
 		return err
 	}
 	return clearRawHeaderCell(f, sheet, "B", 3)
+}
+
+// Vertical merge A2:A3 in the data band; column A is_row_grouped true.
+func writeSchemaDataVerticalMerge(f *excelize.File, sheet string) error {
+	if err := fillSchemaHeader1RowDataBand(f, sheet, schemaDataBand(), nil); err != nil {
+		return err
+	}
+	return mergeRawHeader(f, sheet, "A", 2, "A", 3)
 }
 
 func writeSchemaDataMixedTypes(f *excelize.File, sheet string) error {
@@ -159,6 +172,58 @@ func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 	}
 	combinedPath := fixtureCombinedWorkbookPath(destBase)
 	if err := writeFixtureCombinedWorkbook(combinedPath, sheets); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// Golden raw_data.json: data-band columns from readRawData (reference only for schema_data cases).
+func TestReadRawDataSchemaData(t *testing.T) {
+	for _, tc := range schemaDataCases() {
+		t.Run(tc.dir, func(t *testing.T) {
+			caseDir := filepath.Join("testdata", "schema_data", tc.dir)
+			prepPath := filepath.Join(caseDir, "schema_prep.json")
+			excelPath := filepath.Join(caseDir, "workbook.xlsx")
+			goldenPath := filepath.Join(caseDir, "raw_data.json")
+
+			var prep SchemaPrep
+			if err := jsonfile.Read(prepPath, &prep); err != nil {
+				t.Fatalf("read schema_prep: %v", err)
+			}
+
+			got, err := readRawData(excelPath, prep)
+			if err != nil {
+				t.Fatalf("readRawData: %v", err)
+			}
+
+			if updateGoldens() {
+				writeRawDataGolden(t, goldenPath, got)
+				return
+			}
+
+			want, err := readRawDataGolden(goldenPath)
+			if err != nil {
+				t.Fatalf("read golden: %v", err)
+			}
+			fatalIfJSONGoldenMismatch(t, got, want)
+		})
+	}
+}
+
+func readRawDataGolden(path string) ([]RawDataColumn, error) {
+	var columns []RawDataColumn
+	if err := jsonfile.Read(path, &columns); err != nil {
+		return nil, err
+	}
+	return columns, nil
+}
+
+func writeRawDataGolden(t *testing.T, path string, columns []RawDataColumn) {
+	data, err := json.MarshalIndent(columns, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	data = append(data, '\n')
+	if err := os.WriteFile(path, data, 0o644); err != nil {
 		t.Fatal(err)
 	}
 }

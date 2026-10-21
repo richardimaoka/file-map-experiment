@@ -10,6 +10,7 @@ Per case:
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
 - `table_schema.json` — golden `TableSchema` (today identical across cases: header-driven columns)
 - `raw_headers.json` — copy from `raw_header/1-row-simple` for reference only
+- `raw_data.json` — golden output of `readRawData` for the data band (reference only)
 
 Combined workbook: `schema_data_tests.xlsx` (one sheet per case).
 
@@ -19,6 +20,7 @@ Combined workbook: `schema_data_tests.xlsx` (one sheet per case).
 | `data-empty-column` | Header C present; no data cells in column C |
 | `data-empty-cell` | Hole at B3; other cells filled |
 | `data-mixed-types` | Column A strings, B numbers, C dates (display strings when read later) |
+| `data-vertical-merge` | Vertical merge A2:A3 — column A `is_row_grouped` true |
 
 Regenerate workbooks:
 
@@ -30,6 +32,12 @@ Regenerate `table_schema.json`:
 
 ```bash
 go test ./excel -update -run TestReadSchemaInternalData
+```
+
+Regenerate `raw_data.json`:
+
+```bash
+go test ./excel -update -run TestReadRawDataSchemaData
 ```
 
 Row-level goldens (`RowData`) belong here once `readRowsFromExcelInternal` exists.

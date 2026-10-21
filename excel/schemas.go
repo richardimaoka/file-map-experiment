@@ -45,6 +45,8 @@ func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) 
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
 	}
 
+	columns = applyIsRowGroupedFromData(columns, raw.DataVerticals)
+
 	return TableSchema{
 		SchemaName:   prep.SchemaName,
 		DataStartRow: prep.DataStartRow,
@@ -80,9 +82,8 @@ func columnSchemasFromSingleRowHeader(verticals []RawVertical, headerRow int) ([
 		}
 
 		columns = append(columns, ColumnSchema{
-			HeaderName:   cv.Value,
-			ExcelColumn:  v.ExcelColumn,
-			IsRowGrouped: false, // data-range row merge grouping; set when data schema is implemented
+			HeaderName:  cv.Value,
+			ExcelColumn: v.ExcelColumn,
 		})
 	}
 
@@ -169,9 +170,8 @@ func columnSchemasFromMultiRowHeader(prep SchemaPrep, verticals []RawVertical) (
 			continue
 		}
 		columns = append(columns, ColumnSchema{
-			HeaderName:   name,
-			ExcelColumn:  v.ExcelColumn,
-			IsRowGrouped: false,
+			HeaderName:  name,
+			ExcelColumn: v.ExcelColumn,
 		})
 	}
 	return columns, nil
@@ -276,6 +276,52 @@ func rawVerticalHasNonEmptyCell(v RawVertical) bool {
 		}
 	}
 	return false
+}
+
+// IsRowGrouped is true when the data band has a single-column merge spanning multiple rows
+// (Excel row grouping / repeated values under one anchor cell).
+func applyIsRowGroupedFromData(columns []ColumnSchema, dataVerticals []RawVertical) []ColumnSchema {
+	byCol := make(map[string]RawVertical, len(dataVerticals))
+	for _, dv := range dataVerticals {
+		byCol[dv.ExcelColumn] = dv
+	}
+	out := make([]ColumnSchema, len(columns))
+	for i, c := range columns {
+		c.IsRowGrouped = false
+		if dv, ok := byCol[c.ExcelColumn]; ok {
+			c.IsRowGrouped = dataColumnIsRowGrouped(dv)
+		}
+		out[i] = c
+	}
+	return out
+}
+
+func dataColumnIsRowGrouped(v RawVertical) bool {
+	for _, cv := range v.CellValues {
+		if cv.MergedRange == nil {
+			continue
+		}
+		m := *cv.MergedRange
+		if !mergeSpansMultipleRows(m) || !mergeIsSingleColumn(m) {
+			continue
+		}
+		if m.Range.UpperLeft.ColumnName == v.ExcelColumn {
+			return true
+		}
+	}
+	return false
+}
+
+func mergeSpansMultipleRows(m MergedRange) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.RowNumber != br.RowNumber
+}
+
+func mergeIsSingleColumn(m MergedRange) bool {
+	ul := m.Range.UpperLeft
+	br := m.Range.BottomRight
+	return ul.ColumnName == br.ColumnName
 }
 
 func validateExcelAgainstSchema(resolver PathResolver, schemaName string) (TableSchema, error) {

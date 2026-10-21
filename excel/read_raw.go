@@ -208,6 +208,28 @@ func readRawHeaders(excelPath string, prep SchemaPrep) ([]RawHeader, error) {
 	return headers, nil
 }
 
+func readRawData(excelPath string, prep SchemaPrep) ([]RawDataColumn, error) {
+	if err := prep.Validate(); err != nil {
+		return nil, fmt.Errorf("readRawData: %w", err)
+	}
+
+	verticals, err := readRawVerticals(excelPath, prep.SheetName, prep.DataRange())
+	if err != nil {
+		return nil, fmt.Errorf("readRawData: %w", err)
+	}
+
+	columns := make([]RawDataColumn, len(verticals))
+	for i, v := range verticals {
+		columns[i] = RawDataColumn{
+			ExcelColumn:  v.ExcelColumn,
+			DataStartRow: prep.DataStartRow,
+			DataEndRow:   prep.DataEndRow,
+			CellValues:   v.CellValues,
+		}
+	}
+	return columns, nil
+}
+
 func readCellValue(f *excelize.File, sheet, col string, row int, merges []MergedRange) (CellValue, error) {
 	pos := CellPosition{ColumnName: col, RowNumber: row}
 	cellName, err := excelize.JoinCellName(col, row)

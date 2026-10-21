@@ -13,7 +13,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 | **Single-row headers:** no **multi-cell** merges in the header row (e.g. B1:C1) | `rejectMultiCellMergesInSingleRowHeader` |
 | **Multi-row headers:** `header_name` = row labels joined with ` > `; horizontal group-row merges propagate on non-leaf rows | `resolvedMultiRowHeaderName` |
 | **Multi-row headers:** no **multi-column** merge may intersect `header_end_row` (leaf row) | `rejectMultiColumnMergesIntersectingHeaderEndRow` |
-| `IsRowGrouped` | Hardcoded `false` until data-band row-merge grouping is defined |
+| `IsRowGrouped` | `true` when the data band has a **single-column** merge spanning multiple rows in that column | `dataColumnIsRowGrouped` |
 | Merges overlapping a read range must lie **entirely** inside it | `readRawVerticals` (see `testdata/raw_vertical`) |
 | Cell semantics (formula, types, whitespace) | `testdata/raw_cells`, not schema fixtures |
 
@@ -31,7 +31,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 |-----------|--------|------|
 | [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
 | [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
-| [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band (4 cases) |
+| [`schema_data/`](schema_data/README.md) | **In progress** | Data track: fixed simple header, vary data band (5 cases) |
 | [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
 | `schema_coupling/` (name TBD) | **Planned** | Few cases where header + data rules interact |
 
@@ -85,7 +85,7 @@ See [schema_header_3row/README.md](schema_header_3row/README.md). Data band: `r{
 
 ---
 
-## `schema_data` (4 cases) — in progress
+## `schema_data` (5 cases) — in progress
 
 See [schema_data/README.md](schema_data/README.md).
 
@@ -95,12 +95,12 @@ See [schema_data/README.md](schema_data/README.md).
 | `data-empty-column` | Pass (header C, no data in C) |
 | `data-empty-cell` | Pass |
 | `data-mixed-types` | Pass |
+| `data-vertical-merge` | Pass (column A `is_row_grouped` true) |
 
 **Same header everywhere** (`1-row-simple`). Vary only the data band.
 
 | Planned case | Focus |
 |--------------|--------|
-| `data-vertical-merge` | Row grouping in **data** → drives `IsRowGrouped` when implemented |
 | `data-horizontal-merge` | Only if schema / row read must see data merges |
 | `data-formula` / `data-error` | Only if schema exposes them (else `raw_cells`) |
 
@@ -137,6 +137,7 @@ go test ./excel -update -run TestReadSchemaInternal1Row
 # data band fixtures
 go test ./excel -run TestCreateSchemaDataFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternalData
+go test ./excel -update -run TestReadRawDataSchemaData
 
 # 2-row header fixtures
 go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
