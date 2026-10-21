@@ -26,6 +26,10 @@ import (
 // Regenerate raw_data.json:
 //
 //	go test ./excel -update -run TestReadRawDataSchemaData
+//
+// Regenerate rows_data.json:
+//
+//	go test ./excel -update -run TestReadRowsSchemaData
 
 type schemaDataCase struct {
 	dir           string

@@ -75,6 +75,7 @@ go test ./excel -update -run TestReadSchemaInternal1Row
 go test ./excel -run TestCreateSchemaDataFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternalData
 go test ./excel -update -run TestReadRawDataSchemaData
+go test ./excel -update -run TestReadRowsSchemaData
 
 # 2-row header fixtures
 go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
