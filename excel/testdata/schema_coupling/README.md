@@ -1,5 +1,7 @@
 # `schema_coupling`
 
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (3 cases).
+
 Cases for `readSchemaInternal` where **multi-row header** rules and **data-band** rules interact (not covered by exercising each track alone).
 
 Each case directory has:

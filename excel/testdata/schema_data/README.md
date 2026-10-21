@@ -1,14 +1,14 @@
 # Schema fixtures: data band
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **9 cases** (initial pass plus multi-group vertical merges).
+Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (9 cases).
 
-Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1). Most cases use data rows 2–4; multi-group vertical-merge cases use rows 2–13.
+Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1). Most cases use data rows 2–4; nested vertical-merge cases (`data-vmerge-*`) use rows 2–13.
 
 Per case:
 
 - `workbook.xlsx` — sheet name matches the directory name
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
-- `table_schema.json` — golden `TableSchema` (today identical across cases: header-driven columns)
+- `table_schema.json` — golden `TableSchema` (columns from header; `is_row_grouped` from single-column vertical merges in the data band)
 - `raw_headers.json` — copy from `raw_header/1-row-simple` for reference only
 - `raw_data.json` — golden output of `readRawData` for the data band (reference only)
 

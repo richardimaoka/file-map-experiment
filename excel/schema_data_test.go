@@ -13,7 +13,7 @@ import (
 )
 
 // Schema data fixtures under excel/testdata/schema_data/<case>/.
-// Header matches 1-row-simple everywhere; only the data band (rows 2–4, A–C) varies.
+// Header matches 1-row-simple everywhere; only the data band varies (default rows 2–4, A–C).
 //
 // Regenerate workbooks and schema_prep.json:
 //
@@ -307,7 +307,7 @@ func writeRawDataGolden(t *testing.T, path string, columns []RawDataColumn) {
 	}
 }
 
-// Golden TableSchema: same 1-row-simple header; data band does not change column list today.
+// Golden TableSchema: 1-row-simple header; is_row_grouped reflects vertical merges in the data band.
 func TestReadSchemaInternalData(t *testing.T) {
 	for _, tc := range schemaDataCases() {
 		t.Run(tc.dir, func(t *testing.T) {

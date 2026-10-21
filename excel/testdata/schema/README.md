@@ -32,9 +32,11 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 |-----------|--------|------|
 | [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
 | [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
-| [`schema_data/`](schema_data/README.md) | — | Data track: fixed simple header, vary data band (9 cases) |
 | [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
+| [`schema_data/`](schema_data/README.md) | **Complete (initial pass)** | Data track: fixed simple header, vary data band (9 cases) |
 | [`schema_coupling/`](schema_coupling/README.md) | **Complete (initial pass)** | Header + data interaction (3 cases) |
+
+All tracks above are implemented for the initial `readSchemaInternal` fixture pass; further cases belong in the [deferred / edge](#deferred--edge-bucket-later-or-error-only) bucket unless real files require otherwise.
 
 Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (passing cases only). `raw_header` remains for `readRawHeaders` goldens and may shrink once only schema trees are needed.
 
@@ -86,7 +88,7 @@ See [schema_header_3row/README.md](schema_header_3row/README.md). Data band: `r{
 
 ---
 
-## `schema_data` (9 cases)
+## `schema_data` (9 cases) — initial pass complete
 
 See [schema_data/README.md](schema_data/README.md).
 
