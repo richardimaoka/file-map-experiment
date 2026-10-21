@@ -63,6 +63,7 @@ func columnSchemasFromHeader(prep SchemaPrep, verticals []RawVertical) ([]Column
 	return columnSchemasFromMultiRowHeader(prep, verticals)
 }
 
+// returned []ColumnSchema is in an intermediate state, which will be enriched later.
 func columnSchemasFromSingleRowHeader(verticals []RawVertical, headerRow int) ([]ColumnSchema, error) {
 	if err := rejectMultiCellMergesInSingleRowHeader(verticals, headerRow); err != nil {
 		return nil, err
@@ -84,6 +85,7 @@ func columnSchemasFromSingleRowHeader(verticals []RawVertical, headerRow int) ([
 		columns = append(columns, ColumnSchema{
 			HeaderName:  cv.Value,
 			ExcelColumn: v.ExcelColumn,
+			//IsRowGrouped will be calculated in a separate function.
 		})
 	}
 
