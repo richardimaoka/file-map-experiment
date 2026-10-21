@@ -19,6 +19,11 @@ type TableSchema struct {
 	Columns      []ColumnSchema `json:"columns"`
 }
 
+// ReadTableSchema builds TableSchema from a workbook and prep.
+func ReadTableSchema(excelPath string, prep SchemaPrep) (TableSchema, error) {
+	return readSchemaInternal(excelPath, prep)
+}
+
 func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) {
 	if err := prep.Validate(); err != nil {
 		return TableSchema{}, fmt.Errorf("readSchemaInternal: %w", err)
