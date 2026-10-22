@@ -2,11 +2,7 @@
 
 Layouts shared with [schema_header_1row](../schema_header_1row/README.md), [schema_header_2row](../schema_header_2row/README.md), and [schema_header_3row](../schema_header_3row/README.md) (same directory names; schema cases add a data band and `readSchemaInternal` goldens). See [../schema/README.md](../schema/README.md) for the full schema matrix.
 
-Each case lives in its own directory with `workbook.xlsx` (single sheet named like the directory, e.g. `1-row-simple`; Excel allows at most 31 characters). All cases are also combined in `raw_header_tests.xlsx` at this directory (one sheet per case, same names). Layouts are defined in `raw_header_test.go`; regenerate fixtures with:
-
-```bash
-go test ./excel -run TestCreateRawHeaderFixturesInTestdata
-```
+Each case lives in its own directory with `workbook.xlsx` (single sheet named like the directory, e.g. `1-row-simple`; Excel allows at most 31 characters). All cases are also combined in `raw_header_tests.xlsx` at this directory (one sheet per case, same names). Header layouts are defined in `raw_header_test.go`; regenerate matching workbooks via the `schema_header_*` fixture tests (see [../schema_header_1row/README.md](../schema_header_1row/README.md)).
 
 Only header regions are filled; data rows below the header are intentionally empty.
 

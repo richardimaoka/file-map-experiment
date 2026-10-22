@@ -4,70 +4,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
 	"github.com/xuri/excelize/v2"
 )
 
-// Header workbook fixtures under excel/testdata/raw_header/<case>/ (workbook.xlsx, schema_prep.json).
-// Regenerate workbooks: go test ./excel -run TestCreateRawHeaderFixturesInTestdata
-
-type rawHeaderCase struct {
-	dir   string
-	write func(f *excelize.File, sheet string) error
-}
-
-func rawHeaderCases() []rawHeaderCase {
-	return []rawHeaderCase{
-		{"1-row-simple", writeRawHeader1RowSimple},
-		{"1-row-empty-header", writeRawHeader1RowEmptyHeader},
-		{"1-row-line-break", writeRawHeader1RowLineBreak},
-		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge},
-		{"1-row-duplicate-header", writeRawHeader1RowDuplicateHeader},
-		{"2-row-simple", writeRawHeader2RowSimple},
-		{"2-row-duplicate-header", writeRawHeader2RowDuplicateHeader},
-		{"2-row-empty-cell", writeRawHeader2RowEmptyCell},
-		{"2-row-horizontal-merge", writeRawHeader2RowHorizontalMerge},
-		{"2-row-horizontal-merge-repeated", writeRawHeader2RowHorizontalMergeRepeated},
-		{"2-row-vertical-merge", writeRawHeader2RowVerticalMerge},
-		{"2-row-vertical-merge-repeated", writeRawHeader2RowVerticalMergeRepeated},
-		{"2-row-bidirectional-merge", writeRawHeader2RowBidirectionalMerge},
-		{"2-row-bidirectional-merge-rep", writeRawHeader2RowBidirectionalMergeRepeated},
-		{"2-row-mixed-merge", writeRawHeader2RowMixedMerge},
-		{"3-row-simple", writeRawHeader3RowSimple},
-		{"3-row-bidirectional-merge", writeRawHeader3RowBidirectionalMerge},
-		{"3-row-mixed-merge", writeRawHeader3RowMixedMerge},
-	}
-}
-
-func TestCreateRawHeaderFixturesInTestdata(t *testing.T) {
-	base := filepath.Join("testdata", "raw_header")
-	cases := rawHeaderCases()
-
-	for _, tc := range cases {
-		t.Run(tc.dir, func(t *testing.T) {
-			dir := filepath.Join(base, tc.dir)
-			if err := os.MkdirAll(dir, 0o755); err != nil {
-				t.Fatal(err)
-			}
-			prepPath := filepath.Join(dir, "schema_prep.json")
-			prep, err := readSchemaPrepFixture(prepPath)
-			if err != nil {
-				t.Fatal(err)
-			}
-			path := filepath.Join(dir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write, prep); err != nil {
-				t.Fatal(err)
-			}
-		})
-	}
-
-	combinedPath := fixtureCombinedWorkbookPath(base)
-	if err := writeRawHeaderCombinedWorkbook(combinedPath, base, cases); err != nil {
-		t.Fatal(err)
-	}
-}
+// Shared header layout writers and fixture workbook helpers for schema/raw_* tests.
+// Checked-in workbooks under testdata/raw_header/ are maintained via schema_header_* fixture generators.
 
 func readSchemaPrepFixture(path string) (*SchemaPrep, error) {
 	var prep SchemaPrep
@@ -114,18 +57,6 @@ func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File,
 		return fmt.Errorf("%s was not written", path)
 	}
 	return nil
-}
-
-func writeRawHeaderCombinedWorkbook(path, prepBaseDir string, cases []rawHeaderCase) error {
-	sheets := make([]fixtureSheetCase, len(cases))
-	for i, tc := range cases {
-		prep, err := readSchemaPrepFixture(filepath.Join(prepBaseDir, tc.dir, "schema_prep.json"))
-		if err != nil {
-			return err
-		}
-		sheets[i] = fixtureSheetCase{dir: tc.dir, write: tc.write, prep: prep}
-	}
-	return writeFixtureCombinedWorkbook(path, sheets)
 }
 
 func writeFixtureCombinedWorkbook(path string, cases []fixtureSheetCase) error {
