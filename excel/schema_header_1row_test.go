@@ -56,7 +56,7 @@ func (tc schemaHeader1RowCase) writeWorkbook(f *excelize.File, sheet string) err
 }
 
 func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
-	skipUnlessUpdateGoldens(t)
+	skipUnlessUpdateEnabled(t)
 	destBase := filepath.Join("testdata", "schema_header_1row")
 	cases := schemaHeader1RowCases()
 
@@ -122,7 +122,7 @@ func TestReadSchemaInternal1Row(t *testing.T) {
 				t.Fatalf("readSchemaInternal: %v", err)
 			}
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeTableSchemaGolden(t, goldenPath, got)
 				return
 			}

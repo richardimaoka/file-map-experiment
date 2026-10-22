@@ -1,12 +1,12 @@
 # Excel package test fixtures
 
-Golden and workbook fixtures for `excel` live under this directory. Each tree has its own `README.md` with case tables and regenerate commands.
+JSON **golden** files (expected read output) and Excel **workbook fixtures** (inputs) for `excel` live under this directory. Each tree has its own `README.md` with case tables and regenerate commands.
 
 Requires `APP_BASE_DIR` (see module `.env` / `excel/testmain_test.go`).
 
 ## Regenerating fixtures
 
-Use **`go test -update`** for both workbooks and JSON goldens (`TestCreate*` and read-layer tests share the same flag).
+Use **`go test -update`** to rewrite checked-in testdata: Excel workbook fixtures (`TestCreate*`) and JSON goldens (read-layer tests). Same flag, different artifact types.
 
 ```bash
 export APP_BASE_DIR="$(pwd)"   # repo root

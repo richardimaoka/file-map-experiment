@@ -216,7 +216,7 @@ func setSchemaDataDateCell(f *excelize.File, sheet, col string, row int, d time.
 }
 
 func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
-	skipUnlessUpdateGoldens(t)
+	skipUnlessUpdateEnabled(t)
 	destBase := filepath.Join("testdata", "schema_data")
 	cases := schemaDataCases()
 
@@ -274,7 +274,7 @@ func TestReadRawDataSchemaData(t *testing.T) {
 				t.Fatalf("readRawVerticals: %v", err)
 			}
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeRawVerticalsGolden(t, goldenPath, got)
 				return
 			}
@@ -313,7 +313,7 @@ func TestReadSchemaInternalData(t *testing.T) {
 				t.Fatalf("readSchemaInternal: %v", err)
 			}
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeTableSchemaGolden(t, goldenPath, got)
 				return
 			}

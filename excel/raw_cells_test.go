@@ -41,7 +41,7 @@ func rawCellsCases() []rawCellsCase {
 }
 
 func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
-	skipUnlessUpdateGoldens(t)
+	skipUnlessUpdateEnabled(t)
 	base := filepath.Join("testdata", "raw_cells")
 	cases := rawCellsCases()
 	for _, tc := range cases {
@@ -126,7 +126,7 @@ func TestLoadMergedRanges(t *testing.T) {
 			}
 			sortMergedRanges(got)
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeMergedRangesGolden(t, goldenPath, got)
 				return
 			}
@@ -170,7 +170,7 @@ func TestReadCellValue(t *testing.T) {
 					t.Fatalf("readCellValue: %v", err)
 				}
 
-				if updateGoldens() {
+				if updateEnabled() {
 					writeCellValueGolden(t, goldenPath, got)
 					return
 				}

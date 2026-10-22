@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regenerate all excel test fixtures: .xlsx workbooks and JSON goldens (go test -update).
+# Regenerate excel testdata: Excel workbook fixtures and JSON golden files (go test -update).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

@@ -83,7 +83,7 @@ func (tc schemaCouplingCase) writeWorkbook(f *excelize.File, sheet string) error
 }
 
 func TestCreateSchemaCouplingFixturesInTestdata(t *testing.T) {
-	skipUnlessUpdateGoldens(t)
+	skipUnlessUpdateEnabled(t)
 	destBase := filepath.Join("testdata", "schema_coupling")
 	cases := schemaCouplingCases()
 
@@ -147,7 +147,7 @@ func TestReadSchemaInternalCoupling(t *testing.T) {
 				t.Fatalf("readSchemaInternal: %v", err)
 			}
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeTableSchemaGolden(t, goldenPath, got)
 				return
 			}

@@ -10,7 +10,7 @@ Before each commit, `pre-commit` runs `scripts/regenerate-excel-testdata.sh` (`g
 ./scripts/install-git-hooks.sh
 ```
 
-**All fixtures** (`.xlsx` + JSON goldens), same `-update` flag:
+**All testdata** (Excel workbook fixtures + JSON goldens), same `-update` flag:
 
 ```bash
 ./scripts/regenerate-testdata.sh

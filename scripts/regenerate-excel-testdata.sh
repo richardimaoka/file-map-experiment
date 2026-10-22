@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regenerate excel/testdata/**/*.xlsx (requires go test -update).
+# Regenerate Excel workbook fixtures under excel/testdata (go test -update).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

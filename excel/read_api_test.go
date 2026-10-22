@@ -63,7 +63,7 @@ func TestReadSchemaFromExcel_adsReportSimple(t *testing.T) {
 		t.Fatalf("ReadSchemaFromExcel: %v", err)
 	}
 	schemaPath := resolver.SchemaPath(adsReportSimpleSchemaName)
-	if updateGoldens() {
+	if updateEnabled() {
 		writeTableSchemaGolden(t, schemaPath, got)
 		return
 	}
@@ -81,7 +81,7 @@ func TestReadRowsFromExcel_adsReportSimple(t *testing.T) {
 		t.Fatalf("ReadRowsFromExcel: %v", err)
 	}
 	goldenPath := filepath.Join("testdata", "read_api", "ads_report_simple", "rows_data.json")
-	if updateGoldens() {
+	if updateEnabled() {
 		writeRowsDataGolden(t, goldenPath, got)
 		return
 	}
@@ -100,7 +100,7 @@ func TestReadSchemaFromExcel_adsReportMultiRowHeaders(t *testing.T) {
 		t.Fatalf("ReadSchemaFromExcel: %v", err)
 	}
 	schemaPath := resolver.SchemaPath(adsReportMultiRowHeadersSchemaName)
-	if updateGoldens() {
+	if updateEnabled() {
 		writeTableSchemaGolden(t, schemaPath, got)
 		return
 	}
@@ -118,7 +118,7 @@ func TestReadRowsFromExcel_adsReportMultiRowHeaders(t *testing.T) {
 		t.Fatalf("ReadRowsFromExcel: %v", err)
 	}
 	goldenPath := filepath.Join("testdata", "read_api", "ads_report_multi_row_headers", "rows_data.json")
-	if updateGoldens() {
+	if updateEnabled() {
 		writeRowsDataGolden(t, goldenPath, got)
 		return
 	}

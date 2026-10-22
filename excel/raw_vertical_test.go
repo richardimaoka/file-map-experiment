@@ -112,7 +112,7 @@ func rawVerticalCases() []rawVerticalCase {
 }
 
 func TestCreateRawVerticalFixturesInTestdata(t *testing.T) {
-	skipUnlessUpdateGoldens(t)
+	skipUnlessUpdateEnabled(t)
 	base := filepath.Join("testdata", "raw_vertical")
 	for _, g := range rawVerticalGroups() {
 		sheets := make([]fixtureSheetCase, len(g.cases))
@@ -140,7 +140,7 @@ func TestCreateRawVerticalFixturesInTestdata(t *testing.T) {
 	}
 }
 
-// Exercises readRawVerticals against each prefixed case and its read_range.json golden.
+// Exercises readRawVerticals against each case (read_range.json bounds, raw_verticals.json golden).
 func TestReadRawVerticals(t *testing.T) {
 	for _, tc := range rawVerticalCases() {
 		t.Run(tc.dir, func(t *testing.T) {
@@ -165,7 +165,7 @@ func TestReadRawVerticals(t *testing.T) {
 				t.Fatalf("readRawVerticals: %v", err)
 			}
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeRawVerticalsGolden(t, goldenPath, got)
 				return
 			}

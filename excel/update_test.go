@@ -9,10 +9,18 @@ import (
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
 )
 
-var updateGoldensFlag = flag.Bool("update", false, "rewrite JSON golden files")
+var updateFlag = flag.Bool("update", false, "rewrite checked-in testdata: JSON golden files and Excel workbook fixtures")
 
-func updateGoldens() bool {
-	return *updateGoldensFlag
+// updateEnabled reports whether -update was passed (see scripts/regenerate-testdata.sh).
+func updateEnabled() bool {
+	return *updateFlag
+}
+
+// TestCreate*FixturesInTestdata rewrite Excel workbook fixtures only when -update is set.
+func skipUnlessUpdateEnabled(t *testing.T) {
+	if !updateEnabled() {
+		t.Skip("skipping workbook fixture regeneration (use go test -update)")
+	}
 }
 
 func marshalJSONGoldenIndent(v interface{}) ([]byte, error) {

@@ -34,7 +34,7 @@ func testReadRowsGoldenTrack(t *testing.T, trackDir string, cases []readRowsGold
 				t.Fatalf("readRowsFromExcelInternal: %v", err)
 			}
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeRowsDataGolden(t, goldenPath, got)
 				return
 			}

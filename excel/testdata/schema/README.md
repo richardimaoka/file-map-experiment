@@ -66,9 +66,9 @@ Not part of the initial “clean” pass; add when real `.xlsx` files require th
 
 ## Test commands
 
-All workbook + JSON goldens: `./scripts/regenerate-testdata.sh` from repo root (`APP_BASE_DIR` set in script).
+All fixtures (Excel workbooks + JSON goldens): `./scripts/regenerate-testdata.sh` from repo root (`APP_BASE_DIR` set in script).
 
-Per-track examples (`-update` for both Create and read tests):
+Per-track examples (`-update` rewrites workbooks via `TestCreate*` and JSON via read tests):
 
 ```bash
 # 1-row header fixtures
