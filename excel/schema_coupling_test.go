@@ -93,7 +93,7 @@ func TestCreateSchemaCouplingFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err := writeSchemaPrepForCouplingCase(destDir, tc); err != nil {
+			if err := writeSchemaPrepFile(destDir, fixtureSchemaPrep(tc.dir, 2, tc.dataBand)); err != nil {
 				t.Fatal(err)
 			}
 			prep, err := readSchemaPrepFixture(filepath.Join(destDir, "schema_prep.json"))
@@ -160,18 +160,3 @@ func TestReadSchemaInternalCoupling(t *testing.T) {
 	}
 }
 
-func writeSchemaPrepForCouplingCase(destDir string, tc schemaCouplingCase) error {
-	band := tc.dataBand
-	prep := SchemaPrep{
-		SchemaName:     tc.dir,
-		SheetName:      tc.dir,
-		IsReady:        true,
-		HeaderStartRow: 1,
-		HeaderEndRow:   2,
-		DataStartRow:   band.StartRowNumber(),
-		DataEndRow:     band.EndRowNumber(),
-		StartColumn:    band.StartColumnName(),
-		EndColumn:      band.EndColumnName(),
-	}
-	return writeSchemaPrepFile(destDir, prep)
-}

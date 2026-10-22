@@ -67,7 +67,7 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err := writeSchemaPrepForCase(destDir, tc); err != nil {
+			if err := writeSchemaPrepFile(destDir, fixtureSchemaPrep(tc.dir, 1, tc.dataBand)); err != nil {
 				t.Fatal(err)
 			}
 			prep, err := readSchemaPrepFixture(filepath.Join(destDir, "schema_prep.json"))
@@ -152,22 +152,6 @@ func writeTableSchemaGolden(t *testing.T, path string, schema TableSchema) {
 	if err := os.WriteFile(path, data, 0o644); err != nil {
 		t.Fatal(err)
 	}
-}
-
-func writeSchemaPrepForCase(destDir string, tc schemaHeader1RowCase) error {
-	band := tc.dataBand
-	prep := SchemaPrep{
-		SchemaName:     tc.dir,
-		SheetName:      tc.dir,
-		IsReady:        true,
-		HeaderStartRow: 1,
-		HeaderEndRow:   1,
-		DataStartRow:   band.StartRowNumber(),
-		DataEndRow:     band.EndRowNumber(),
-		StartColumn:    band.StartColumnName(),
-		EndColumn:      band.EndColumnName(),
-	}
-	return writeSchemaPrepFile(destDir, prep)
 }
 
 func fillSchemaHeader1RowDataBand(f *excelize.File, sheet string, band CellRange, skipColumns map[string]bool) error {

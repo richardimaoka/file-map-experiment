@@ -227,7 +227,7 @@ func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err := writeSchemaPrepForDataCase(destDir, tc); err != nil {
+			if err := writeSchemaPrepFile(destDir, fixtureSchemaPrep(tc.dir, 1, tc.effectiveDataBand())); err != nil {
 				t.Fatal(err)
 			}
 			prep, err := readSchemaPrepFixture(filepath.Join(destDir, "schema_prep.json"))
@@ -366,18 +366,3 @@ func TestReadSchemaInternalData(t *testing.T) {
 	}
 }
 
-func writeSchemaPrepForDataCase(destDir string, tc schemaDataCase) error {
-	band := tc.effectiveDataBand()
-	prep := SchemaPrep{
-		SchemaName:     tc.dir,
-		SheetName:      tc.dir,
-		IsReady:        true,
-		HeaderStartRow: 1,
-		HeaderEndRow:   1,
-		DataStartRow:   band.StartRowNumber(),
-		DataEndRow:     band.EndRowNumber(),
-		StartColumn:    band.StartColumnName(),
-		EndColumn:      band.EndColumnName(),
-	}
-	return writeSchemaPrepFile(destDir, prep)
-}

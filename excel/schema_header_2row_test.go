@@ -97,7 +97,7 @@ func TestCreateSchemaHeader2RowFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err := writeSchemaPrepFor2RowCase(destDir, tc); err != nil {
+			if err := writeSchemaPrepFile(destDir, fixtureSchemaPrep(tc.dir, 2, tc.dataBand)); err != nil {
 				t.Fatal(err)
 			}
 			prep, err := readSchemaPrepFixture(filepath.Join(destDir, "schema_prep.json"))
@@ -165,18 +165,3 @@ func TestReadSchemaInternal2Row(t *testing.T) {
 	}
 }
 
-func writeSchemaPrepFor2RowCase(destDir string, tc schemaHeader2RowCase) error {
-	band := tc.dataBand
-	prep := SchemaPrep{
-		SchemaName:     tc.dir,
-		SheetName:      tc.dir,
-		IsReady:        true,
-		HeaderStartRow: 1,
-		HeaderEndRow:   2,
-		DataStartRow:   band.StartRowNumber(),
-		DataEndRow:     band.EndRowNumber(),
-		StartColumn:    band.StartColumnName(),
-		EndColumn:      band.EndColumnName(),
-	}
-	return writeSchemaPrepFile(destDir, prep)
-}

@@ -10,6 +10,21 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+// Standard checked-in fixture: sheet name matches directory name, header rows 1..headerEndRow.
+func fixtureSchemaPrep(sheetName string, headerEndRow int, band CellRange) SchemaPrep {
+	return SchemaPrep{
+		SchemaName:     sheetName,
+		SheetName:      sheetName,
+		IsReady:        true,
+		HeaderStartRow: 1,
+		HeaderEndRow:   headerEndRow,
+		DataStartRow:   band.StartRowNumber(),
+		DataEndRow:     band.EndRowNumber(),
+		StartColumn:    band.StartColumnName(),
+		EndColumn:      band.EndColumnName(),
+	}
+}
+
 func writeSchemaPrepFile(destDir string, prep SchemaPrep) error {
 	data, err := json.MarshalIndent(prep, "", "  ")
 	if err != nil {
