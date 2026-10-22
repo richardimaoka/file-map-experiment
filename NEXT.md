@@ -5,7 +5,7 @@ _Last updated: 2026-10-23._
 ## Done (read path)
 
 1. **Row goldens** — `rows_data.json` for `schema_data`, `schema_header_*`, and `schema_coupling` (`TestReadRowsSchema*`).
-2. **Public read API** — `ReadSchemaFromJson`, `ReadSchemaFromExcel`, `ReadRowsFromExcel` (resolver + `config.json` + cached `schemas/<name>.json` + workbook). Fixture: `excel/testdata/read_api/data_all_string/`.
+2. **Public read API** — `ReadSchemaFromJson`, `ReadSchemaFromExcel`, `WriteSchemaToJson`, `WriteSchemaFromExcel`, `ReadRowsFromExcel` (resolver + `config.json` + persisted `schemas/<name>.json` + workbook). Fixture: `excel/testdata/read_api/data_all_string/`.
 
 ## Done (fixture architecture & excel package)
 
@@ -21,13 +21,11 @@ _Last updated: 2026-10-23._
 1. **`read_api/ads_report_simple`** — Hand-styled [samples/ads_report_simple.xlsx](excel/testdata/samples/ads_report_simple.xlsx) in resolver layout (`config.json`, `schemas/ads-report-simple.json`, `rows_data.json`). Tests: `TestReadSchemaFromExcel_adsReportSimple`, `TestReadRowsFromExcel_adsReportSimple`.
 2. **`read_api/ads_report_multi_row_headers`** — [samples/ads_report_multi_row_headers.xlsx](excel/testdata/samples/ads_report_multi_row_headers.xlsx) (2 header rows, grouped column titles). Tests: `TestReadSchemaFromExcel_adsReportMultiRowHeaders`, `TestReadRowsFromExcel_adsReportMultiRowHeaders`. See [excel/testdata/read_api/README.md](excel/testdata/read_api/README.md).
 
-## Suggested next step
+**Scope:** `read_api` is resolver-layout smoke (`config.json` + persisted schema + workbook), not a second copy of `schema_header_*` / `schema_data` / `schema_coupling`. Edge cases (row grouping, coupling, etc.) stay on internal `ReadTableSchema` / row-read tests.
 
-**Third sample case** — `ads_report_grouped_rows.xlsx` (vertical merges in data / `is_row_grouped`), same `read_api/<case>/` layout.
+3. **Persisted schema** — `WriteSchemaFromExcel` (reference workbook + `is_ready` prep → `schemas/<name>.json`); `WriteSchemaToJson` for file-level serde. `ReadRowsFromExcel` loads that JSON; `validateExcelAgainstSchema` (future) checks instance workbooks against it.
 
 ## Optional next
-
-- **`ReadSchemaFromExcel` writer** — CLI or test helper to materialize `schemas/<name>.json` from workbook + prep after `is_ready` (no production writer yet).
 - **Fixture test dedupe** — shared `testCreateSchemaHeaderFixturesInTestdata` / `testReadSchemaInternalHeaderTrack` (keep three `schema_header_*` testdata trees and case files).
 - **Rename helpers** — `writeRawHeader*` / `writeRawHeaderWorkbook` → `writeFixture*` (mechanical).
 - **Toolchain** — Go **1.26.6+** for **GO-2026-6088** (`encoding/xml` via excelize open/read).

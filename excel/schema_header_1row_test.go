@@ -144,11 +144,7 @@ func readTableSchemaGolden(path string) (TableSchema, error) {
 }
 
 func writeTableSchemaGolden(t *testing.T, path string, schema TableSchema) {
-	data, err := marshalJSONGoldenIndent(schema)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(path, data, 0o644); err != nil {
+	if err := WriteSchemaToJson(path, schema); err != nil {
 		t.Fatal(err)
 	}
 }

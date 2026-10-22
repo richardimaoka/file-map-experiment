@@ -2,6 +2,8 @@ package excel
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
@@ -426,4 +428,39 @@ func ReadSchemaFromJson(jsonPath string) (TableSchema, error) {
 		return TableSchema{}, fmt.Errorf("ReadSchemaFromJson: %w", err)
 	}
 	return schema, nil
+}
+
+// WriteSchemaToJson persists a table schema (format contract) for reuse across workbook instances.
+func WriteSchemaToJson(jsonPath string, schema TableSchema) error {
+	if err := jsonfile.Write(jsonPath, schema); err != nil {
+		return fmt.Errorf("WriteSchemaToJson: %w", err)
+	}
+	return nil
+}
+
+// WriteSchemaFromExcel derives the schema from a reference workbook and persists it under schemas/<name>.json.
+func WriteSchemaFromExcel(resolver PathResolver, schemaName string) error {
+	config, err := ReadExcelConfig(resolver.ConfigPath())
+	if err != nil {
+		return fmt.Errorf("WriteSchemaFromExcel: %w", err)
+	}
+	prep, err := config.GetSchemaPrep(schemaName)
+	if err != nil {
+		return fmt.Errorf("WriteSchemaFromExcel: %w", err)
+	}
+	if !prep.IsReady {
+		return fmt.Errorf("WriteSchemaFromExcel: schema prep %q is not ready (is_ready)", schemaName)
+	}
+	schema, err := ReadSchemaFromExcel(resolver, schemaName)
+	if err != nil {
+		return fmt.Errorf("WriteSchemaFromExcel: %w", err)
+	}
+	jsonPath := resolver.SchemaPath(schemaName)
+	if err := os.MkdirAll(filepath.Dir(jsonPath), 0o755); err != nil {
+		return fmt.Errorf("WriteSchemaFromExcel: %w", err)
+	}
+	if err := WriteSchemaToJson(jsonPath, schema); err != nil {
+		return fmt.Errorf("WriteSchemaFromExcel: %w", err)
+	}
+	return nil
 }

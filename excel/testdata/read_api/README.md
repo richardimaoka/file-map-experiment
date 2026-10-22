@@ -7,7 +7,7 @@ Each case is a full resolver tree under `APP_BASE_DIR`:
   workbook.xlsx
   config.json          # schema_preps (bounds + is_ready)
   schemas/
-    <schema_name>.json # golden TableSchema (ReadSchemaFromExcel)
+    <schema_name>.json # persisted TableSchema (WriteSchemaFromExcel / ReadSchemaFromJson)
   rows_data.json       # optional golden []RowData (ReadRowsFromExcel)
 ```
 

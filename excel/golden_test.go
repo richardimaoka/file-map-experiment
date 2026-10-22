@@ -1,12 +1,12 @@
 package excel
 
 import (
-	"bytes"
-	"encoding/json"
 	"flag"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/richardimaoka/file-map-experiment/jsonfile"
 )
 
 var updateGoldensFlag = flag.Bool("update", false, "rewrite JSON golden files")
@@ -15,16 +15,8 @@ func updateGoldens() bool {
 	return *updateGoldensFlag
 }
 
-// Golden files are UTF-8 text for humans; do not HTML-escape >, &, < in strings.
 func marshalJSONGoldenIndent(v interface{}) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetEscapeHTML(false)
-	enc.SetIndent("", "  ")
-	if err := enc.Encode(v); err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
+	return jsonfile.MarshalIndent(v)
 }
 
 func fatalIfJSONGoldenMismatch(t *testing.T, got, want interface{}) {
