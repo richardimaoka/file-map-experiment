@@ -12,7 +12,7 @@ func TestValidateExcelAgainstSchema_readAPIFixture_matches(t *testing.T) {
 	resolver := NewPathResolver(readAPICaseRelPath)
 	var got TableSchema
 	stderr := captureStderr(func() {
-		got = ValidateExcelAgainstSchema(*resolver, "data-all-string")
+		got = ValidateExcelAgainstSchema(resolver, "data-all-string")
 	})
 	if stderr != "" {
 		t.Fatalf("unexpected stderr:\n%s", stderr)

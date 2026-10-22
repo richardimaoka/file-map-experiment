@@ -29,7 +29,7 @@ func TestReadSchemaFromJson(t *testing.T) {
 
 func TestReadSchemaFromExcel_readAPIFixture(t *testing.T) {
 	resolver := NewPathResolver(readAPICaseRelPath)
-	got, err := ReadSchemaFromExcel(*resolver, "data-all-string")
+	got, err := ReadSchemaFromExcel(resolver, "data-all-string")
 	if err != nil {
 		t.Fatalf("ReadSchemaFromExcel: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestReadSchemaFromExcel_readAPIFixture(t *testing.T) {
 
 func TestReadRowsFromExcel_readAPIFixture(t *testing.T) {
 	resolver := NewPathResolver(readAPICaseRelPath)
-	got, err := ReadRowsFromExcel(*resolver, "data-all-string")
+	got, err := ReadRowsFromExcel(resolver, "data-all-string")
 	if err != nil {
 		t.Fatalf("ReadRowsFromExcel: %v", err)
 	}
@@ -58,7 +58,7 @@ func TestReadRowsFromExcel_readAPIFixture(t *testing.T) {
 // Hand-styled sample workbook (excel/testdata/samples/ads_report_simple.xlsx) in resolver layout.
 func TestReadSchemaFromExcel_adsReportSimple(t *testing.T) {
 	resolver := NewPathResolver(readAPIAdsReportSimpleRelPath)
-	got, err := ReadSchemaFromExcel(*resolver, adsReportSimpleSchemaName)
+	got, err := ReadSchemaFromExcel(resolver, adsReportSimpleSchemaName)
 	if err != nil {
 		t.Fatalf("ReadSchemaFromExcel: %v", err)
 	}
@@ -76,7 +76,7 @@ func TestReadSchemaFromExcel_adsReportSimple(t *testing.T) {
 
 func TestReadRowsFromExcel_adsReportSimple(t *testing.T) {
 	resolver := NewPathResolver(readAPIAdsReportSimpleRelPath)
-	got, err := ReadRowsFromExcel(*resolver, adsReportSimpleSchemaName)
+	got, err := ReadRowsFromExcel(resolver, adsReportSimpleSchemaName)
 	if err != nil {
 		t.Fatalf("ReadRowsFromExcel: %v", err)
 	}
@@ -95,7 +95,7 @@ func TestReadRowsFromExcel_adsReportSimple(t *testing.T) {
 // Hand-styled sample with two header rows (group row + leaf labels).
 func TestReadSchemaFromExcel_adsReportMultiRowHeaders(t *testing.T) {
 	resolver := NewPathResolver(readAPIAdsReportMultiRowHeadersRelPath)
-	got, err := ReadSchemaFromExcel(*resolver, adsReportMultiRowHeadersSchemaName)
+	got, err := ReadSchemaFromExcel(resolver, adsReportMultiRowHeadersSchemaName)
 	if err != nil {
 		t.Fatalf("ReadSchemaFromExcel: %v", err)
 	}
@@ -113,7 +113,7 @@ func TestReadSchemaFromExcel_adsReportMultiRowHeaders(t *testing.T) {
 
 func TestReadRowsFromExcel_adsReportMultiRowHeaders(t *testing.T) {
 	resolver := NewPathResolver(readAPIAdsReportMultiRowHeadersRelPath)
-	got, err := ReadRowsFromExcel(*resolver, adsReportMultiRowHeadersSchemaName)
+	got, err := ReadRowsFromExcel(resolver, adsReportMultiRowHeadersSchemaName)
 	if err != nil {
 		t.Fatalf("ReadRowsFromExcel: %v", err)
 	}

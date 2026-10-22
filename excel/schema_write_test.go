@@ -26,7 +26,7 @@ func TestWriteSchemaToJson_roundTrip(t *testing.T) {
 
 func TestWriteSchemaFromExcel_readAPIFixture(t *testing.T) {
 	resolver := NewPathResolver(readAPICaseRelPath)
-	want, err := ReadSchemaFromExcel(*resolver, "data-all-string")
+	want, err := ReadSchemaFromExcel(resolver, "data-all-string")
 	if err != nil {
 		t.Fatalf("ReadSchemaFromExcel: %v", err)
 	}
@@ -38,7 +38,7 @@ func TestWriteSchemaFromExcel_readAPIFixture(t *testing.T) {
 	}
 	t.Setenv("APP_BASE_DIR", dir)
 	tmpResolver := NewPathResolver(rel)
-	if err := WriteSchemaFromExcel(*tmpResolver, "data-all-string"); err != nil {
+	if err := WriteSchemaFromExcel(tmpResolver, "data-all-string"); err != nil {
 		t.Fatalf("WriteSchemaFromExcel: %v", err)
 	}
 	got, err := ReadSchemaFromJson(tmpResolver.SchemaPath("data-all-string"))
@@ -50,7 +50,7 @@ func TestWriteSchemaFromExcel_readAPIFixture(t *testing.T) {
 
 func TestWriteSchemaFromExcel_notReady(t *testing.T) {
 	resolver := NewPathResolver("excel/testdata/build/existing_dir_with_config")
-	err := WriteSchemaFromExcel(*resolver, "preserved_marker")
+	err := WriteSchemaFromExcel(resolver, "preserved_marker")
 	if err == nil {
 		t.Fatal("expected error when is_ready is false")
 	}
