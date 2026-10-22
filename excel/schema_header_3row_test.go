@@ -13,7 +13,7 @@ import (
 // Schema header fixtures (3-row) under excel/testdata/schema_header_3row/<case>/.
 // Header layout matches raw_header for the same case name; data band uses r{row}c{col} literals.
 //
-// Regenerate workbooks and sync schema_prep.json / raw_headers.json from raw_header:
+// Regenerate workbooks and sync schema_prep.json from raw_header:
 //
 //	go test ./excel -run TestCreateSchemaHeader3RowFixturesInTestdata
 //
@@ -61,7 +61,6 @@ func (tc schemaHeader3RowCase) rawHeaderSourceDir() string {
 
 func TestCreateSchemaHeader3RowFixturesInTestdata(t *testing.T) {
 	destBase := filepath.Join("testdata", "schema_header_3row")
-	srcBase := filepath.Join("testdata", "raw_header")
 	cases := schemaHeader3RowCases()
 
 	for _, tc := range cases {
@@ -71,10 +70,6 @@ func TestCreateSchemaHeader3RowFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			srcDir := filepath.Join(srcBase, tc.rawHeaderSourceDir())
-			if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, "raw_headers.json"), filepath.Join(destDir, "raw_headers.json")); err != nil {
-				t.Fatal(err)
-			}
 			if err := writeSchemaPrepFor3RowCase(destDir, tc); err != nil {
 				t.Fatal(err)
 			}

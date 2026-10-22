@@ -9,8 +9,6 @@ Per case:
 - `workbook.xlsx` — sheet name matches the directory name
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
 - `table_schema.json` — golden `TableSchema` from `readSchemaInternal` (**passing cases only**; error cases omit this file)
-- `raw_headers.json` — optional copy from `raw_header` for comparison only
-
 Combined workbook: `schema_header_3row_tests.xlsx` (one sheet per case).
 
 `header_name` joins each header row’s label top-to-bottom with ` > `. Example: `group1 > subgroup1 > headerA`.

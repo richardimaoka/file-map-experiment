@@ -218,7 +218,6 @@ func setSchemaDataDateCell(f *excelize.File, sheet, col string, row int, d time.
 
 func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 	destBase := filepath.Join("testdata", "schema_data")
-	headerRef := filepath.Join("testdata", "raw_header", "1-row-simple", "raw_headers.json")
 	cases := schemaDataCases()
 
 	for _, tc := range cases {
@@ -228,9 +227,6 @@ func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err := copySchemaHeaderFixtureFile(headerRef, filepath.Join(destDir, "raw_headers.json")); err != nil {
-				t.Fatal(err)
-			}
 			if err := writeSchemaPrepForDataCase(destDir, tc); err != nil {
 				t.Fatal(err)
 			}

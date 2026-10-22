@@ -9,8 +9,6 @@ Each case directory has:
 - `workbook.xlsx`
 - `schema_prep.json`
 - `table_schema.json` — golden for **passing** cases only
-- `raw_headers.json` — optional reference from `raw_header` when the header layout matches
-
 | Case | Result |
 |------|--------|
 | `coupling-2row-data-vmerge` | Pass — `2-row-simple` header, vertical merge **A3:A4** → column A `is_row_grouped` |

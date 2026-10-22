@@ -28,7 +28,7 @@ type schemaCouplingCase struct {
 	dataAfterFill   func(f *excelize.File, sheet string) error
 	wantSchemaErr   bool
 	skipDataColumns map[string]bool
-	// raw_header case for schema_prep.json and optional raw_headers.json copy; empty skips raw_headers.
+	// raw_header case name for schema_prep.json when layouts match (see writeSchemaPrepForCouplingCase).
 	rawHeaderRef string
 }
 
@@ -90,7 +90,6 @@ func (tc schemaCouplingCase) writeWorkbook(f *excelize.File, sheet string) error
 
 func TestCreateSchemaCouplingFixturesInTestdata(t *testing.T) {
 	destBase := filepath.Join("testdata", "schema_coupling")
-	srcBase := filepath.Join("testdata", "raw_header")
 	cases := schemaCouplingCases()
 
 	for _, tc := range cases {
@@ -100,12 +99,6 @@ func TestCreateSchemaCouplingFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if tc.rawHeaderRef != "" && tc.dir != "coupling-2row-empty-header-data" { // no raw_header match for cleared C headers
-				srcDir := filepath.Join(srcBase, tc.rawHeaderRef)
-				if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, "raw_headers.json"), filepath.Join(destDir, "raw_headers.json")); err != nil {
-					t.Fatal(err)
-				}
-			}
 			if err := writeSchemaPrepForCouplingCase(destDir, tc); err != nil {
 				t.Fatal(err)
 			}

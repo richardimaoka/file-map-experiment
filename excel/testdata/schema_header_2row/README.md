@@ -9,8 +9,6 @@ Per case:
 - `workbook.xlsx` — sheet name matches the directory name
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
 - `table_schema.json` — golden `TableSchema` from `readSchemaInternal` (**passing cases only**; error cases omit this file)
-- `raw_headers.json` — optional copy from `raw_header` for comparison only
-
 Combined workbook: `schema_header_2row_tests.xlsx` (one sheet per case).
 
 `header_name` joins each header row’s label top-to-bottom with ` > `. Per row: unmerged cells and merge anchors count; non-anchor cells count only for **horizontal** merges on that row (so `group1` applies to every column under A1:B1). Example: `group1 > headerA`.

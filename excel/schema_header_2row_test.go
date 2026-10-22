@@ -13,7 +13,7 @@ import (
 // Schema header fixtures (2-row) under excel/testdata/schema_header_2row/<case>/.
 // Header layout matches raw_header for the same case name; data band uses r{row}c{col} literals.
 //
-// Regenerate workbooks and sync schema_prep.json / raw_headers.json from raw_header:
+// Regenerate workbooks and sync schema_prep.json from raw_header:
 //
 //	go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
 //
@@ -103,7 +103,6 @@ func (tc schemaHeader2RowCase) rawHeaderSourceDir() string {
 
 func TestCreateSchemaHeader2RowFixturesInTestdata(t *testing.T) {
 	destBase := filepath.Join("testdata", "schema_header_2row")
-	srcBase := filepath.Join("testdata", "raw_header")
 	cases := schemaHeader2RowCases()
 
 	for _, tc := range cases {
@@ -113,10 +112,6 @@ func TestCreateSchemaHeader2RowFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			srcDir := filepath.Join(srcBase, tc.rawHeaderSourceDir())
-			if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, "raw_headers.json"), filepath.Join(destDir, "raw_headers.json")); err != nil {
-				t.Fatal(err)
-			}
 			if err := writeSchemaPrepFor2RowCase(destDir, tc); err != nil {
 				t.Fatal(err)
 			}

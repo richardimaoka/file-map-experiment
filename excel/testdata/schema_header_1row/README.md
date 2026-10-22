@@ -9,8 +9,6 @@ Per case:
 - `workbook.xlsx` — sheet name matches the directory name
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
 - `table_schema.json` — golden `TableSchema` from `readSchemaInternal` (passing cases only)
-- `raw_headers.json` — optional copy from `raw_header` for comparison only (not tested here)
-
 Combined workbook: `schema_header_1row_tests.xlsx` (one sheet per case).
 
 | Directory | Description |

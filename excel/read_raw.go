@@ -6,21 +6,6 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-type RawHeader struct {
-	ExcelColumn    string      `json:"excel_column"`
-	HeaderStartRow int         `json:"header_start_row"`
-	HeaderEndRow   int         `json:"header_end_row"`
-	CellValues     []CellValue `json:"cell_values"`
-}
-
-func (h *RawHeader) Type() (string, error) {
-	return "", fmt.Errorf("RawHeader.Type: not implemented")
-}
-
-func (h *RawHeader) HeaderName() (string, error) {
-	return "", fmt.Errorf("HeaderName: not implemented")
-}
-
 type RawDataColumn struct {
 	ExcelColumn  string      `json:"excel_column"`
 	DataStartRow int         `json:"data_start_row"`
@@ -30,11 +15,6 @@ type RawDataColumn struct {
 
 func (c *RawDataColumn) Type() (string, error) {
 	return "", fmt.Errorf("RawDataColumn.Type: not implemented")
-}
-
-type RawColumn struct {
-	Header *RawHeader     `json:"header"`
-	Data   *RawDataColumn `json:"data"`
 }
 
 type RawTable struct {
@@ -149,63 +129,6 @@ func mergeRangeLabel(r CellRange) string {
 	ul := r.UpperLeft
 	br := r.BottomRight
 	return fmt.Sprintf("%s%d:%s%d", ul.ColumnName, ul.RowNumber, br.ColumnName, br.RowNumber)
-}
-
-func readRawHeaders(excelPath string, prep SchemaPrep) ([]RawHeader, error) {
-	if err := prep.Validate(); err != nil {
-		return nil, fmt.Errorf("readRawHeaders: %w", err)
-	}
-
-	f, err := excelize.OpenFile(excelPath)
-	if err != nil {
-		return nil, fmt.Errorf("readRawHeaders: %w", err)
-	}
-	defer f.Close()
-
-	sheet := prep.SheetName
-	if idx, err := f.GetSheetIndex(sheet); err != nil || idx < 0 {
-		return nil, fmt.Errorf("readRawHeaders: sheet %q not found", sheet)
-	}
-
-	merges, err := loadMergedRanges(f, sheet)
-	if err != nil {
-		return nil, fmt.Errorf("readRawHeaders: %w", err)
-	}
-
-	startCol, err := excelize.ColumnNameToNumber(prep.StartColumn)
-	if err != nil {
-		return nil, fmt.Errorf("readRawHeaders: start_column: %w", err)
-	}
-	endCol, err := excelize.ColumnNameToNumber(prep.EndColumn)
-	if err != nil {
-		return nil, fmt.Errorf("readRawHeaders: end_column: %w", err)
-	}
-
-	headers := make([]RawHeader, 0, endCol-startCol+1)
-	for colNum := startCol; colNum <= endCol; colNum++ {
-		colName, err := excelize.ColumnNumberToName(colNum)
-		if err != nil {
-			return nil, fmt.Errorf("readRawHeaders: %w", err)
-		}
-
-		cellValues := make([]CellValue, 0, prep.HeaderEndRow-prep.HeaderStartRow+1)
-		for row := prep.HeaderStartRow; row <= prep.HeaderEndRow; row++ {
-			cv, err := readCellValue(f, sheet, colName, row, merges)
-			if err != nil {
-				return nil, fmt.Errorf("readRawHeaders: %w", err)
-			}
-			cellValues = append(cellValues, cv)
-		}
-
-		headers = append(headers, RawHeader{
-			ExcelColumn:    colName,
-			HeaderStartRow: prep.HeaderStartRow,
-			HeaderEndRow:   prep.HeaderEndRow,
-			CellValues:     cellValues,
-		})
-	}
-
-	return headers, nil
 }
 
 func readRawDataForSchema(excelPath string, schema TableSchema) ([]RawDataColumn, error) {

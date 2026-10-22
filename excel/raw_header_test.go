@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,9 +10,8 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// Header fixtures under excel/testdata/raw_header/<case>/ (workbook.xlsx, raw_headers.json).
+// Header workbook fixtures under excel/testdata/raw_header/<case>/ (workbook.xlsx, schema_prep.json).
 // Regenerate workbooks: go test ./excel -run TestCreateRawHeaderFixturesInTestdata
-// Regenerate raw_headers.json: go test ./excel -update -run TestReadRawHeaders
 
 type rawHeaderCase struct {
 	dir   string
@@ -77,66 +75,6 @@ func readSchemaPrepFixture(path string) (*SchemaPrep, error) {
 		return nil, err
 	}
 	return &prep, nil
-}
-
-func TestReadRawHeaders(t *testing.T) {
-	for _, dir := range rawHeaderCaseDirs() {
-		t.Run(dir, func(t *testing.T) {
-			caseDir := filepath.Join("testdata", "raw_header", dir)
-			prepPath := filepath.Join(caseDir, "schema_prep.json")
-			excelPath := filepath.Join(caseDir, "workbook.xlsx")
-			goldenPath := filepath.Join(caseDir, "raw_headers.json")
-
-			var prep SchemaPrep
-			if err := jsonfile.Read(prepPath, &prep); err != nil {
-				t.Fatalf("read schema_prep: %v", err)
-			}
-
-			got, err := readRawHeaders(excelPath, prep)
-			if err != nil {
-				t.Fatalf("readRawHeaders: %v", err)
-			}
-
-			if updateGoldens() {
-				writeRawHeadersGolden(t, goldenPath, got)
-				return
-			}
-
-			want, err := readRawHeadersGolden(goldenPath)
-			if err != nil {
-				t.Fatalf("read golden: %v", err)
-			}
-			fatalIfJSONGoldenMismatch(t, got, want)
-		})
-	}
-}
-
-func rawHeaderCaseDirs() []string {
-	cases := rawHeaderCases()
-	dirs := make([]string, len(cases))
-	for i, c := range cases {
-		dirs[i] = c.dir
-	}
-	return dirs
-}
-
-func readRawHeadersGolden(path string) ([]RawHeader, error) {
-	var headers []RawHeader
-	if err := jsonfile.Read(path, &headers); err != nil {
-		return nil, err
-	}
-	return headers, nil
-}
-
-func writeRawHeadersGolden(t *testing.T, path string, headers []RawHeader) {
-	data, err := json.MarshalIndent(headers, "", "  ")
-	if err != nil {
-		t.Fatal(err)
-	}
-	data = append(data, '\n')
-	if err := os.WriteFile(path, data, 0o644); err != nil {
-		t.Fatal(err)
-	}
 }
 
 type fixtureSheetCase struct {

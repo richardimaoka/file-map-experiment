@@ -15,7 +15,7 @@ import (
 // Schema header fixtures (1-row) under excel/testdata/schema_header_1row/<case>/.
 // Header layout matches raw_header for the same case name; data band is filled with r{row}c{col} literals.
 //
-// Regenerate workbooks and sync schema_prep.json / raw_headers.json from raw_header:
+// Regenerate workbooks and sync schema_prep.json from raw_header:
 //
 //	go test ./excel -run TestCreateSchemaHeader1RowFixturesInTestdata
 //
@@ -31,7 +31,7 @@ type schemaHeader1RowCase struct {
 	wantSchemaErr bool
 	// omit data band cells for these columns (e.g. empty header column with no RowData key).
 	skipDataColumns map[string]bool
-	// copy schema_prep.json / raw_headers.json from this raw_header case (default: same as dir).
+	// copy schema_prep.json from this raw_header case (default: same as dir).
 	rawHeaderFixture string
 }
 
@@ -69,7 +69,6 @@ func (tc schemaHeader1RowCase) rawHeaderSourceDir() string {
 
 func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 	destBase := filepath.Join("testdata", "schema_header_1row")
-	srcBase := filepath.Join("testdata", "raw_header")
 	cases := schemaHeader1RowCases()
 
 	for _, tc := range cases {
@@ -79,10 +78,6 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			srcDir := filepath.Join(srcBase, tc.rawHeaderSourceDir())
-			if err := copySchemaHeaderFixtureFile(filepath.Join(srcDir, "raw_headers.json"), filepath.Join(destDir, "raw_headers.json")); err != nil {
-				t.Fatal(err)
-			}
 			if err := writeSchemaPrepForCase(destDir, tc); err != nil {
 				t.Fatal(err)
 			}
