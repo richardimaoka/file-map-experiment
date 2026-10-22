@@ -39,5 +39,5 @@ func fatalIfJSONGoldenMismatch(t *testing.T, got, want interface{}) {
 	if err != nil {
 		t.Fatalf("marshal want: %v", err)
 	}
-	t.Fatalf("golden JSON mismatch (-want +got):\n%s", jsonLineDiff(string(wantJSON), string(gotJSON)))
+	t.Fatalf("golden JSON mismatch (-want +got):\n%s", jsonfile.LineDiff(string(wantJSON), string(gotJSON)))
 }

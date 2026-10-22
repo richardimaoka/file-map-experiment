@@ -1,9 +1,9 @@
-package excel
+package jsonfile
 
 import "strings"
 
-// jsonLineDiff formats a minimal line-oriented diff between two indented JSON strings.
-func jsonLineDiff(want, got string) string {
+// LineDiff formats a minimal line-oriented diff between two indented JSON strings.
+func LineDiff(want, got string) string {
 	wantLines := strings.Split(strings.TrimSuffix(want, "\n"), "\n")
 	gotLines := strings.Split(strings.TrimSuffix(got, "\n"), "\n")
 	n := len(wantLines)

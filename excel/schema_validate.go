@@ -56,6 +56,6 @@ func warnExcelSchemaMismatch(schemaName string, persisted, fromExcel TableSchema
 	fmt.Fprintf(os.Stderr,
 		"ValidateExcelAgainstSchema: warning: workbook schema does not match persisted schema %q (-persisted +workbook):\n%s",
 		schemaName,
-		jsonLineDiff(string(persistedJSON), string(fromExcelJSON)),
+		jsonfile.LineDiff(string(persistedJSON), string(fromExcelJSON)),
 	)
 }
