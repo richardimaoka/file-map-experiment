@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -420,7 +420,7 @@ func ReadSchemaFromExcel(resolver PathResolver, schemaName string) (TableSchema,
 
 func ReadSchemaFromJson(jsonPath string) (TableSchema, error) {
 	var schema TableSchema
-	if err := jsonfile.Read(jsonPath, &schema); err != nil {
+	if err := jsonutil.Read(jsonPath, &schema); err != nil {
 		return TableSchema{}, fmt.Errorf("ReadSchemaFromJson: %w", err)
 	}
 	return schema, nil
@@ -428,7 +428,7 @@ func ReadSchemaFromJson(jsonPath string) (TableSchema, error) {
 
 // WriteSchemaToJson persists a table schema (format contract) for reuse across workbook instances.
 func WriteSchemaToJson(jsonPath string, schema TableSchema) error {
-	if err := jsonfile.Write(jsonPath, schema); err != nil {
+	if err := jsonutil.Write(jsonPath, schema); err != nil {
 		return fmt.Errorf("WriteSchemaToJson: %w", err)
 	}
 	return nil

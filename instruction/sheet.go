@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/richardimaoka/file-map-experiment/excel"
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 // Sheet is one logical table: excel bounds (prep), structural schema, optional policy.
@@ -20,7 +20,7 @@ type Sheet struct {
 func LoadSheet(caseDir, excelPath string) (Sheet, error) {
 	prepPath := filepath.Join(caseDir, "schema_prep.json")
 	var prep excel.SchemaPrep
-	if err := jsonfile.Read(prepPath, &prep); err != nil {
+	if err := jsonutil.Read(prepPath, &prep); err != nil {
 		return Sheet{}, fmt.Errorf("LoadSheet: %w", err)
 	}
 

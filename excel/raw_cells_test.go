@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -283,7 +283,7 @@ func mergedRangeSortKey(m MergedRange) string {
 
 func readMergedRangesGolden(path string) ([]MergedRange, error) {
 	var merges []MergedRange
-	if err := jsonfile.Read(path, &merges); err != nil {
+	if err := jsonutil.Read(path, &merges); err != nil {
 		return nil, err
 	}
 	return merges, nil
@@ -302,7 +302,7 @@ func writeMergedRangesGolden(t *testing.T, path string, merges []MergedRange) {
 
 func readCellValueGolden(path string) (CellValue, error) {
 	var cv CellValue
-	if err := jsonfile.Read(path, &cv); err != nil {
+	if err := jsonutil.Read(path, &cv); err != nil {
 		return CellValue{}, err
 	}
 	return cv, nil

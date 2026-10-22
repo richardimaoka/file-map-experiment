@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -42,7 +42,7 @@ type fixtureSheetCase struct {
 
 func readSchemaPrepFixture(path string) (*SchemaPrep, error) {
 	var prep SchemaPrep
-	if err := jsonfile.Read(path, &prep); err != nil {
+	if err := jsonutil.Read(path, &prep); err != nil {
 		return nil, err
 	}
 	return &prep, nil

@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 const (
@@ -49,7 +49,7 @@ func TestReadRowsFromExcel_readAPIFixture(t *testing.T) {
 	}
 	goldenPath := filepath.Join("testdata", "schema_data", "data-all-string", "rows_data.json")
 	var want []RowData
-	if err := jsonfile.Read(goldenPath, &want); err != nil {
+	if err := jsonutil.Read(goldenPath, &want); err != nil {
 		t.Fatalf("read rows golden: %v", err)
 	}
 	fatalIfJSONGoldenMismatch(t, got, want)

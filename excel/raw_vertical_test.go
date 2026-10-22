@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -196,7 +196,7 @@ func writeRawVerticalReadRangeFile(caseDir, sheetName string, r CellRange) error
 
 func readRawVerticalReadRangeFile(path string) (rawVerticalReadRangeFile, error) {
 	var spec rawVerticalReadRangeFile
-	if err := jsonfile.Read(path, &spec); err != nil {
+	if err := jsonutil.Read(path, &spec); err != nil {
 		return rawVerticalReadRangeFile{}, err
 	}
 	return spec, nil
@@ -204,7 +204,7 @@ func readRawVerticalReadRangeFile(path string) (rawVerticalReadRangeFile, error)
 
 func readRawVerticalsGolden(path string) ([]RawVertical, error) {
 	var verticals []RawVertical
-	if err := jsonfile.Read(path, &verticals); err != nil {
+	if err := jsonutil.Read(path, &verticals); err != nil {
 		return nil, err
 	}
 	return verticals, nil

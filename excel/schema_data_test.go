@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -265,7 +265,7 @@ func TestReadRawDataSchemaData(t *testing.T) {
 			goldenPath := filepath.Join(caseDir, "raw_data.json")
 
 			var prep SchemaPrep
-			if err := jsonfile.Read(prepPath, &prep); err != nil {
+			if err := jsonutil.Read(prepPath, &prep); err != nil {
 				t.Fatalf("read schema_prep: %v", err)
 			}
 
@@ -298,7 +298,7 @@ func TestReadSchemaInternalData(t *testing.T) {
 			goldenPath := filepath.Join(caseDir, "table_schema.json")
 
 			var prep SchemaPrep
-			if err := jsonfile.Read(prepPath, &prep); err != nil {
+			if err := jsonutil.Read(prepPath, &prep); err != nil {
 				t.Fatalf("read schema_prep: %v", err)
 			}
 

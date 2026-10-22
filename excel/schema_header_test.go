@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -160,7 +160,7 @@ func testReadSchemaInternalHeaderTrack(t *testing.T, cases []schemaHeaderTrackCa
 			goldenPath := filepath.Join(caseDir, "table_schema.json")
 
 			var prep SchemaPrep
-			if err := jsonfile.Read(prepPath, &prep); err != nil {
+			if err := jsonutil.Read(prepPath, &prep); err != nil {
 				t.Fatalf("read schema_prep: %v", err)
 			}
 
@@ -191,7 +191,7 @@ func testReadSchemaInternalHeaderTrack(t *testing.T, cases []schemaHeaderTrackCa
 
 func readTableSchemaGolden(path string) (TableSchema, error) {
 	var schema TableSchema
-	if err := jsonfile.Read(path, &schema); err != nil {
+	if err := jsonutil.Read(path, &schema); err != nil {
 		return TableSchema{}, err
 	}
 	return schema, nil

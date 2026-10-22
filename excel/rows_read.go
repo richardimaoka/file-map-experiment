@@ -3,7 +3,7 @@ package excel
 import (
 	"fmt"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 // value is in string, because excelize treats all cell values as string, and we don't want to lose precision
@@ -82,7 +82,7 @@ func ReadRowsFromExcel(resolver PathResolver, schemaName string) ([]RowData, err
 
 func ReadRowsFromJson(jsonPath string) ([]RowData, error) {
 	var rows []RowData
-	if err := jsonfile.Read(jsonPath, &rows); err != nil {
+	if err := jsonutil.Read(jsonPath, &rows); err != nil {
 		return nil, fmt.Errorf("ReadRowsFromJson: %w", err)
 	}
 	return rows, nil

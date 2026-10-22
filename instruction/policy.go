@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 // PolicyFileName is the optional sidecar next to schema_prep.json / workbook fixtures.
@@ -28,7 +28,7 @@ type SheetPolicy struct {
 
 func ReadSheetPolicyFromJSON(jsonPath string) (SheetPolicy, error) {
 	var policy SheetPolicy
-	if err := jsonfile.Read(jsonPath, &policy); err != nil {
+	if err := jsonutil.Read(jsonPath, &policy); err != nil {
 		return SheetPolicy{}, fmt.Errorf("ReadSheetPolicyFromJSON: %w", err)
 	}
 	if err := policy.Validate(); err != nil {

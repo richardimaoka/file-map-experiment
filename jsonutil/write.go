@@ -1,4 +1,4 @@
-package jsonfile
+package jsonutil
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ func MarshalIndent(v any) ([]byte, error) {
 	enc.SetEscapeHTML(false)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(v); err != nil {
-		return nil, fmt.Errorf("jsonfile.MarshalIndent: %w", err)
+		return nil, fmt.Errorf("jsonutil.MarshalIndent: %w", err)
 	}
 	return buf.Bytes(), nil
 }
@@ -26,7 +26,7 @@ func Write(path string, v any) error {
 		return err
 	}
 	if err := os.WriteFile(path, data, 0o644); err != nil {
-		return fmt.Errorf("jsonfile.Write: %w", err)
+		return fmt.Errorf("jsonutil.Write: %w", err)
 	}
 	return nil
 }

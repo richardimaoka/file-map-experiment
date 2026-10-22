@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -12,11 +12,11 @@ import (
 func TestDetectDataEndRow_schemaDataFixtures(t *testing.T) {
 	caseDir := filepath.Join("testdata", "schema_data", "data-all-string")
 	var prep SchemaPrep
-	if err := jsonfile.Read(filepath.Join(caseDir, "schema_prep.json"), &prep); err != nil {
+	if err := jsonutil.Read(filepath.Join(caseDir, "schema_prep.json"), &prep); err != nil {
 		t.Fatalf("read prep: %v", err)
 	}
 	var schema TableSchema
-	if err := jsonfile.Read(filepath.Join(caseDir, "table_schema.json"), &schema); err != nil {
+	if err := jsonutil.Read(filepath.Join(caseDir, "table_schema.json"), &schema); err != nil {
 		t.Fatalf("read schema: %v", err)
 	}
 

@@ -1,4 +1,4 @@
-package jsonfile
+package jsonutil
 
 import (
 	"path/filepath"

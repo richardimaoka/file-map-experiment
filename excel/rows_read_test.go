@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 type readRowsGoldenCase struct {
@@ -25,7 +25,7 @@ func testReadRowsGoldenTrack(t *testing.T, trackDir string, cases []readRowsGold
 			goldenPath := filepath.Join(caseDir, "rows_data.json")
 
 			var schema TableSchema
-			if err := jsonfile.Read(schemaPath, &schema); err != nil {
+			if err := jsonutil.Read(schemaPath, &schema); err != nil {
 				t.Fatalf("read table_schema: %v", err)
 			}
 
@@ -78,7 +78,7 @@ func TestReadRowsSchemaCoupling(t *testing.T) {
 
 func readRowsDataGolden(path string) ([]RowData, error) {
 	var rows []RowData
-	if err := jsonfile.Read(path, &rows); err != nil {
+	if err := jsonutil.Read(path, &rows); err != nil {
 		return nil, err
 	}
 	return rows, nil

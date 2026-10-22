@@ -5,7 +5,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 // validateExcelAgainstSchemaDetailedDiff controls whether a schema mismatch warning
@@ -42,12 +42,12 @@ func warnExcelSchemaMismatch(schemaName string, persisted, fromExcel TableSchema
 		return
 	}
 
-	persistedJSON, err := jsonfile.MarshalIndent(persisted)
+	persistedJSON, err := jsonutil.MarshalIndent(persisted)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ValidateExcelAgainstSchema: warning: workbook schema does not match persisted schema %q (marshal persisted: %v)\n", schemaName, err)
 		return
 	}
-	fromExcelJSON, err := jsonfile.MarshalIndent(fromExcel)
+	fromExcelJSON, err := jsonutil.MarshalIndent(fromExcel)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ValidateExcelAgainstSchema: warning: workbook schema does not match persisted schema %q (marshal workbook: %v)\n", schemaName, err)
 		return
@@ -56,6 +56,6 @@ func warnExcelSchemaMismatch(schemaName string, persisted, fromExcel TableSchema
 	fmt.Fprintf(os.Stderr,
 		"ValidateExcelAgainstSchema: warning: workbook schema does not match persisted schema %q (-persisted +workbook):\n%s",
 		schemaName,
-		jsonfile.LineDiff(string(persistedJSON), string(fromExcelJSON)),
+		jsonutil.LineDiff(string(persistedJSON), string(fromExcelJSON)),
 	)
 }
