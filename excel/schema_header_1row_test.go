@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -13,9 +12,9 @@ import (
 )
 
 // Schema header fixtures (1-row) under excel/testdata/schema_header_1row/<case>/.
-// Header layout matches raw_header for the same case name; data band is filled with r{row}c{col} literals.
+// Data band is filled with r{row}c{col} literals below the header layout writers in raw_header_test.go.
 //
-// Regenerate workbooks and sync schema_prep.json from raw_header:
+// Regenerate workbooks and schema_prep.json:
 //
 //	go test ./excel -run TestCreateSchemaHeader1RowFixturesInTestdata
 //
@@ -31,25 +30,22 @@ type schemaHeader1RowCase struct {
 	wantSchemaErr bool
 	// omit data band cells for these columns (e.g. empty header column with no RowData key).
 	skipDataColumns map[string]bool
-	// copy schema_prep.json from this raw_header case (default: same as dir).
-	rawHeaderFixture string
 }
 
 func schemaHeader1RowCases() []schemaHeader1RowCase {
 	return []schemaHeader1RowCase{
-		{"1-row-simple", writeRawHeader1RowSimple, NewCellRange("A", 2, "C", 4), false, nil, ""},
-		{"1-row-empty-header", writeRawHeader1RowEmptyHeader, NewCellRange("A", 2, "D", 4), true, nil, ""},
+		{"1-row-simple", writeRawHeader1RowSimple, NewCellRange("A", 2, "C", 4), false, nil},
+		{"1-row-empty-header", writeRawHeader1RowEmptyHeader, NewCellRange("A", 2, "D", 4), true, nil},
 		{
 			"1-row-empty-header-valid",
 			writeRawHeader1RowEmptyHeader,
 			NewCellRange("A", 2, "D", 4),
 			false,
 			map[string]bool{"C": true},
-			"1-row-empty-header",
 		},
-		{"1-row-line-break", writeRawHeader1RowLineBreak, NewCellRange("A", 2, "B", 4), false, nil, ""},
-		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge, NewCellRange("A", 2, "D", 4), true, nil, ""},
-		{"1-row-duplicate-header", writeRawHeader1RowDuplicateHeader, NewCellRange("A", 2, "C", 4), true, nil, ""},
+		{"1-row-line-break", writeRawHeader1RowLineBreak, NewCellRange("A", 2, "B", 4), false, nil},
+		{"1-row-horizontal-merge", writeRawHeader1RowHorizontalMerge, NewCellRange("A", 2, "D", 4), true, nil},
+		{"1-row-duplicate-header", writeRawHeader1RowDuplicateHeader, NewCellRange("A", 2, "C", 4), true, nil},
 	}
 }
 
@@ -58,13 +54,6 @@ func (tc schemaHeader1RowCase) writeWorkbook(f *excelize.File, sheet string) err
 		return err
 	}
 	return fillSchemaHeader1RowDataBand(f, sheet, tc.dataBand, tc.skipDataColumns)
-}
-
-func (tc schemaHeader1RowCase) rawHeaderSourceDir() string {
-	if tc.rawHeaderFixture != "" {
-		return tc.rawHeaderFixture
-	}
-	return tc.dir
 }
 
 func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
@@ -166,19 +155,19 @@ func writeTableSchemaGolden(t *testing.T, path string, schema TableSchema) {
 }
 
 func writeSchemaPrepForCase(destDir string, tc schemaHeader1RowCase) error {
-	srcPath := filepath.Join("testdata", "raw_header", tc.rawHeaderSourceDir(), "schema_prep.json")
-	var prep SchemaPrep
-	if err := jsonfile.Read(srcPath, &prep); err != nil {
-		return err
+	band := tc.dataBand
+	prep := SchemaPrep{
+		SchemaName:     tc.dir,
+		SheetName:      tc.dir,
+		IsReady:        true,
+		HeaderStartRow: 1,
+		HeaderEndRow:   1,
+		DataStartRow:   band.StartRowNumber(),
+		DataEndRow:     band.EndRowNumber(),
+		StartColumn:    band.StartColumnName(),
+		EndColumn:      band.EndColumnName(),
 	}
-	prep.SchemaName = tc.dir
-	prep.SheetName = tc.dir
-	data, err := json.MarshalIndent(prep, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+	return writeSchemaPrepFile(destDir, prep)
 }
 
 func fillSchemaHeader1RowDataBand(f *excelize.File, sheet string, band CellRange, skipColumns map[string]bool) error {

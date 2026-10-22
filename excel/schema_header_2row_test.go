@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -11,9 +10,9 @@ import (
 )
 
 // Schema header fixtures (2-row) under excel/testdata/schema_header_2row/<case>/.
-// Header layout matches raw_header for the same case name; data band uses r{row}c{col} literals.
+// Data band uses r{row}c{col} literals below header layouts from raw_header_test.go.
 //
-// Regenerate workbooks and sync schema_prep.json from raw_header:
+// Regenerate workbooks and schema_prep.json:
 //
 //	go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
 //
@@ -26,31 +25,28 @@ type schemaHeader2RowCase struct {
 	headerWrite      func(f *excelize.File, sheet string) error
 	dataBand         CellRange
 	wantSchemaErr    bool
-	skipDataColumns  map[string]bool
-	rawHeaderFixture string
+	skipDataColumns map[string]bool
 }
 
 func schemaHeader2RowCases() []schemaHeader2RowCase {
 	return []schemaHeader2RowCase{
-		{"2-row-simple", writeRawHeader2RowSimple, NewCellRange("A", 3, "C", 5), false, nil, ""},
+		{"2-row-simple", writeRawHeader2RowSimple, NewCellRange("A", 3, "C", 5), false, nil},
 		{
 			"2-row-duplicate-header",
 			writeRawHeader2RowDuplicateHeader,
 			NewCellRange("A", 3, "C", 5),
 			true,
 			nil,
-			"",
 		},
-		{"2-row-empty-cell", writeRawHeader2RowEmptyCell, NewCellRange("A", 3, "C", 5), false, nil, ""},
-		{"2-row-horizontal-merge", writeRawHeader2RowHorizontalMerge, NewCellRange("A", 3, "C", 5), false, nil, ""},
-		{"2-row-vertical-merge", writeRawHeader2RowVerticalMerge, NewCellRange("A", 3, "C", 5), false, nil, ""},
+		{"2-row-empty-cell", writeRawHeader2RowEmptyCell, NewCellRange("A", 3, "C", 5), false, nil},
+		{"2-row-horizontal-merge", writeRawHeader2RowHorizontalMerge, NewCellRange("A", 3, "C", 5), false, nil},
+		{"2-row-vertical-merge", writeRawHeader2RowVerticalMerge, NewCellRange("A", 3, "C", 5), false, nil},
 		{
 			"2-row-bidirectional-merge",
 			writeRawHeader2RowBidirectionalMerge,
 			NewCellRange("A", 3, "C", 5),
 			true,
 			nil,
-			"",
 		},
 		{
 			"2-row-horizontal-merge-repeated",
@@ -58,7 +54,6 @@ func schemaHeader2RowCases() []schemaHeader2RowCase {
 			NewCellRange("A", 3, "G", 5),
 			false,
 			nil,
-			"",
 		},
 		{
 			"2-row-vertical-merge-repeated",
@@ -66,7 +61,6 @@ func schemaHeader2RowCases() []schemaHeader2RowCase {
 			NewCellRange("A", 3, "E", 5),
 			false,
 			nil,
-			"",
 		},
 		{
 			"2-row-bidirectional-merge-rep",
@@ -74,7 +68,6 @@ func schemaHeader2RowCases() []schemaHeader2RowCase {
 			NewCellRange("A", 3, "I", 5),
 			true,
 			nil,
-			"",
 		},
 		{
 			"2-row-mixed-merge",
@@ -82,7 +75,6 @@ func schemaHeader2RowCases() []schemaHeader2RowCase {
 			NewCellRange("A", 3, "L", 5),
 			true,
 			nil,
-			"",
 		},
 	}
 }
@@ -92,13 +84,6 @@ func (tc schemaHeader2RowCase) writeWorkbook(f *excelize.File, sheet string) err
 		return err
 	}
 	return fillSchemaHeader1RowDataBand(f, sheet, tc.dataBand, tc.skipDataColumns)
-}
-
-func (tc schemaHeader2RowCase) rawHeaderSourceDir() string {
-	if tc.rawHeaderFixture != "" {
-		return tc.rawHeaderFixture
-	}
-	return tc.dir
 }
 
 func TestCreateSchemaHeader2RowFixturesInTestdata(t *testing.T) {
@@ -181,17 +166,17 @@ func TestReadSchemaInternal2Row(t *testing.T) {
 }
 
 func writeSchemaPrepFor2RowCase(destDir string, tc schemaHeader2RowCase) error {
-	srcPath := filepath.Join("testdata", "raw_header", tc.rawHeaderSourceDir(), "schema_prep.json")
-	var prep SchemaPrep
-	if err := jsonfile.Read(srcPath, &prep); err != nil {
-		return err
+	band := tc.dataBand
+	prep := SchemaPrep{
+		SchemaName:     tc.dir,
+		SheetName:      tc.dir,
+		IsReady:        true,
+		HeaderStartRow: 1,
+		HeaderEndRow:   2,
+		DataStartRow:   band.StartRowNumber(),
+		DataEndRow:     band.EndRowNumber(),
+		StartColumn:    band.StartColumnName(),
+		EndColumn:      band.EndColumnName(),
 	}
-	prep.SchemaName = tc.dir
-	prep.SheetName = tc.dir
-	data, err := json.MarshalIndent(prep, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+	return writeSchemaPrepFile(destDir, prep)
 }

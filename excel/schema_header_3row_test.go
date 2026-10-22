@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -11,9 +10,9 @@ import (
 )
 
 // Schema header fixtures (3-row) under excel/testdata/schema_header_3row/<case>/.
-// Header layout matches raw_header for the same case name; data band uses r{row}c{col} literals.
+// Data band uses r{row}c{col} literals below header layouts from raw_header_test.go.
 //
-// Regenerate workbooks and sync schema_prep.json from raw_header:
+// Regenerate workbooks and schema_prep.json:
 //
 //	go test ./excel -run TestCreateSchemaHeader3RowFixturesInTestdata
 //
@@ -26,22 +25,20 @@ type schemaHeader3RowCase struct {
 	headerWrite      func(f *excelize.File, sheet string) error
 	dataBand         CellRange
 	wantSchemaErr    bool
-	skipDataColumns  map[string]bool
-	rawHeaderFixture string
+	skipDataColumns map[string]bool
 }
 
 func schemaHeader3RowCases() []schemaHeader3RowCase {
 	return []schemaHeader3RowCase{
-		{"3-row-simple", writeRawHeader3RowSimple, NewCellRange("A", 4, "C", 6), false, nil, ""},
+		{"3-row-simple", writeRawHeader3RowSimple, NewCellRange("A", 4, "C", 6), false, nil},
 		{
 			"3-row-bidirectional-merge",
 			writeRawHeader3RowBidirectionalMerge,
 			NewCellRange("A", 4, "C", 6),
 			true,
 			nil,
-			"",
 		},
-		{"3-row-mixed-merge", writeRawHeader3RowMixedMerge, NewCellRange("A", 4, "H", 6), false, nil, ""},
+		{"3-row-mixed-merge", writeRawHeader3RowMixedMerge, NewCellRange("A", 4, "H", 6), false, nil},
 	}
 }
 
@@ -50,13 +47,6 @@ func (tc schemaHeader3RowCase) writeWorkbook(f *excelize.File, sheet string) err
 		return err
 	}
 	return fillSchemaHeader1RowDataBand(f, sheet, tc.dataBand, tc.skipDataColumns)
-}
-
-func (tc schemaHeader3RowCase) rawHeaderSourceDir() string {
-	if tc.rawHeaderFixture != "" {
-		return tc.rawHeaderFixture
-	}
-	return tc.dir
 }
 
 func TestCreateSchemaHeader3RowFixturesInTestdata(t *testing.T) {
@@ -138,17 +128,17 @@ func TestReadSchemaInternal3Row(t *testing.T) {
 }
 
 func writeSchemaPrepFor3RowCase(destDir string, tc schemaHeader3RowCase) error {
-	srcPath := filepath.Join("testdata", "raw_header", tc.rawHeaderSourceDir(), "schema_prep.json")
-	var prep SchemaPrep
-	if err := jsonfile.Read(srcPath, &prep); err != nil {
-		return err
+	band := tc.dataBand
+	prep := SchemaPrep{
+		SchemaName:     tc.dir,
+		SheetName:      tc.dir,
+		IsReady:        true,
+		HeaderStartRow: 1,
+		HeaderEndRow:   3,
+		DataStartRow:   band.StartRowNumber(),
+		DataEndRow:     band.EndRowNumber(),
+		StartColumn:    band.StartColumnName(),
+		EndColumn:      band.EndColumnName(),
 	}
-	prep.SchemaName = tc.dir
-	prep.SheetName = tc.dir
-	data, err := json.MarshalIndent(prep, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+	return writeSchemaPrepFile(destDir, prep)
 }

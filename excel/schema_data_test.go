@@ -379,10 +379,5 @@ func writeSchemaPrepForDataCase(destDir string, tc schemaDataCase) error {
 		StartColumn:    band.StartColumnName(),
 		EndColumn:      band.EndColumnName(),
 	}
-	data, err := json.MarshalIndent(prep, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+	return writeSchemaPrepFile(destDir, prep)
 }

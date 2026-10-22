@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -8,6 +9,15 @@ import (
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
 	"github.com/xuri/excelize/v2"
 )
+
+func writeSchemaPrepFile(destDir string, prep SchemaPrep) error {
+	data, err := json.MarshalIndent(prep, "", "  ")
+	if err != nil {
+		return err
+	}
+	data = append(data, '\n')
+	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+}
 
 type fixtureSheetCase struct {
 	dir   string

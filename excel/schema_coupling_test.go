@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -28,8 +27,6 @@ type schemaCouplingCase struct {
 	dataAfterFill   func(f *excelize.File, sheet string) error
 	wantSchemaErr   bool
 	skipDataColumns map[string]bool
-	// raw_header case name for schema_prep.json when layouts match (see writeSchemaPrepForCouplingCase).
-	rawHeaderRef string
 }
 
 func schemaCouplingCases() []schemaCouplingCase {
@@ -40,21 +37,18 @@ func schemaCouplingCases() []schemaCouplingCase {
 			headerWrite:   writeRawHeader2RowSimple,
 			dataBand:      band2Row,
 			dataAfterFill: mergeDataVerticalMergeA,
-			rawHeaderRef:  "2-row-simple",
 		},
 		{
 			dir:           "coupling-2row-hdr-data-vmerge",
 			headerWrite:   writeRawHeader2RowVerticalMerge,
 			dataBand:      band2Row,
 			dataAfterFill: mergeDataVerticalMergeA,
-			rawHeaderRef:  "2-row-vertical-merge",
 		},
 		{
 			dir:           "coupling-2row-empty-header-data",
 			headerWrite:   writeCoupling2RowEmptyHeaderColumnC,
 			dataBand:      band2Row,
 			wantSchemaErr: true,
-			rawHeaderRef:  "2-row-simple",
 		},
 	}
 }
@@ -167,21 +161,17 @@ func TestReadSchemaInternalCoupling(t *testing.T) {
 }
 
 func writeSchemaPrepForCouplingCase(destDir string, tc schemaCouplingCase) error {
-	ref := tc.rawHeaderRef
-	if ref == "" {
-		ref = "2-row-simple"
+	band := tc.dataBand
+	prep := SchemaPrep{
+		SchemaName:     tc.dir,
+		SheetName:      tc.dir,
+		IsReady:        true,
+		HeaderStartRow: 1,
+		HeaderEndRow:   2,
+		DataStartRow:   band.StartRowNumber(),
+		DataEndRow:     band.EndRowNumber(),
+		StartColumn:    band.StartColumnName(),
+		EndColumn:      band.EndColumnName(),
 	}
-	srcPath := filepath.Join("testdata", "raw_header", ref, "schema_prep.json")
-	var prep SchemaPrep
-	if err := jsonfile.Read(srcPath, &prep); err != nil {
-		return err
-	}
-	prep.SchemaName = tc.dir
-	prep.SheetName = tc.dir
-	data, err := json.MarshalIndent(prep, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(filepath.Join(destDir, "schema_prep.json"), data, 0o644)
+	return writeSchemaPrepFile(destDir, prep)
 }
