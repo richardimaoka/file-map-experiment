@@ -402,10 +402,6 @@ func mergeIsSingleColumn(m MergedRange) bool {
 	return ul.ColumnName == br.ColumnName
 }
 
-func validateExcelAgainstSchema(resolver PathResolver, schemaName string) (TableSchema, error) {
-	return TableSchema{}, fmt.Errorf("validateExcelAgainstSchema: not implemented")
-}
-
 func ReadSchemaFromExcel(resolver PathResolver, schemaName string) (TableSchema, error) {
 	config, err := ReadExcelConfig(resolver.ConfigPath())
 	if err != nil {
