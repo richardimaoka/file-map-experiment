@@ -259,7 +259,7 @@ func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 	}
 }
 
-// Golden raw_data.json: data-band columns from readRawData (reference only for schema_data cases).
+// Golden raw_data.json: data-band columns from prep bounds via readRawVerticals (reference only).
 func TestReadRawDataSchemaData(t *testing.T) {
 	for _, tc := range schemaDataCases() {
 		t.Run(tc.dir, func(t *testing.T) {
@@ -273,9 +273,9 @@ func TestReadRawDataSchemaData(t *testing.T) {
 				t.Fatalf("read schema_prep: %v", err)
 			}
 
-			got, err := readRawData(excelPath, prep)
+			got, err := rawDataColumnsFromPrep(excelPath, prep)
 			if err != nil {
-				t.Fatalf("readRawData: %v", err)
+				t.Fatalf("rawDataColumnsFromPrep: %v", err)
 			}
 
 			if updateGoldens() {
@@ -290,6 +290,26 @@ func TestReadRawDataSchemaData(t *testing.T) {
 			fatalIfJSONGoldenMismatch(t, got, want)
 		})
 	}
+}
+
+func rawDataColumnsFromPrep(excelPath string, prep SchemaPrep) ([]RawDataColumn, error) {
+	if err := prep.Validate(); err != nil {
+		return nil, err
+	}
+	verticals, err := readRawVerticals(excelPath, prep.SheetName, prep.DataRange())
+	if err != nil {
+		return nil, err
+	}
+	columns := make([]RawDataColumn, len(verticals))
+	for i, v := range verticals {
+		columns[i] = RawDataColumn{
+			ExcelColumn:  v.ExcelColumn,
+			DataStartRow: prep.DataStartRow,
+			DataEndRow:   prep.DataEndRow,
+			CellValues:   v.CellValues,
+		}
+	}
+	return columns, nil
 }
 
 func readRawDataGolden(path string) ([]RawDataColumn, error) {
