@@ -4,7 +4,7 @@ go 1.26.3
 
 require (
 	github.com/joho/godotenv v1.5.1
-	github.com/xuri/excelize/v2 v2.11.1-0.20260930021559-01a9ff32fb3c
+	github.com/xuri/excelize/v2 v2.11.1-0.20261003002531-6258dcebc4e2
 )
 
 require (
