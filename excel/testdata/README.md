@@ -14,7 +14,7 @@ export APP_BASE_DIR="$(pwd)"   # repo root
 ./scripts/regenerate-excel-testdata.sh  # .xlsx only
 ```
 
-With git hooks installed (`./scripts/install-git-hooks.sh`), **pre-commit** regenerates workbooks only and stages changed `.xlsx`. Plain `go test ./excel` does not rewrite testdata.
+With git hooks installed (`./scripts/install-git-hooks.sh`), **pre-commit** regenerates workbooks and **fails the commit** if `excel/testdata` has unstaged changes afterward (stage `.xlsx` and commit again). Plain `go test ./excel` does not rewrite testdata.
 
 ## Fixture trees
 

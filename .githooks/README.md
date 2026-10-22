@@ -2,7 +2,7 @@
 
 ## Pre-commit: excel testdata workbooks
 
-Before each commit, `pre-commit` runs `scripts/regenerate-excel-testdata.sh` (`go test -update`, Create tests only) and stages any changed `excel/testdata/**/*.xlsx`.
+Before each commit, `pre-commit` runs `scripts/regenerate-excel-testdata.sh` (`go test -update`, Create tests only). If that leaves an unstaged diff under `excel/testdata`, the commit is **aborted**; review `git diff`, `git add` the workbooks you want, and run `git commit` again.
 
 **One-time setup** (per clone):
 

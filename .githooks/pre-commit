@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regenerate tracked excel/testdata workbooks and stage any changes before commit.
+# Regenerate excel/testdata workbooks; abort commit if that leaves unstaged changes.
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
@@ -7,7 +7,8 @@ cd "$ROOT"
 
 "$ROOT/scripts/regenerate-excel-testdata.sh"
 
-# Stage updated workbooks (no-op if bytes unchanged).
-if git diff --name-only -- 'excel/testdata' | grep -q '\.xlsx$'; then
-  git diff --name-only -- 'excel/testdata' | grep '\.xlsx$' | xargs -r git add --
+if ! git diff --quiet -- excel/testdata; then
+  echo "pre-commit: workbook regeneration changed excel/testdata (see git diff)." >&2
+  echo "pre-commit: review, git add the .xlsx you want, then git commit again." >&2
+  exit 1
 fi
