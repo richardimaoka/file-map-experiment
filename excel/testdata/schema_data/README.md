@@ -9,7 +9,7 @@ Per case:
 - `workbook.xlsx` — sheet name matches the directory name
 - `schema_prep.json` — `SchemaPrep` (header + data row bounds)
 - `table_schema.json` — golden `TableSchema` (columns from header; `is_row_grouped` from single-column vertical merges in the data band)
-- `raw_data.json` — golden data-band columns from prep bounds (`TestReadRawDataSchemaData`; reference only)
+- `raw_data.json` — golden `[]RawVertical` for the prep data band (`TestReadRawDataSchemaData`; reference only)
 - `rows_data.json` — golden `[]RowData` from `readRowsFromExcelInternal` (passing cases only)
 
 Combined workbook: `schema_data_tests.xlsx` (one sheet per case).

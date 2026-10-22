@@ -1,7 +1,6 @@
 package excel
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -255,7 +254,7 @@ func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 	}
 }
 
-// Golden raw_data.json: data-band columns from prep bounds via readRawVerticals (reference only).
+// Golden raw_data.json: prep data band via readRawVerticals (reference only).
 func TestReadRawDataSchemaData(t *testing.T) {
 	for _, tc := range schemaDataCases() {
 		t.Run(tc.dir, func(t *testing.T) {
@@ -269,61 +268,22 @@ func TestReadRawDataSchemaData(t *testing.T) {
 				t.Fatalf("read schema_prep: %v", err)
 			}
 
-			got, err := rawDataColumnsFromPrep(excelPath, prep)
+			got, err := readRawVerticals(excelPath, prep.SheetName, prep.DataRange())
 			if err != nil {
-				t.Fatalf("rawDataColumnsFromPrep: %v", err)
+				t.Fatalf("readRawVerticals: %v", err)
 			}
 
 			if updateGoldens() {
-				writeRawDataGolden(t, goldenPath, got)
+				writeRawVerticalsGolden(t, goldenPath, got)
 				return
 			}
 
-			want, err := readRawDataGolden(goldenPath)
+			want, err := readRawVerticalsGolden(goldenPath)
 			if err != nil {
 				t.Fatalf("read golden: %v", err)
 			}
 			fatalIfJSONGoldenMismatch(t, got, want)
 		})
-	}
-}
-
-func rawDataColumnsFromPrep(excelPath string, prep SchemaPrep) ([]RawDataColumn, error) {
-	if err := prep.Validate(); err != nil {
-		return nil, err
-	}
-	verticals, err := readRawVerticals(excelPath, prep.SheetName, prep.DataRange())
-	if err != nil {
-		return nil, err
-	}
-	columns := make([]RawDataColumn, len(verticals))
-	for i, v := range verticals {
-		columns[i] = RawDataColumn{
-			ExcelColumn:  v.ExcelColumn,
-			DataStartRow: prep.DataStartRow,
-			DataEndRow:   prep.DataEndRow,
-			CellValues:   v.CellValues,
-		}
-	}
-	return columns, nil
-}
-
-func readRawDataGolden(path string) ([]RawDataColumn, error) {
-	var columns []RawDataColumn
-	if err := jsonfile.Read(path, &columns); err != nil {
-		return nil, err
-	}
-	return columns, nil
-}
-
-func writeRawDataGolden(t *testing.T, path string, columns []RawDataColumn) {
-	data, err := json.MarshalIndent(columns, "", "  ")
-	if err != nil {
-		t.Fatal(err)
-	}
-	data = append(data, '\n')
-	if err := os.WriteFile(path, data, 0o644); err != nil {
-		t.Fatal(err)
 	}
 }
 

@@ -15,28 +15,28 @@ func readRowsFromExcelInternal(excelPath string, schema TableSchema) ([]RowData,
 	if err := schema.ValidateForDataRead(); err != nil {
 		return nil, fmt.Errorf("readRowsFromExcelInternal: %w", err)
 	}
-	rawCols, err := readRawDataForSchema(excelPath, schema)
+	verticals, err := readRawDataForSchema(excelPath, schema)
 	if err != nil {
 		return nil, fmt.Errorf("readRowsFromExcelInternal: %w", err)
 	}
-	return rowDataFromRawColumns(rawCols, schema)
+	return rowDataFromRawVerticals(verticals, schema)
 }
 
-func rowDataFromRawColumns(rawCols []RawDataColumn, schema TableSchema) ([]RowData, error) {
-	byCol := make(map[string]map[int]string, len(rawCols))
-	for _, col := range rawCols {
-		rowMap := make(map[int]string, len(col.CellValues))
-		for _, cv := range col.CellValues {
+func rowDataFromRawVerticals(verticals []RawVertical, schema TableSchema) ([]RowData, error) {
+	byCol := make(map[string]map[int]string, len(verticals))
+	for _, v := range verticals {
+		rowMap := make(map[int]string, len(v.CellValues))
+		for _, cv := range v.CellValues {
 			rowMap[cv.Position.RowNumber] = cv.Value
 		}
-		byCol[col.ExcelColumn] = rowMap
+		byCol[v.ExcelColumn] = rowMap
 	}
 
 	dataStart := schema.DataStartRow
 	dataEnd := dataStart - 1
-	if len(rawCols) > 0 {
-		dataStart = rawCols[0].DataStartRow
-		dataEnd = rawCols[0].DataEndRow
+	if len(verticals) > 0 {
+		dataStart = verticals[0].StartRow
+		dataEnd = verticals[0].EndRow
 	}
 
 	n := dataEnd - dataStart + 1

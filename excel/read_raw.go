@@ -6,17 +6,6 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-type RawDataColumn struct {
-	ExcelColumn  string      `json:"excel_column"`
-	DataStartRow int         `json:"data_start_row"`
-	DataEndRow   int         `json:"data_end_row"`
-	CellValues   []CellValue `json:"cell_values"`
-}
-
-func (c *RawDataColumn) Type() (string, error) {
-	return "", fmt.Errorf("RawDataColumn.Type: not implemented")
-}
-
 type RawTable struct {
 	HeaderVerticals []RawVertical `json:"header_verticals"`
 	DataVerticals   []RawVertical `json:"data_verticals"`
@@ -131,7 +120,7 @@ func mergeRangeLabel(r CellRange) string {
 	return fmt.Sprintf("%s%d:%s%d", ul.ColumnName, ul.RowNumber, br.ColumnName, br.RowNumber)
 }
 
-func readRawDataForSchema(excelPath string, schema TableSchema) ([]RawDataColumn, error) {
+func readRawDataForSchema(excelPath string, schema TableSchema) ([]RawVertical, error) {
 	if err := schema.ValidateForDataRead(); err != nil {
 		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
 	}
@@ -151,21 +140,7 @@ func readRawDataForSchema(excelPath string, schema TableSchema) ([]RawDataColumn
 		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
 	}
 
-	verticals, err := readRawVerticals(excelPath, schema.SheetName, schema.DataRange(dataEndRow))
-	if err != nil {
-		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
-	}
-
-	columns := make([]RawDataColumn, len(verticals))
-	for i, v := range verticals {
-		columns[i] = RawDataColumn{
-			ExcelColumn:  v.ExcelColumn,
-			DataStartRow: schema.DataStartRow,
-			DataEndRow:   dataEndRow,
-			CellValues:   v.CellValues,
-		}
-	}
-	return columns, nil
+	return readRawVerticals(excelPath, schema.SheetName, schema.DataRange(dataEndRow))
 }
 
 func readCellValue(f *excelize.File, sheet, col string, row int, merges []MergedRange) (CellValue, error) {
