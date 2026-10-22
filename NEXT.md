@@ -6,10 +6,6 @@ _Last updated: 2026-10-23._
 
 **`ValidateExcelAgainstSchema`** — Load persisted `schemas/<name>.json`, read headers (and bounds from prep) on a **instance** workbook, and confirm it matches the schema (column set, grouped headers, row-grouping flags, etc.). Stub exists in `excel/schema.go`; pairs with `ReadRowsFromExcel` for the “same schema, many weekly files” workflow.
 
-## Optional next
-
-- **Toolchain** — Go **1.26.6+** for **GO-2026-6088** (`encoding/xml` via excelize open/read).
-
 ## Defer for now
 
 - Excel **write** path / formula preservation  
