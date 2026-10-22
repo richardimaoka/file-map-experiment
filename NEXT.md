@@ -34,4 +34,4 @@ go test ./excel -run 'TestReadSchemaFrom|TestReadRowsFromExcel'
 govulncheck ./...
 ```
 
-Fixture layout and per-track commands: [excel/testdata/README.md](excel/testdata/README.md), [excel/testdata/schema/README.md](excel/testdata/schema/README.md).
+Fixture layout and per-track commands: [excel/testdata/README.md](excel/testdata/README.md).

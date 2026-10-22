@@ -1,6 +1,6 @@
 # Schema fixtures: data band
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (9 cases).
+Schema data-band track for `readSchemaInternal`; global rules: [../README.md#schema-fixtures-readschemainternal](../README.md#schema-fixtures-readschemainternal). **Initial pass complete** (9 cases).
 
 Cases for `readSchemaInternal` (data track). **Header is always `1-row-simple`** (A–C, row 1). Most cases use data rows 2–4; nested vertical-merge cases (`data-vmerge-*`) use rows 2–13.
 

@@ -1,6 +1,6 @@
 # Schema fixtures: header row tracks
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (19 cases across 1-, 2-, and 3-row headers). Data-band fixtures: [../schema_data/README.md](../schema_data/README.md).
+Schema header track for `readSchemaInternal`; global rules: [../README.md#schema-fixtures-readschemainternal](../README.md#schema-fixtures-readschemainternal). **Initial pass complete** (19 cases). Data band track: [../schema_data/README.md](../schema_data/README.md).
 
 Layout:
 

@@ -1,6 +1,6 @@
 # `schema_coupling`
 
-Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (3 cases).
+Schema coupling track for `readSchemaInternal`; global rules: [../README.md#schema-fixtures-readschemainternal](../README.md#schema-fixtures-readschemainternal). **Initial pass complete** (3 cases).
 
 Cases for `readSchemaInternal` where **multi-row header** rules and **data-band** rules interact (not covered by exercising each track alone).
 
@@ -9,6 +9,7 @@ Each case directory has:
 - `workbook.xlsx`
 - `schema_prep.json`
 - `table_schema.json` — golden for **passing** cases only
+
 | Case | Result |
 |------|--------|
 | `coupling-2row-data-vmerge` | Pass — `2-row-simple` header, vertical merge **A3:A4** → column A `is_row_grouped` |
@@ -22,4 +23,3 @@ go test ./excel -run TestCreateSchemaCouplingFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternalCoupling
 ```
 
-See [../schema/README.md](../schema/README.md) for global schema fixture rules.
