@@ -23,9 +23,7 @@ With git hooks installed (`./scripts/install-git-hooks.sh`), **pre-commit** rege
 | [`raw_cells/`](raw_cells/README.md) | `readCellValue`, merged ranges | Stable |
 | [`raw_vertical/`](raw_vertical/README.md) | `readRawVerticals` | Stable |
 | [`schema/`](schema/README.md) | Index for `readSchemaInternal` → `TableSchema` | — |
-| [`schema_header_1row/`](schema_header_1row/README.md) | Header track (1 row) | **Complete** (initial pass, 6 cases) |
-| [`schema_header_2row/`](schema_header_2row/README.md) | Header track (2 rows) | **Complete** (initial pass, 10 cases) |
-| [`schema_header_3row/`](schema_header_3row/README.md) | Header track (3 rows) | **Complete** (initial pass, 3 cases) |
+| [`schema_header/`](schema_header/README.md) | Header tracks (`1row/`, `2row/`, `3row/`) | **Complete** (initial pass, 19 cases) |
 | [`schema_data/`](schema_data/README.md) | Data band track | **Complete** (initial pass, 9 cases) |
 | [`schema_coupling/`](schema_coupling/README.md) | Header + data interaction | **Complete** (initial pass, 3 cases) |
 | [`read_api/`](read_api/README.md) | `ReadSchemaFromExcel`, `ReadRowsFromExcel` (resolver layout) | Smoke (`data_all_string`, `ads_report_simple`, `ads_report_multi_row_headers`) |

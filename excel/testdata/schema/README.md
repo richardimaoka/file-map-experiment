@@ -30,23 +30,19 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 
 | Directory | Status | Role |
 |-----------|--------|------|
-| [`schema_header_1row/`](schema_header_1row/README.md) | **Complete (initial pass)** | Header track: one header row (6 cases) |
-| [`schema_header_2row/`](schema_header_2row/README.md) | **Complete (initial pass)** | Header track: two header rows (10 cases) |
-| [`schema_header_3row/`](schema_header_3row/README.md) | **Complete (initial pass)** | Header track: three header rows (3 cases) |
+| [`schema_header/`](schema_header/README.md) | **Complete (initial pass)** | Header tracks: `1row/` (6), `2row/` (10), `3row/` (3) |
 | [`schema_data/`](schema_data/README.md) | **Complete (initial pass)** | Data track: fixed simple header, vary data band (9 cases) |
 | [`schema_coupling/`](schema_coupling/README.md) | **Complete (initial pass)** | Header + data interaction (3 cases) |
 
 All tracks above are implemented for the initial `readSchemaInternal` fixture pass; further cases belong in the [deferred / edge](#deferred--edge-bucket-later-or-error-only) bucket unless real files require otherwise.
 
-Header layouts for `schema_header_*` are defined in Go (`excel/fixture_header_layouts_test.go`) and written by each track’s `TestCreateSchemaHeader*FixturesInTestdata`; cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it).
+Header layouts are defined in Go (`excel/fixture_header_layouts_test.go`) and written by `TestCreateSchemaHeaderFixturesInTestdata`; cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it).
 
 ## Tracks (case tables)
 
-Case names, layouts, and pass/error notes live in each track README (not duplicated here):
+Case names, layouts, and pass/error notes:
 
-- [schema_header_1row/README.md](../schema_header_1row/README.md)
-- [schema_header_2row/README.md](../schema_header_2row/README.md)
-- [schema_header_3row/README.md](../schema_header_3row/README.md)
+- [schema_header/README.md](../schema_header/README.md)
 - [schema_data/README.md](../schema_data/README.md)
 - [schema_coupling/README.md](../schema_coupling/README.md)
 
@@ -71,9 +67,10 @@ All fixtures (Excel workbooks + JSON goldens): `./scripts/regenerate-testdata.sh
 Per-track examples (`-update` rewrites workbooks via `TestCreate*` and JSON via read tests):
 
 ```bash
-# 1-row header fixtures
-go test ./excel -update -run TestCreateSchemaHeader1RowFixturesInTestdata
-go test ./excel -update -run TestReadSchemaInternal1Row
+# header fixtures (1row / 2row / 3row under testdata/schema_header/)
+go test ./excel -update -run TestCreateSchemaHeaderFixturesInTestdata
+go test ./excel -update -run TestReadSchemaInternalHeader
+go test ./excel -update -run TestReadRowsSchemaHeader
 
 # data band fixtures
 go test ./excel -update -run TestCreateSchemaDataFixturesInTestdata
@@ -83,14 +80,6 @@ go test ./excel -update -run TestReadRowsSchemaData
 
 # row goldens (all schema tracks)
 go test ./excel -update -run 'TestReadRowsSchema'
-
-# 2-row header fixtures
-go test ./excel -update -run TestCreateSchemaHeader2RowFixturesInTestdata
-go test ./excel -update -run TestReadSchemaInternal2Row
-
-# 3-row header fixtures
-go test ./excel -update -run TestCreateSchemaHeader3RowFixturesInTestdata
-go test ./excel -update -run TestReadSchemaInternal3Row
 
 # coupling fixtures
 go test ./excel -update -run TestCreateSchemaCouplingFixturesInTestdata

@@ -57,28 +57,15 @@ func TestReadRowsSchemaData(t *testing.T) {
 	testReadRowsGoldenTrack(t, "schema_data", cases)
 }
 
-func TestReadRowsSchemaHeader1Row(t *testing.T) {
-	cases := make([]readRowsGoldenCase, 0, len(schemaHeader1RowCases()))
-	for _, tc := range schemaHeader1RowCases() {
-		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
+func TestReadRowsSchemaHeader(t *testing.T) {
+	cases := make([]readRowsGoldenCase, 0, len(schemaHeaderCases()))
+	for _, tc := range schemaHeaderCases() {
+		if tc.wantSchemaErr {
+			continue
+		}
+		cases = append(cases, readRowsGoldenCase{dir: tc.caseRelPath(), wantSchemaErr: false})
 	}
-	testReadRowsGoldenTrack(t, "schema_header_1row", cases)
-}
-
-func TestReadRowsSchemaHeader2Row(t *testing.T) {
-	cases := make([]readRowsGoldenCase, 0, len(schemaHeader2RowCases()))
-	for _, tc := range schemaHeader2RowCases() {
-		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
-	}
-	testReadRowsGoldenTrack(t, "schema_header_2row", cases)
-}
-
-func TestReadRowsSchemaHeader3Row(t *testing.T) {
-	cases := make([]readRowsGoldenCase, 0, len(schemaHeader3RowCases()))
-	for _, tc := range schemaHeader3RowCases() {
-		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
-	}
-	testReadRowsGoldenTrack(t, "schema_header_3row", cases)
+	testReadRowsGoldenTrack(t, schemaHeaderFixturesDir, cases)
 }
 
 func TestReadRowsSchemaCoupling(t *testing.T) {
