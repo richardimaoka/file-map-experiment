@@ -19,10 +19,8 @@ func readRowsFromExcelInternal(excelPath string, schema TableSchema) ([]RowData,
 	if err != nil {
 		return nil, fmt.Errorf("readRowsFromExcelInternal: %w", err)
 	}
-	return rowDataFromRawVerticals(verticals, schema)
-}
 
-func rowDataFromRawVerticals(verticals []RawVertical, schema TableSchema) ([]RowData, error) {
+	// byCol[excelColumn][rowNumber] = cell display value in the data band.
 	byCol := make(map[string]map[int]string, len(verticals))
 	for _, v := range verticals {
 		rowMap := make(map[int]string, len(v.CellValues))
@@ -32,6 +30,7 @@ func rowDataFromRawVerticals(verticals []RawVertical, schema TableSchema) ([]Row
 		byCol[v.ExcelColumn] = rowMap
 	}
 
+	// Verticals share the same start_row/end_row (the data band actually read, after detectDataEndRow).
 	dataStart := schema.DataStartRow
 	dataEnd := dataStart - 1
 	if len(verticals) > 0 {
@@ -39,9 +38,14 @@ func rowDataFromRawVerticals(verticals []RawVertical, schema TableSchema) ([]Row
 		dataEnd = verticals[0].EndRow
 	}
 
+	// For each sheet row from dataStart through dataEnd, build one RowData (map header_name → value).
+	// Every schema column gets a key; if the cell was empty or absent in byCol, the value is "".
 	n := dataEnd - dataStart + 1
 	if n < 0 {
-		n = 0
+		return nil, fmt.Errorf(
+			"readRowsFromExcelInternal: data end row %d is before start row %d",
+			dataEnd, dataStart,
+		)
 	}
 	rows := make([]RowData, 0, n)
 	for row := dataStart; row <= dataEnd; row++ {
@@ -71,9 +75,6 @@ func ReadRowsFromExcel(resolver PathResolver, schemaName string) ([]RowData, err
 	}
 	if schema.SchemaName != schemaName {
 		return nil, fmt.Errorf("ReadRowsFromExcel: schema_name %q does not match requested %q", schema.SchemaName, schemaName)
-	}
-	if err := schema.ValidateForDataRead(); err != nil {
-		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
 	}
 	excelPath := resolver.ExcelPath(config)
 	return readRowsFromExcelInternal(excelPath, schema)
