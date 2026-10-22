@@ -10,7 +10,6 @@ Requires `APP_BASE_DIR` (see module `.env` / `excel/testmain_test.go`).
 |-----------|--------|--------|
 | [`raw_cells/`](raw_cells/README.md) | `readCellValue`, merged ranges | Stable |
 | [`raw_vertical/`](raw_vertical/README.md) | `readRawVerticals` | Stable |
-| [`raw_header/`](raw_header/README.md) | Header layout reference workbooks | Shared with schema header tracks |
 | [`schema/`](schema/README.md) | Index for `readSchemaInternal` → `TableSchema` | — |
 | [`schema_header_1row/`](schema_header_1row/README.md) | Header track (1 row) | **Complete** (initial pass, 6 cases) |
 | [`schema_header_2row/`](schema_header_2row/README.md) | Header track (2 rows) | **Complete** (initial pass, 10 cases) |

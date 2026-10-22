@@ -38,7 +38,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 
 All tracks above are implemented for the initial `readSchemaInternal` fixture pass; further cases belong in the [deferred / edge](#deferred--edge-bucket-later-or-error-only) bucket unless real files require otherwise.
 
-Header layouts for `schema_header_*` match same-named cases under [`raw_header/`](../raw_header/README.md) where applicable; schema cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it).
+Header layouts for `schema_header_*` are defined in Go (`excel/raw_header_test.go`) and written by each track’s `TestCreateSchemaHeader*FixturesInTestdata`; cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it).
 
 ## Tracks (case tables)
 
@@ -99,4 +99,3 @@ go test ./excel -update -run TestReadSchemaInternalCoupling
 |------|--------|
 | `raw_cells` | `readCellValue` |
 | `raw_vertical` | `readRawVerticals` |
-| `raw_header` | Header layout workbooks (source for schema header tracks) |

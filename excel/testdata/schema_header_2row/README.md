@@ -2,7 +2,7 @@
 
 Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (10 cases).
 
-Cases for `readSchemaInternal` (header track, two header rows). Header cells match the same-named case under `testdata/raw_header/`; the data band (`data_start_row`–`data_end_row`) is filled with values like `r3cA`.
+Cases for `readSchemaInternal` (header track, two header rows). Header cells are built in `excel/raw_header_test.go`; the data band (`data_start_row`–`data_end_row`) is filled with values like `r3cA`.
 
 Per case:
 

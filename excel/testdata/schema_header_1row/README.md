@@ -2,7 +2,7 @@
 
 Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (6 cases). Data-band fixtures: [../schema_data/README.md](../schema_data/README.md).
 
-Cases for `readSchemaInternal` (header track, single header row). Header cells match the same-named case under `testdata/raw_header/`; the data band (`data_start_row`–`data_end_row`, every column in `start_column`–`end_column`) is filled with values like `r2cA` for use when header and data verticals are read together.
+Cases for `readSchemaInternal` (header track, single header row). Header cells are built in `excel/raw_header_test.go`; the data band (`data_start_row`–`data_end_row`, every column in `start_column`–`end_column`) is filled with values like `r2cA` for use when header and data verticals are read together.
 
 Per case:
 
@@ -22,7 +22,7 @@ Combined workbook: `schema_header_1row_tests.xlsx` (one sheet per case).
 
 Data band: rows 2–4, all in-range columns.
 
-Regenerate workbooks (header + data) and sync JSON from `raw_header`:
+Regenerate workbooks, `schema_prep.json`, and combined workbook:
 
 ```bash
 go test ./excel -run TestCreateSchemaHeader1RowFixturesInTestdata
