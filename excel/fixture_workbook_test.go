@@ -53,7 +53,7 @@ func fixtureCombinedWorkbookPath(testdataDir string) string {
 	return filepath.Join(testdataDir, filepath.Base(testdataDir)+"_tests.xlsx")
 }
 
-func writeRawHeaderWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error, prep *SchemaPrep) error {
+func writeFixtureWorkbook(path, sheetName string, write func(f *excelize.File, sheet string) error, prep *SchemaPrep) error {
 	f := excelize.NewFile()
 	defer f.Close()
 

@@ -50,41 +50,41 @@ func schemaHeaderCases() []schemaHeaderTrackCase {
 
 func schemaHeader1RowCases() []schemaHeaderTrackCase {
 	return []schemaHeaderTrackCase{
-		{"1row", "1-row-simple", 1, writeRawHeader1RowSimple, NewCellRange("A", 2, "C", 4), false, nil},
-		{"1row", "1-row-empty-header", 1, writeRawHeader1RowEmptyHeader, NewCellRange("A", 2, "D", 4), true, nil},
+		{"1row", "1-row-simple", 1, writeFixture1RowSimple, NewCellRange("A", 2, "C", 4), false, nil},
+		{"1row", "1-row-empty-header", 1, writeFixture1RowEmptyHeader, NewCellRange("A", 2, "D", 4), true, nil},
 		{
 			"1row", "1-row-empty-header-valid", 1,
-			writeRawHeader1RowEmptyHeader,
+			writeFixture1RowEmptyHeader,
 			NewCellRange("A", 2, "D", 4),
 			false,
 			map[string]bool{"C": true},
 		},
-		{"1row", "1-row-line-break", 1, writeRawHeader1RowLineBreak, NewCellRange("A", 2, "B", 4), false, nil},
-		{"1row", "1-row-horizontal-merge", 1, writeRawHeader1RowHorizontalMerge, NewCellRange("A", 2, "D", 4), true, nil},
-		{"1row", "1-row-duplicate-header", 1, writeRawHeader1RowDuplicateHeader, NewCellRange("A", 2, "C", 4), true, nil},
+		{"1row", "1-row-line-break", 1, writeFixture1RowLineBreak, NewCellRange("A", 2, "B", 4), false, nil},
+		{"1row", "1-row-horizontal-merge", 1, writeFixture1RowHorizontalMerge, NewCellRange("A", 2, "D", 4), true, nil},
+		{"1row", "1-row-duplicate-header", 1, writeFixture1RowDuplicateHeader, NewCellRange("A", 2, "C", 4), true, nil},
 	}
 }
 
 func schemaHeader2RowCases() []schemaHeaderTrackCase {
 	return []schemaHeaderTrackCase{
-		{"2row", "2-row-simple", 2, writeRawHeader2RowSimple, NewCellRange("A", 3, "C", 5), false, nil},
-		{"2row", "2-row-duplicate-header", 2, writeRawHeader2RowDuplicateHeader, NewCellRange("A", 3, "C", 5), true, nil},
-		{"2row", "2-row-empty-cell", 2, writeRawHeader2RowEmptyCell, NewCellRange("A", 3, "C", 5), false, nil},
-		{"2row", "2-row-horizontal-merge", 2, writeRawHeader2RowHorizontalMerge, NewCellRange("A", 3, "C", 5), false, nil},
-		{"2row", "2-row-vertical-merge", 2, writeRawHeader2RowVerticalMerge, NewCellRange("A", 3, "C", 5), false, nil},
-		{"2row", "2-row-bidirectional-merge", 2, writeRawHeader2RowBidirectionalMerge, NewCellRange("A", 3, "C", 5), true, nil},
-		{"2row", "2-row-horizontal-merge-repeated", 2, writeRawHeader2RowHorizontalMergeRepeated, NewCellRange("A", 3, "G", 5), false, nil},
-		{"2row", "2-row-vertical-merge-repeated", 2, writeRawHeader2RowVerticalMergeRepeated, NewCellRange("A", 3, "E", 5), false, nil},
-		{"2row", "2-row-bidirectional-merge-rep", 2, writeRawHeader2RowBidirectionalMergeRepeated, NewCellRange("A", 3, "I", 5), true, nil},
-		{"2row", "2-row-mixed-merge", 2, writeRawHeader2RowMixedMerge, NewCellRange("A", 3, "L", 5), true, nil},
+		{"2row", "2-row-simple", 2, writeFixture2RowSimple, NewCellRange("A", 3, "C", 5), false, nil},
+		{"2row", "2-row-duplicate-header", 2, writeFixture2RowDuplicateHeader, NewCellRange("A", 3, "C", 5), true, nil},
+		{"2row", "2-row-empty-cell", 2, writeFixture2RowEmptyCell, NewCellRange("A", 3, "C", 5), false, nil},
+		{"2row", "2-row-horizontal-merge", 2, writeFixture2RowHorizontalMerge, NewCellRange("A", 3, "C", 5), false, nil},
+		{"2row", "2-row-vertical-merge", 2, writeFixture2RowVerticalMerge, NewCellRange("A", 3, "C", 5), false, nil},
+		{"2row", "2-row-bidirectional-merge", 2, writeFixture2RowBidirectionalMerge, NewCellRange("A", 3, "C", 5), true, nil},
+		{"2row", "2-row-horizontal-merge-repeated", 2, writeFixture2RowHorizontalMergeRepeated, NewCellRange("A", 3, "G", 5), false, nil},
+		{"2row", "2-row-vertical-merge-repeated", 2, writeFixture2RowVerticalMergeRepeated, NewCellRange("A", 3, "E", 5), false, nil},
+		{"2row", "2-row-bidirectional-merge-rep", 2, writeFixture2RowBidirectionalMergeRepeated, NewCellRange("A", 3, "I", 5), true, nil},
+		{"2row", "2-row-mixed-merge", 2, writeFixture2RowMixedMerge, NewCellRange("A", 3, "L", 5), true, nil},
 	}
 }
 
 func schemaHeader3RowCases() []schemaHeaderTrackCase {
 	return []schemaHeaderTrackCase{
-		{"3row", "3-row-simple", 3, writeRawHeader3RowSimple, NewCellRange("A", 4, "C", 6), false, nil},
-		{"3row", "3-row-bidirectional-merge", 3, writeRawHeader3RowBidirectionalMerge, NewCellRange("A", 4, "C", 6), true, nil},
-		{"3row", "3-row-mixed-merge", 3, writeRawHeader3RowMixedMerge, NewCellRange("A", 4, "H", 6), false, nil},
+		{"3row", "3-row-simple", 3, writeFixture3RowSimple, NewCellRange("A", 4, "C", 6), false, nil},
+		{"3row", "3-row-bidirectional-merge", 3, writeFixture3RowBidirectionalMerge, NewCellRange("A", 4, "C", 6), true, nil},
+		{"3row", "3-row-mixed-merge", 3, writeFixture3RowMixedMerge, NewCellRange("A", 4, "H", 6), false, nil},
 	}
 }
 
@@ -118,7 +118,7 @@ func testCreateSchemaHeaderFixturesInTestdata(t *testing.T, cases []schemaHeader
 			}
 			workbookPath := filepath.Join(destDir, "workbook.xlsx")
 			// Header layout + r{row}c{col} data band; styling from prep.
-			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
+			if err := writeFixtureWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
 				t.Fatal(err)
 			}
 		})

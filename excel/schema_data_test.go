@@ -70,7 +70,7 @@ func schemaDataCases() []schemaDataCase {
 }
 
 func (tc schemaDataCase) writeWorkbook(f *excelize.File, sheet string) error {
-	if err := writeRawHeader1RowSimple(f, sheet); err != nil {
+	if err := writeFixture1RowSimple(f, sheet); err != nil {
 		return err
 	}
 	return tc.dataWrite(f, sheet)
@@ -235,7 +235,7 @@ func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 			workbookPath := filepath.Join(destDir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
+			if err := writeFixtureWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
 				t.Fatal(err)
 			}
 		})

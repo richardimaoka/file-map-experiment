@@ -7,7 +7,7 @@ import (
 // Header layout writers for schema_header_* and related fixture tests.
 // Workbook save/load helpers live in fixture_workbook_test.go; cell helpers in fixture_cells_test.go.
 
-func writeRawHeader1RowSimple(f *excelize.File, sheet string) error {
+func writeFixture1RowSimple(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -18,7 +18,7 @@ func writeRawHeader1RowSimple(f *excelize.File, sheet string) error {
 }
 
 // Column C is intentionally left blank (empty header).
-func writeRawHeader1RowEmptyHeader(f *excelize.File, sheet string) error {
+func writeFixture1RowEmptyHeader(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -28,14 +28,14 @@ func writeRawHeader1RowEmptyHeader(f *excelize.File, sheet string) error {
 	return setRawHeaderCell(f, sheet, "D", 1, "headerC")
 }
 
-func writeRawHeader1RowLineBreak(f *excelize.File, sheet string) error {
+func writeFixture1RowLineBreak(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
 	return setRawHeaderCell(f, sheet, "B", 1, "this\nis a long\nheader with\nline breaks")
 }
 
-func writeRawHeader1RowHorizontalMerge(f *excelize.File, sheet string) error {
+func writeFixture1RowHorizontalMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func writeRawHeader1RowHorizontalMerge(f *excelize.File, sheet string) error {
 }
 
 // Columns B and C share the same header text (duplicate RowData keys).
-func writeRawHeader1RowDuplicateHeader(f *excelize.File, sheet string) error {
+func writeFixture1RowDuplicateHeader(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func writeRawHeader1RowDuplicateHeader(f *excelize.File, sheet string) error {
 	return setRawHeaderCell(f, sheet, "C", 1, "headerB")
 }
 
-func writeRawHeader2RowSimple(f *excelize.File, sheet string) error {
+func writeFixture2RowSimple(f *excelize.File, sheet string) error {
 	if err := setRawHeaderRow(f, sheet, 1, []string{"A", "B", "C"}, []string{"group1", "group2", "group3"}); err != nil {
 		return err
 	}
@@ -67,14 +67,14 @@ func writeRawHeader2RowSimple(f *excelize.File, sheet string) error {
 }
 
 // Columns B and C both resolve to group2 > headerB (duplicate RowData keys).
-func writeRawHeader2RowDuplicateHeader(f *excelize.File, sheet string) error {
+func writeFixture2RowDuplicateHeader(f *excelize.File, sheet string) error {
 	if err := setRawHeaderRow(f, sheet, 1, []string{"A", "B", "C"}, []string{"group1", "group2", "group2"}); err != nil {
 		return err
 	}
 	return setRawHeaderRow(f, sheet, 2, []string{"A", "B", "C"}, []string{"headerA", "headerB", "headerB"})
 }
 
-func writeRawHeader2RowEmptyCell(f *excelize.File, sheet string) error {
+func writeFixture2RowEmptyCell(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "group1"); err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func writeRawHeader2RowEmptyCell(f *excelize.File, sheet string) error {
 	return setRawHeaderRow(f, sheet, 2, []string{"A", "B", "C"}, []string{"headerA", "headerB", "headerC"})
 }
 
-func writeRawHeader2RowHorizontalMerge(f *excelize.File, sheet string) error {
+func writeFixture2RowHorizontalMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "group1"); err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func writeRawHeader2RowHorizontalMerge(f *excelize.File, sheet string) error {
 	return mergeRawHeader(f, sheet, "A", 1, "B", 1)
 }
 
-func writeRawHeader2RowHorizontalMergeRepeated(f *excelize.File, sheet string) error {
+func writeFixture2RowHorizontalMergeRepeated(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "group1"); err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func writeRawHeader2RowHorizontalMergeRepeated(f *excelize.File, sheet string) e
 	return mergeRawHeader(f, sheet, "D", 1, "F", 1)
 }
 
-func writeRawHeader2RowVerticalMerge(f *excelize.File, sheet string) error {
+func writeFixture2RowVerticalMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -142,7 +142,7 @@ func writeRawHeader2RowVerticalMerge(f *excelize.File, sheet string) error {
 	return mergeRawHeader(f, sheet, "A", 1, "A", 2)
 }
 
-func writeRawHeader2RowVerticalMergeRepeated(f *excelize.File, sheet string) error {
+func writeFixture2RowVerticalMergeRepeated(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -170,7 +170,7 @@ func writeRawHeader2RowVerticalMergeRepeated(f *excelize.File, sheet string) err
 	return mergeRawHeader(f, sheet, "D", 1, "D", 2)
 }
 
-func writeRawHeader2RowBidirectionalMerge(f *excelize.File, sheet string) error {
+func writeFixture2RowBidirectionalMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -183,7 +183,7 @@ func writeRawHeader2RowBidirectionalMerge(f *excelize.File, sheet string) error 
 	return mergeRawHeader(f, sheet, "A", 1, "B", 2)
 }
 
-func writeRawHeader2RowBidirectionalMergeRepeated(f *excelize.File, sheet string) error {
+func writeFixture2RowBidirectionalMergeRepeated(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "headerA"); err != nil {
 		return err
 	}
@@ -208,7 +208,7 @@ func writeRawHeader2RowBidirectionalMergeRepeated(f *excelize.File, sheet string
 	return mergeRawHeader(f, sheet, "F", 1, "H", 2)
 }
 
-func writeRawHeader2RowMixedMerge(f *excelize.File, sheet string) error {
+func writeFixture2RowMixedMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "B", 1, "headerB"); err != nil {
 		return err
 	}
@@ -242,7 +242,7 @@ func writeRawHeader2RowMixedMerge(f *excelize.File, sheet string) error {
 	return mergeRawHeader(f, sheet, "G", 1, "H", 1)
 }
 
-func writeRawHeader3RowSimple(f *excelize.File, sheet string) error {
+func writeFixture3RowSimple(f *excelize.File, sheet string) error {
 	if err := setRawHeaderRow(f, sheet, 1, []string{"A", "B", "C"}, []string{"group1", "group2", "group3"}); err != nil {
 		return err
 	}
@@ -253,7 +253,7 @@ func writeRawHeader3RowSimple(f *excelize.File, sheet string) error {
 }
 
 // 2D merge A1:B3 intersects the leaf header row across multiple columns.
-func writeRawHeader3RowBidirectionalMerge(f *excelize.File, sheet string) error {
+func writeFixture3RowBidirectionalMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "tierA"); err != nil {
 		return err
 	}
@@ -270,7 +270,7 @@ func writeRawHeader3RowBidirectionalMerge(f *excelize.File, sheet string) error 
 }
 
 // Horizontal group/subgroup merges (A–C, D–E) plus vertical leaf merges (F–H); data band only in A–C.
-func writeRawHeader3RowMixedMerge(f *excelize.File, sheet string) error {
+func writeFixture3RowMixedMerge(f *excelize.File, sheet string) error {
 	if err := setRawHeaderCell(f, sheet, "A", 1, "group1"); err != nil {
 		return err
 	}

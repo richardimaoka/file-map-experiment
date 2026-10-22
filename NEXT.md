@@ -8,7 +8,6 @@ _Last updated: 2026-10-23._
 
 ## Optional next
 
-- **Rename helpers** — `writeRawHeader*` / `writeRawHeaderWorkbook` → `writeFixture*` (mechanical).
 - **Toolchain** — Go **1.26.6+** for **GO-2026-6088** (`encoding/xml` via excelize open/read).
 
 ## Defer for now

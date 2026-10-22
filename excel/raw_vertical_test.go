@@ -123,7 +123,7 @@ func TestCreateRawVerticalFixturesInTestdata(t *testing.T) {
 					t.Fatal(err)
 				}
 				path := filepath.Join(dir, "workbook.xlsx")
-				if err := writeRawHeaderWorkbook(path, tc.dir, tc.write, nil); err != nil {
+				if err := writeFixtureWorkbook(path, tc.dir, tc.write, nil); err != nil {
 					t.Fatal(err)
 				}
 				if err := writeRawVerticalReadRangeFile(dir, tc.dir, tc.readRange); err != nil {

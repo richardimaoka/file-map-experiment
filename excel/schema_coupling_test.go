@@ -34,13 +34,13 @@ func schemaCouplingCases() []schemaCouplingCase {
 	return []schemaCouplingCase{
 		{
 			dir:           "coupling-2row-data-vmerge",
-			headerWrite:   writeRawHeader2RowSimple,
+			headerWrite:   writeFixture2RowSimple,
 			dataBand:      band2Row,
 			dataAfterFill: mergeDataVerticalMergeA,
 		},
 		{
 			dir:           "coupling-2row-hdr-data-vmerge",
-			headerWrite:   writeRawHeader2RowVerticalMerge,
+			headerWrite:   writeFixture2RowVerticalMerge,
 			dataBand:      band2Row,
 			dataAfterFill: mergeDataVerticalMergeA,
 		},
@@ -60,7 +60,7 @@ func mergeDataVerticalMergeA(f *excelize.File, sheet string) error {
 
 // No resolved header_name for column C (both header rows empty) but data band still fills C.
 func writeCoupling2RowEmptyHeaderColumnC(f *excelize.File, sheet string) error {
-	if err := writeRawHeader2RowSimple(f, sheet); err != nil {
+	if err := writeFixture2RowSimple(f, sheet); err != nil {
 		return err
 	}
 	if err := clearRawHeaderCell(f, sheet, "C", 1); err != nil {
@@ -102,7 +102,7 @@ func TestCreateSchemaCouplingFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 			workbookPath := filepath.Join(destDir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
+			if err := writeFixtureWorkbook(workbookPath, tc.dir, tc.writeWorkbook, prep); err != nil {
 				t.Fatal(err)
 			}
 		})
