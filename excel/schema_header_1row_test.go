@@ -11,7 +11,7 @@ import (
 )
 
 // Schema header fixtures (1-row) under excel/testdata/schema_header_1row/<case>/.
-// Data band is filled with r{row}c{col} literals below the header layout writers in raw_header_test.go.
+// Data band is filled with r{row}c{col} literals below the header layout writers in fixture_header_layouts_test.go.
 //
 // Regenerate workbooks and schema_prep.json:
 //

@@ -2,7 +2,7 @@
 
 Part of the schema fixture plan; see [../schema/README.md](../schema/README.md). **Initial pass complete** (6 cases). Data-band fixtures: [../schema_data/README.md](../schema_data/README.md).
 
-Cases for `readSchemaInternal` (header track, single header row). Header cells are built in `excel/raw_header_test.go`; the data band (`data_start_row`–`data_end_row`, every column in `start_column`–`end_column`) is filled with values like `r2cA` for use when header and data verticals are read together.
+Cases for `readSchemaInternal` (header track, single header row). Header cells are built in `excel/fixture_header_layouts_test.go`; the data band (`data_start_row`–`data_end_row`, every column in `start_column`–`end_column`) is filled with values like `r2cA` for use when header and data verticals are read together.
 
 Per case:
 

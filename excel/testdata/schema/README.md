@@ -38,7 +38,7 @@ Row reading later uses `RowData` (`[]map[string]string`): each row is a flat JSO
 
 All tracks above are implemented for the initial `readSchemaInternal` fixture pass; further cases belong in the [deferred / edge](#deferred--edge-bucket-later-or-error-only) bucket unless real files require otherwise.
 
-Header layouts for `schema_header_*` are defined in Go (`excel/raw_header_test.go`) and written by each track’s `TestCreateSchemaHeader*FixturesInTestdata`; cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it).
+Header layouts for `schema_header_*` are defined in Go (`excel/fixture_header_layouts_test.go`) and written by each track’s `TestCreateSchemaHeader*FixturesInTestdata`; cases add a filled data band and `table_schema.json` (**passing cases only**; error fixtures omit it).
 
 ## Tracks (case tables)
 

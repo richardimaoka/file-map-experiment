@@ -10,7 +10,7 @@ import (
 )
 
 // Schema header fixtures (2-row) under excel/testdata/schema_header_2row/<case>/.
-// Data band uses r{row}c{col} literals below header layouts from raw_header_test.go.
+// Data band uses r{row}c{col} literals below header layouts from fixture_header_layouts_test.go.
 //
 // Regenerate workbooks and schema_prep.json:
 //
