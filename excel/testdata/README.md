@@ -16,6 +16,7 @@ Requires `APP_BASE_DIR` (see module `.env` / `excel/testmain_test.go`).
 | [`schema_header_3row/`](schema_header_3row/README.md) | Header track (3 rows) | **Complete** (initial pass, 3 cases) |
 | [`schema_data/`](schema_data/README.md) | Data band track | **Complete** (initial pass, 9 cases) |
 | [`schema_coupling/`](schema_coupling/README.md) | Header + data interaction | **Complete** (initial pass, 3 cases) |
+| [`read_api/`](read_api/README.md) | `ReadSchemaFromExcel`, `ReadRowsFromExcel` (resolver layout) | Smoke (`data_all_string`, `ads_report_simple`, `ads_report_multi_row_headers`) |
 | [`samples/`](samples/) | Realistic `.xlsx` samples (not golden-driven) | Ad hoc |
 
 Schema design rules, track index, and regenerate commands: [schema/README.md](schema/README.md).

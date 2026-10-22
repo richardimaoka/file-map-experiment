@@ -1,0 +1,49 @@
+{
+  "schema_name": "ads-report-multi-row-headers",
+  "sheet_name": "Sheet1",
+  "data_start_row": 3,
+  "start_column": "A",
+  "end_column": "H",
+  "columns": [
+    {
+      "header_name": "配信設定 > 広告アカウント",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "配信設定 > 広告キャンペーン",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "配信設定 > 広告グループ",
+      "excel_column": "C",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "配信設定 > 広告",
+      "excel_column": "D",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "クリエイティブ > クリエイティブ",
+      "excel_column": "E",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "成果 > インプレッション",
+      "excel_column": "F",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "成果 > 費用",
+      "excel_column": "G",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "成果 > Conversion",
+      "excel_column": "H",
+      "is_row_grouped": false
+    }
+  ]
+}

@@ -16,11 +16,14 @@ _Last updated: 2026-10-23._
 5. **File layout** — `vertical.go`, `merge.go`, `schema.go`, `rows_read.go`, `rows_write.go`, `rows_ops.go`; fixture helpers in `fixture_*_test.go` (styling only in tests).
 6. **excelize** — `v2.11.1-0.20261003002531-6258dcebc4e2` (2026 security advisories including GO-2026-6695).
 
+## Done (read API smoke)
+
+1. **`read_api/ads_report_simple`** — Hand-styled [samples/ads_report_simple.xlsx](excel/testdata/samples/ads_report_simple.xlsx) in resolver layout (`config.json`, `schemas/ads-report-simple.json`, `rows_data.json`). Tests: `TestReadSchemaFromExcel_adsReportSimple`, `TestReadRowsFromExcel_adsReportSimple`.
+2. **`read_api/ads_report_multi_row_headers`** — [samples/ads_report_multi_row_headers.xlsx](excel/testdata/samples/ads_report_multi_row_headers.xlsx) (2 header rows, grouped column titles). Tests: `TestReadSchemaFromExcel_adsReportMultiRowHeaders`, `TestReadRowsFromExcel_adsReportMultiRowHeaders`. See [excel/testdata/read_api/README.md](excel/testdata/read_api/README.md).
+
 ## Suggested next step
 
-**Sample smoke cases** — Add one or two `excel/testdata/samples/ads_report_*.xlsx` cases under the real resolver layout (`config.json`, hand-written `schema_prep` / cached `schemas/*.json`, workbook path). Goal: prove the public read API on hand-styled production-like books, not only generated schema fixtures.
-
-Concrete first case: pick `ads_report_simple.xlsx` (or `ads_report_multi_row_headers.xlsx` if you want multi-row header stress), add `excel/testdata/read_api/<case>/` mirroring `data_all_string`, and a test like `TestReadRowsFromExcel_adsReportSimple` that compares rows or schema to a small checked-in golden.
+**Third sample case** — `ads_report_grouped_rows.xlsx` (vertical merges in data / `is_row_grouped`), same `read_api/<case>/` layout.
 
 ## Optional next
 
