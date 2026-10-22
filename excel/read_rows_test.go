@@ -8,14 +8,18 @@ import (
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
 )
 
-// Golden rows_data.json: one RowData map per data-band row (schema_data track first).
-func TestReadRowsSchemaData(t *testing.T) {
-	for _, tc := range schemaDataCases() {
+type readRowsGoldenCase struct {
+	dir           string
+	wantSchemaErr bool
+}
+
+func testReadRowsGoldenTrack(t *testing.T, trackDir string, cases []readRowsGoldenCase) {
+	for _, tc := range cases {
 		if tc.wantSchemaErr {
 			continue
 		}
 		t.Run(tc.dir, func(t *testing.T) {
-			caseDir := filepath.Join("testdata", "schema_data", tc.dir)
+			caseDir := filepath.Join("testdata", trackDir, tc.dir)
 			prepPath := filepath.Join(caseDir, "schema_prep.json")
 			excelPath := filepath.Join(caseDir, "workbook.xlsx")
 			schemaPath := filepath.Join(caseDir, "table_schema.json")
@@ -47,6 +51,47 @@ func TestReadRowsSchemaData(t *testing.T) {
 			fatalIfJSONGoldenMismatch(t, got, want)
 		})
 	}
+}
+
+// Golden rows_data.json: one RowData map per data-band row (schema_data track).
+func TestReadRowsSchemaData(t *testing.T) {
+	cases := make([]readRowsGoldenCase, 0, len(schemaDataCases()))
+	for _, tc := range schemaDataCases() {
+		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
+	}
+	testReadRowsGoldenTrack(t, "schema_data", cases)
+}
+
+func TestReadRowsSchemaHeader1Row(t *testing.T) {
+	cases := make([]readRowsGoldenCase, 0, len(schemaHeader1RowCases()))
+	for _, tc := range schemaHeader1RowCases() {
+		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
+	}
+	testReadRowsGoldenTrack(t, "schema_header_1row", cases)
+}
+
+func TestReadRowsSchemaHeader2Row(t *testing.T) {
+	cases := make([]readRowsGoldenCase, 0, len(schemaHeader2RowCases()))
+	for _, tc := range schemaHeader2RowCases() {
+		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
+	}
+	testReadRowsGoldenTrack(t, "schema_header_2row", cases)
+}
+
+func TestReadRowsSchemaHeader3Row(t *testing.T) {
+	cases := make([]readRowsGoldenCase, 0, len(schemaHeader3RowCases()))
+	for _, tc := range schemaHeader3RowCases() {
+		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
+	}
+	testReadRowsGoldenTrack(t, "schema_header_3row", cases)
+}
+
+func TestReadRowsSchemaCoupling(t *testing.T) {
+	cases := make([]readRowsGoldenCase, 0, len(schemaCouplingCases()))
+	for _, tc := range schemaCouplingCases() {
+		cases = append(cases, readRowsGoldenCase{dir: tc.dir, wantSchemaErr: tc.wantSchemaErr})
+	}
+	testReadRowsGoldenTrack(t, "schema_coupling", cases)
 }
 
 func readRowsDataGolden(path string) ([]RowData, error) {

@@ -1,0 +1,14 @@
+[
+  {
+    "headerA": "r2cA",
+    "this\nis a long\nheader with\nline breaks": "r2cB"
+  },
+  {
+    "headerA": "r3cA",
+    "this\nis a long\nheader with\nline breaks": "r3cB"
+  },
+  {
+    "headerA": "r4cA",
+    "this\nis a long\nheader with\nline breaks": "r4cB"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "group1 > subgroup1 > headerA": "r4cA",
+    "group2 > subgroup2 > headerB": "r4cB",
+    "group3 > subgroup3 > headerC": "r4cC"
+  },
+  {
+    "group1 > subgroup1 > headerA": "r5cA",
+    "group2 > subgroup2 > headerB": "r5cB",
+    "group3 > subgroup3 > headerC": "r5cC"
+  },
+  {
+    "group1 > subgroup1 > headerA": "r6cA",
+    "group2 > subgroup2 > headerB": "r6cB",
+    "group3 > subgroup3 > headerC": "r6cC"
+  }
+]

@@ -48,7 +48,23 @@ func rowDataFromRawColumns(rawCols []RawDataColumn, prep SchemaPrep, schema Tabl
 }
 
 func ReadRowsFromExcel(resolver PathResolver, schemaName string) ([]RowData, error) {
-	return nil, fmt.Errorf("ReadRowsFromExcel: not implemented")
+	config, err := ReadExcelConfig(resolver.ConfigPath())
+	if err != nil {
+		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
+	}
+	prep, err := config.GetSchemaPrep(schemaName)
+	if err != nil {
+		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
+	}
+	if err := prep.Validate(); err != nil {
+		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
+	}
+	schema, err := ReadSchemaFromJson(resolver.SchemaPath(schemaName))
+	if err != nil {
+		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
+	}
+	excelPath := resolver.ExcelPath(config)
+	return readRowsFromExcelInternal(excelPath, prep, schema)
 }
 
 func ReadRowsFromJson(jsonPath string) ([]RowData, error) {

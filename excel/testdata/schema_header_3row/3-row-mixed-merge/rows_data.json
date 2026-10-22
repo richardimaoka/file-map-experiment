@@ -1,0 +1,32 @@
+[
+  {
+    "group1 > subgroup1 > headerA": "r4cA",
+    "group1 > subgroup2 > headerB": "r4cB",
+    "group1 > subgroup2 > headerC": "r4cC",
+    "group2 > subgroup1 > headerA": "r4cD",
+    "headerA": "r4cF",
+    "headerB": "r4cG",
+    "headerC": "r4cH",
+    "subgroup2 > headerB": "r4cE"
+  },
+  {
+    "group1 > subgroup1 > headerA": "r5cA",
+    "group1 > subgroup2 > headerB": "r5cB",
+    "group1 > subgroup2 > headerC": "r5cC",
+    "group2 > subgroup1 > headerA": "r5cD",
+    "headerA": "r5cF",
+    "headerB": "r5cG",
+    "headerC": "r5cH",
+    "subgroup2 > headerB": "r5cE"
+  },
+  {
+    "group1 > subgroup1 > headerA": "r6cA",
+    "group1 > subgroup2 > headerB": "r6cB",
+    "group1 > subgroup2 > headerC": "r6cC",
+    "group2 > subgroup1 > headerA": "r6cD",
+    "headerA": "r6cF",
+    "headerB": "r6cG",
+    "headerC": "r6cH",
+    "subgroup2 > headerB": "r6cE"
+  }
+]

@@ -77,6 +77,9 @@ go test ./excel -update -run TestReadSchemaInternalData
 go test ./excel -update -run TestReadRawDataSchemaData
 go test ./excel -update -run TestReadRowsSchemaData
 
+# row goldens (all schema tracks)
+go test ./excel -update -run 'TestReadRowsSchema'
+
 # 2-row header fixtures
 go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal2Row

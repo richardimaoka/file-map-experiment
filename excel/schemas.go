@@ -3,6 +3,8 @@ package excel
 import (
 	"fmt"
 	"strings"
+
+	"github.com/richardimaoka/file-map-experiment/jsonfile"
 )
 
 type ColumnSchema struct {
@@ -375,9 +377,25 @@ func validateExcelAgainstSchema(resolver PathResolver, schemaName string) (Table
 }
 
 func ReadSchemaFromExcel(resolver PathResolver, schemaName string) (TableSchema, error) {
-	return TableSchema{}, fmt.Errorf("ReadSchemaFromExcel: not implemented")
+	config, err := ReadExcelConfig(resolver.ConfigPath())
+	if err != nil {
+		return TableSchema{}, fmt.Errorf("ReadSchemaFromExcel: %w", err)
+	}
+	prep, err := config.GetSchemaPrep(schemaName)
+	if err != nil {
+		return TableSchema{}, fmt.Errorf("ReadSchemaFromExcel: %w", err)
+	}
+	if err := prep.Validate(); err != nil {
+		return TableSchema{}, fmt.Errorf("ReadSchemaFromExcel: %w", err)
+	}
+	excelPath := resolver.ExcelPath(config)
+	return ReadTableSchema(excelPath, prep)
 }
 
 func ReadSchemaFromJson(jsonPath string) (TableSchema, error) {
-	return TableSchema{}, fmt.Errorf("ReadSchemaFromJson: not implemented")
+	var schema TableSchema
+	if err := jsonfile.Read(jsonPath, &schema); err != nil {
+		return TableSchema{}, fmt.Errorf("ReadSchemaFromJson: %w", err)
+	}
+	return schema, nil
 }
