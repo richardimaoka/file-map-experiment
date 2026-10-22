@@ -111,9 +111,9 @@ func TestCreateSchemaHeader1RowFixturesInTestdata(t *testing.T) {
 	}
 }
 
-// Golden TableSchema assumptions (1-row header track): prep supplies schema_name, data_start_row,
-// and column bounds; header_name from the header row; skip empty names; merged headers only on
-// the merge anchor column; is_row_grouped is false until data-range grouping is implemented.
+// Golden TableSchema assumptions (1-row header track): sheet_name, data band bounds, and column
+// bounds; header_name from the header row; skip empty names; merged headers only on the merge
+// anchor column; is_row_grouped from single-column vertical merges in the data band.
 func TestReadSchemaInternal1Row(t *testing.T) {
 	for _, tc := range schemaHeader1RowCases() {
 		t.Run(tc.dir, func(t *testing.T) {

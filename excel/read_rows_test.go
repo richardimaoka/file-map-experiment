@@ -20,21 +20,16 @@ func testReadRowsGoldenTrack(t *testing.T, trackDir string, cases []readRowsGold
 		}
 		t.Run(tc.dir, func(t *testing.T) {
 			caseDir := filepath.Join("testdata", trackDir, tc.dir)
-			prepPath := filepath.Join(caseDir, "schema_prep.json")
 			excelPath := filepath.Join(caseDir, "workbook.xlsx")
 			schemaPath := filepath.Join(caseDir, "table_schema.json")
 			goldenPath := filepath.Join(caseDir, "rows_data.json")
 
-			var prep SchemaPrep
-			if err := jsonfile.Read(prepPath, &prep); err != nil {
-				t.Fatalf("read schema_prep: %v", err)
-			}
 			var schema TableSchema
 			if err := jsonfile.Read(schemaPath, &schema); err != nil {
 				t.Fatalf("read table_schema: %v", err)
 			}
 
-			got, err := readRowsFromExcelInternal(excelPath, prep, schema)
+			got, err := readRowsFromExcelInternal(excelPath, schema)
 			if err != nil {
 				t.Fatalf("readRowsFromExcelInternal: %v", err)
 			}

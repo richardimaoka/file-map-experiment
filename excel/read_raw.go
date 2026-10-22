@@ -230,6 +230,43 @@ func readRawData(excelPath string, prep SchemaPrep) ([]RawDataColumn, error) {
 	return columns, nil
 }
 
+func readRawDataForSchema(excelPath string, schema TableSchema) ([]RawDataColumn, error) {
+	if err := schema.ValidateForDataRead(); err != nil {
+		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
+	}
+
+	f, err := excelize.OpenFile(excelPath)
+	if err != nil {
+		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
+	}
+	defer f.Close()
+
+	merges, err := loadMergedRanges(f, schema.SheetName)
+	if err != nil {
+		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
+	}
+	dataEndRow, err := detectDataEndRow(f, schema, merges)
+	if err != nil {
+		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
+	}
+
+	verticals, err := readRawVerticals(excelPath, schema.SheetName, schema.DataRange(dataEndRow))
+	if err != nil {
+		return nil, fmt.Errorf("readRawDataForSchema: %w", err)
+	}
+
+	columns := make([]RawDataColumn, len(verticals))
+	for i, v := range verticals {
+		columns[i] = RawDataColumn{
+			ExcelColumn:  v.ExcelColumn,
+			DataStartRow: schema.DataStartRow,
+			DataEndRow:   dataEndRow,
+			CellValues:   v.CellValues,
+		}
+	}
+	return columns, nil
+}
+
 func readCellValue(f *excelize.File, sheet, col string, row int, merges []MergedRange) (CellValue, error) {
 	pos := CellPosition{ColumnName: col, RowNumber: row}
 	cellName, err := excelize.JoinCellName(col, row)

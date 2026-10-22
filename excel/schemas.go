@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/xuri/excelize/v2"
 )
 
 type ColumnSchema struct {
@@ -15,10 +16,36 @@ type ColumnSchema struct {
 
 type TableSchema struct {
 	SchemaName   string         `json:"schema_name"`
+	SheetName    string         `json:"sheet_name"`
 	DataStartRow int            `json:"data_start_row"`
 	StartColumn  string         `json:"start_column"`
 	EndColumn    string         `json:"end_column"`
 	Columns      []ColumnSchema `json:"columns"`
+}
+
+// ValidateForDataRead checks fields required to read the data band from a workbook.
+func (s TableSchema) ValidateForDataRead() error {
+	if strings.TrimSpace(s.SheetName) == "" {
+		return fmt.Errorf("TableSchema.ValidateForDataRead: sheet_name is not set")
+	}
+	if len(s.Columns) == 0 {
+		return fmt.Errorf("TableSchema.ValidateForDataRead: columns is empty")
+	}
+	startCol, err := excelize.ColumnNameToNumber(s.StartColumn)
+	if err != nil {
+		return fmt.Errorf("TableSchema.ValidateForDataRead: start_column: %w", err)
+	}
+	endCol, err := excelize.ColumnNameToNumber(s.EndColumn)
+	if err != nil {
+		return fmt.Errorf("TableSchema.ValidateForDataRead: end_column: %w", err)
+	}
+	if startCol > endCol {
+		return fmt.Errorf("TableSchema.ValidateForDataRead: start_column must be <= end_column")
+	}
+	if s.DataStartRow < 1 {
+		return fmt.Errorf("TableSchema.ValidateForDataRead: data_start_row must be >= 1")
+	}
+	return nil
 }
 
 // ReadTableSchema builds TableSchema from a workbook and prep.
@@ -60,6 +87,7 @@ func readSchemaInternal(excelPath string, prep SchemaPrep) (TableSchema, error) 
 
 	return TableSchema{
 		SchemaName:   prep.SchemaName,
+		SheetName:    prep.SheetName,
 		DataStartRow: prep.DataStartRow,
 		StartColumn:  prep.StartColumn,
 		EndColumn:    prep.EndColumn,

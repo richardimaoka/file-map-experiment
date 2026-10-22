@@ -1,5 +1,6 @@
 {
   "schema_name": "2-row-horizontal-merge",
+  "sheet_name": "2-row-horizontal-merge",
   "data_start_row": 3,
   "start_column": "A",
   "end_column": "C",

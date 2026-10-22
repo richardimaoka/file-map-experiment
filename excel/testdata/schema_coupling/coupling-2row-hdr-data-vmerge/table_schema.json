@@ -1,5 +1,6 @@
 {
   "schema_name": "coupling-2row-hdr-data-vmerge",
+  "sheet_name": "coupling-2row-hdr-data-vmerge",
   "data_start_row": 3,
   "start_column": "A",
   "end_column": "C",

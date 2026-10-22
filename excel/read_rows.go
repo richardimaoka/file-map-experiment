@@ -9,17 +9,20 @@ import (
 // value is in string, because excelize treats all cell values as string, and we don't want to lose precision
 type RowData map[string]string
 
-// readRowsFromExcelInternal builds one RowData per physical data row (data_start_row–data_end_row).
-// Cell values come from readRawData (merge anchors and excelize display strings).
-func readRowsFromExcelInternal(excelPath string, prep SchemaPrep, schema TableSchema) ([]RowData, error) {
-	rawCols, err := readRawData(excelPath, prep)
+// readRowsFromExcelInternal builds one RowData per data row from data_start_row through the
+// last row with data in schema columns (see detectDataEndRow).
+func readRowsFromExcelInternal(excelPath string, schema TableSchema) ([]RowData, error) {
+	if err := schema.ValidateForDataRead(); err != nil {
+		return nil, fmt.Errorf("readRowsFromExcelInternal: %w", err)
+	}
+	rawCols, err := readRawDataForSchema(excelPath, schema)
 	if err != nil {
 		return nil, fmt.Errorf("readRowsFromExcelInternal: %w", err)
 	}
-	return rowDataFromRawColumns(rawCols, prep, schema)
+	return rowDataFromRawColumns(rawCols, schema)
 }
 
-func rowDataFromRawColumns(rawCols []RawDataColumn, prep SchemaPrep, schema TableSchema) ([]RowData, error) {
+func rowDataFromRawColumns(rawCols []RawDataColumn, schema TableSchema) ([]RowData, error) {
 	byCol := make(map[string]map[int]string, len(rawCols))
 	for _, col := range rawCols {
 		rowMap := make(map[int]string, len(col.CellValues))
@@ -29,9 +32,19 @@ func rowDataFromRawColumns(rawCols []RawDataColumn, prep SchemaPrep, schema Tabl
 		byCol[col.ExcelColumn] = rowMap
 	}
 
-	n := prep.DataEndRow - prep.DataStartRow + 1
+	dataStart := schema.DataStartRow
+	dataEnd := dataStart - 1
+	if len(rawCols) > 0 {
+		dataStart = rawCols[0].DataStartRow
+		dataEnd = rawCols[0].DataEndRow
+	}
+
+	n := dataEnd - dataStart + 1
+	if n < 0 {
+		n = 0
+	}
 	rows := make([]RowData, 0, n)
-	for row := prep.DataStartRow; row <= prep.DataEndRow; row++ {
+	for row := dataStart; row <= dataEnd; row++ {
 		rd := RowData{}
 		for _, c := range schema.Columns {
 			val := ""
@@ -52,19 +65,18 @@ func ReadRowsFromExcel(resolver PathResolver, schemaName string) ([]RowData, err
 	if err != nil {
 		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
 	}
-	prep, err := config.GetSchemaPrep(schemaName)
-	if err != nil {
-		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
-	}
-	if err := prep.Validate(); err != nil {
-		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
-	}
 	schema, err := ReadSchemaFromJson(resolver.SchemaPath(schemaName))
 	if err != nil {
 		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
 	}
+	if schema.SchemaName != schemaName {
+		return nil, fmt.Errorf("ReadRowsFromExcel: schema_name %q does not match requested %q", schema.SchemaName, schemaName)
+	}
+	if err := schema.ValidateForDataRead(); err != nil {
+		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
+	}
 	excelPath := resolver.ExcelPath(config)
-	return readRowsFromExcelInternal(excelPath, prep, schema)
+	return readRowsFromExcelInternal(excelPath, schema)
 }
 
 func ReadRowsFromJson(jsonPath string) ([]RowData, error) {

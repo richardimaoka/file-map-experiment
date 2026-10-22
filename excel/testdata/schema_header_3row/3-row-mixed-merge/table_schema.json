@@ -1,5 +1,6 @@
 {
   "schema_name": "3-row-mixed-merge",
+  "sheet_name": "3-row-mixed-merge",
   "data_start_row": 4,
   "start_column": "A",
   "end_column": "H",
