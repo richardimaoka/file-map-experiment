@@ -14,7 +14,7 @@ import (
 )
 
 // Cell fixtures under excel/testdata/raw_cells/<case>/workbook.xlsx, merged_ranges.json, and <cell>.json (e.g. B1.json).
-// Regenerate workbooks: go test ./excel -run TestCreateRawCellsFixturesInTestdata
+// Regenerate workbooks: go test ./excel -update -run TestCreateRawCellsFixturesInTestdata
 // Regenerate JSON goldens: go test ./excel -update -run 'TestLoadMergedRanges|TestReadCellValue'
 
 type rawCellsCase struct {
@@ -41,6 +41,7 @@ func rawCellsCases() []rawCellsCase {
 }
 
 func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateGoldens(t)
 	base := filepath.Join("testdata", "raw_cells")
 	cases := rawCellsCases()
 	for _, tc := range cases {

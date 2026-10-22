@@ -4,6 +4,18 @@ Golden and workbook fixtures for `excel` live under this directory. Each tree ha
 
 Requires `APP_BASE_DIR` (see module `.env` / `excel/testmain_test.go`).
 
+## Regenerating fixtures
+
+Use **`go test -update`** for both workbooks and JSON goldens (`TestCreate*` and read-layer tests share the same flag).
+
+```bash
+export APP_BASE_DIR="$(pwd)"   # repo root
+./scripts/regenerate-testdata.sh          # .xlsx + JSON
+./scripts/regenerate-excel-testdata.sh  # .xlsx only
+```
+
+With git hooks installed (`./scripts/install-git-hooks.sh`), **pre-commit** regenerates workbooks only and stages changed `.xlsx`. Plain `go test ./excel` does not rewrite testdata.
+
 ## Fixture trees
 
 | Directory | Tests | Status |

@@ -83,6 +83,7 @@ func (tc schemaCouplingCase) writeWorkbook(f *excelize.File, sheet string) error
 }
 
 func TestCreateSchemaCouplingFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateGoldens(t)
 	destBase := filepath.Join("testdata", "schema_coupling")
 	cases := schemaCouplingCases()
 

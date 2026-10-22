@@ -216,6 +216,7 @@ func setSchemaDataDateCell(f *excelize.File, sheet, col string, row int, d time.
 }
 
 func TestCreateSchemaDataFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateGoldens(t)
 	destBase := filepath.Join("testdata", "schema_data")
 	cases := schemaDataCases()
 

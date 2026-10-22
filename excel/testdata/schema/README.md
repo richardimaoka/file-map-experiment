@@ -66,13 +66,17 @@ Not part of the initial “clean” pass; add when real `.xlsx` files require th
 
 ## Test commands
 
+All workbook + JSON goldens: `./scripts/regenerate-testdata.sh` from repo root (`APP_BASE_DIR` set in script).
+
+Per-track examples (`-update` for both Create and read tests):
+
 ```bash
 # 1-row header fixtures
-go test ./excel -run TestCreateSchemaHeader1RowFixturesInTestdata
+go test ./excel -update -run TestCreateSchemaHeader1RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal1Row
 
 # data band fixtures
-go test ./excel -run TestCreateSchemaDataFixturesInTestdata
+go test ./excel -update -run TestCreateSchemaDataFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternalData
 go test ./excel -update -run TestReadRawDataSchemaData
 go test ./excel -update -run TestReadRowsSchemaData
@@ -81,15 +85,15 @@ go test ./excel -update -run TestReadRowsSchemaData
 go test ./excel -update -run 'TestReadRowsSchema'
 
 # 2-row header fixtures
-go test ./excel -run TestCreateSchemaHeader2RowFixturesInTestdata
+go test ./excel -update -run TestCreateSchemaHeader2RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal2Row
 
 # 3-row header fixtures
-go test ./excel -run TestCreateSchemaHeader3RowFixturesInTestdata
+go test ./excel -update -run TestCreateSchemaHeader3RowFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternal3Row
 
 # coupling fixtures
-go test ./excel -run TestCreateSchemaCouplingFixturesInTestdata
+go test ./excel -update -run TestCreateSchemaCouplingFixturesInTestdata
 go test ./excel -update -run TestReadSchemaInternalCoupling
 ```
 

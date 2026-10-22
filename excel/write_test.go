@@ -18,6 +18,7 @@ import (
 //   - complex: multi-row headers, grouped rows, summary rows, origin at D5
 
 func TestCreateAdsReportFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateGoldens(t)
 	dir := filepath.Join("testdata", "samples")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatal(err)

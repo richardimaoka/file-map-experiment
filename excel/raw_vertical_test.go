@@ -112,6 +112,7 @@ func rawVerticalCases() []rawVerticalCase {
 }
 
 func TestCreateRawVerticalFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateGoldens(t)
 	base := filepath.Join("testdata", "raw_vertical")
 	for _, g := range rawVerticalGroups() {
 		sheets := make([]fixtureSheetCase, len(g.cases))

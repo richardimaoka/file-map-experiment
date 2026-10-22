@@ -50,6 +50,7 @@ func (tc schemaHeader3RowCase) writeWorkbook(f *excelize.File, sheet string) err
 }
 
 func TestCreateSchemaHeader3RowFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateGoldens(t)
 	destBase := filepath.Join("testdata", "schema_header_3row")
 	cases := schemaHeader3RowCases()
 
