@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -121,7 +121,7 @@ func InitConfig(excelFileName string) ExcelConfig {
 
 func ReadExcelConfig(jsonPath string) (ExcelConfig, error) {
 	var config ExcelConfig
-	err := jsonfile.Read(jsonPath, &config)
+	err := jsonutil.Read(jsonPath, &config)
 	if err != nil {
 		return ExcelConfig{}, fmt.Errorf("ReadExcelConfig: %w", err)
 	}

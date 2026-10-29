@@ -1,0 +1,24 @@
+{
+  "schema_name": "2-row-vertical-merge",
+  "sheet_name": "2-row-vertical-merge",
+  "data_start_row": 3,
+  "start_column": "A",
+  "end_column": "C",
+  "columns": [
+    {
+      "header_name": "headerA",
+      "excel_column": "A",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group2 > headerB",
+      "excel_column": "B",
+      "is_row_grouped": false
+    },
+    {
+      "header_name": "group3 > headerC",
+      "excel_column": "C",
+      "is_row_grouped": false
+    }
+  ]
+}

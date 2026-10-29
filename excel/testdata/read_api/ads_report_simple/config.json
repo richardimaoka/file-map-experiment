@@ -1,0 +1,16 @@
+{
+  "excel_file_name": "workbook.xlsx",
+  "schema_preps": [
+    {
+      "schema_name": "ads-report-simple",
+      "sheet_name": "Sheet1",
+      "is_ready": true,
+      "header_start_row": 1,
+      "header_end_row": 1,
+      "data_start_row": 2,
+      "data_end_row": 26,
+      "start_column": "A",
+      "end_column": "H"
+    }
+  ]
+}

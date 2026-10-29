@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/richardimaoka/file-map-experiment/jsonfile"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 	"github.com/xuri/excelize/v2"
 )
 
 // Cell fixtures under excel/testdata/raw_cells/<case>/workbook.xlsx, merged_ranges.json, and <cell>.json (e.g. B1.json).
-// Regenerate workbooks: go test ./excel -run TestCreateRawCellsFixturesInTestdata
+// Regenerate workbooks: go test ./excel -update -run TestCreateRawCellsFixturesInTestdata
 // Regenerate JSON goldens: go test ./excel -update -run 'TestLoadMergedRanges|TestReadCellValue'
 
 type rawCellsCase struct {
@@ -41,6 +41,7 @@ func rawCellsCases() []rawCellsCase {
 }
 
 func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
+	skipUnlessUpdateEnabled(t)
 	base := filepath.Join("testdata", "raw_cells")
 	cases := rawCellsCases()
 	for _, tc := range cases {
@@ -50,7 +51,7 @@ func TestCreateRawCellsFixturesInTestdata(t *testing.T) {
 				t.Fatal(err)
 			}
 			path := filepath.Join(dir, "workbook.xlsx")
-			if err := writeRawHeaderWorkbook(path, tc.dir, tc.write); err != nil {
+			if err := writeFixtureWorkbook(path, tc.dir, tc.write, nil); err != nil {
 				t.Fatal(err)
 			}
 		})
@@ -125,7 +126,7 @@ func TestLoadMergedRanges(t *testing.T) {
 			}
 			sortMergedRanges(got)
 
-			if updateGoldens() {
+			if updateEnabled() {
 				writeMergedRangesGolden(t, goldenPath, got)
 				return
 			}
@@ -169,7 +170,7 @@ func TestReadCellValue(t *testing.T) {
 					t.Fatalf("readCellValue: %v", err)
 				}
 
-				if updateGoldens() {
+				if updateEnabled() {
 					writeCellValueGolden(t, goldenPath, got)
 					return
 				}
@@ -282,7 +283,7 @@ func mergedRangeSortKey(m MergedRange) string {
 
 func readMergedRangesGolden(path string) ([]MergedRange, error) {
 	var merges []MergedRange
-	if err := jsonfile.Read(path, &merges); err != nil {
+	if err := jsonutil.Read(path, &merges); err != nil {
 		return nil, err
 	}
 	return merges, nil
@@ -301,7 +302,7 @@ func writeMergedRangesGolden(t *testing.T, path string, merges []MergedRange) {
 
 func readCellValueGolden(path string) (CellValue, error) {
 	var cv CellValue
-	if err := jsonfile.Read(path, &cv); err != nil {
+	if err := jsonutil.Read(path, &cv); err != nil {
 		return CellValue{}, err
 	}
 	return cv, nil

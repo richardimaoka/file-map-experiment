@@ -1,0 +1,7 @@
+{
+  "schema_name": "data-formula",
+  "preserve_formula_cells": true,
+  "column_types": {
+    "B": "formula"
+  }
+}

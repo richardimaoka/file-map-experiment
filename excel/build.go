@@ -9,7 +9,7 @@ import (
 	"github.com/richardimaoka/file-map-experiment/fs"
 )
 
-func ensureDirExists(resolver *PathResolver) error {
+func ensureDirExists(resolver PathResolver) error {
 	path := resolver.DirPath()
 	if err := os.MkdirAll(path, 0o755); err != nil {
 		return fmt.Errorf("ensureDirExists: %w", err)
@@ -17,7 +17,7 @@ func ensureDirExists(resolver *PathResolver) error {
 	return nil
 }
 
-func copyExcelFile(sourceExcelPath string, resolver *PathResolver) error {
+func copyExcelFile(sourceExcelPath string, resolver PathResolver) error {
 	excelName := filepath.Base(sourceExcelPath)
 	cfg := InitConfig(excelName)
 	destExcel := resolver.ExcelPath(cfg)
@@ -27,7 +27,7 @@ func copyExcelFile(sourceExcelPath string, resolver *PathResolver) error {
 	return nil
 }
 
-func ensureConfigExists(sourceExcelPath string, resolver *PathResolver) error {
+func ensureConfigExists(sourceExcelPath string, resolver PathResolver) error {
 	configPath := resolver.ConfigPath()
 
 	_, err := ReadExcelConfig(configPath)
