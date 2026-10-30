@@ -192,10 +192,6 @@ func mergeSchemaPrepsFromWorkbook(existing []SchemaPrep, excelPath string) ([]Sc
 	return merged, nil
 }
 
-func schemaPrepsFromWorkbook(excelPath string) ([]SchemaPrep, error) {
-	return mergeSchemaPrepsFromWorkbook(nil, excelPath)
-}
-
 func defaultSchemaPrepForSheet(sheetName string) SchemaPrep {
 	return SchemaPrep{
 		SchemaName:     sheetName,
