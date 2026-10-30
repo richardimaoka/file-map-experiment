@@ -70,13 +70,10 @@ func BuildDirs() error {
 		formatName := formatName(excelPath)
 		relDir := top.FormatSchemaRelDir(formatName)
 
-		slog.Info("instruction.BuildDirs: building format", "format", formatName, "rel_dir", relDir, "source_excel", excelPath)
-
 		if err := BuildDir(excelPath, relDir); err != nil {
 			return fmt.Errorf("BuildDirs: %w", err)
 		}
 	}
 
-	slog.Info("instruction.BuildDirs: finished", "workbook_count", len(excelPaths))
 	return nil
 }

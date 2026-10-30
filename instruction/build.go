@@ -41,7 +41,8 @@ func updateDefaultDataFromConfig(resolver Resolver) error {
 // for each schemas/<schemaName>.json present after bootstrap. For the layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
 	excelFileName := filepath.Base(sourceExcelPath)
-	slog.Info("instruction.BuildDir: starting", "rel_dir", relDirPath, "excelFile", excelFileName)
+	relDirBase := filepath.Base(relDirPath)
+	slog.Info("instruction.BuildDir: starting", "rel_dir", relDirBase, "excelFile", excelFileName)
 
 	if err := excel.BuildDir(sourceExcelPath, relDirPath); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
@@ -53,6 +54,5 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
 	}
 
-	slog.Info("instruction.BuildDir: finished", "rel_dir", relDirPath)
 	return nil
 }
