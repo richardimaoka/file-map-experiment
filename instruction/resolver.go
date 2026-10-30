@@ -8,6 +8,9 @@ import (
 
 // Resolver extends [excel.Resolver] with instruction case paths under the same case directory.
 //
+// RelDirPath (from [excel.Resolver]) is relative to APP_BASE_DIR. DefaultDataPath and other
+// promoted excel path methods return absolute paths for file I/O.
+//
 // Expected layout (excel case tree plus instruction sidecars):
 //
 //	$APP_BASE_DIR/<relDirPath>/

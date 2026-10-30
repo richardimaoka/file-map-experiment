@@ -6,10 +6,6 @@ import (
 	"strings"
 )
 
-func formatSchemaRelDirPath(name string) string {
-	return filepath.Join("assets", "入稿指示書", "format_schemas", name)
-}
-
 func formatSourceWorkbookPath(resolver TopLevelResolver, name string) (string, error) {
 	_ = resolver
 	_ = name
@@ -29,7 +25,7 @@ func buildFormatSchema(name string) error {
 		return fmt.Errorf("buildFormatSchema: %w", err)
 	}
 
-	relDirPath := formatSchemaRelDirPath(name)
+	relDirPath := top.FormatSchemaRelDir(name)
 	if err := BuildDir(sourcePath, relDirPath); err != nil {
 		return fmt.Errorf("buildFormatSchema: %w", err)
 	}
@@ -53,13 +49,11 @@ func BuildDirs() error {
 	}
 
 	for _, excelPath := range excelPaths {
-		fmtDirName, err := formatName(excelPath)
+		name, err := formatName(excelPath)
 		if err != nil {
 			return fmt.Errorf("BuildDirs: %w", err)
 		}
-		fmtDirPath := top.FormatSchemaDir(fmtDirName)
-		BuildDir(excelPath, fmtDirPath)
-		if err := buildFormatSchema(fmtDirName); err != nil {
+		if err := buildFormatSchema(name); err != nil {
 			return fmt.Errorf("BuildDirs: %w", err)
 		}
 	}

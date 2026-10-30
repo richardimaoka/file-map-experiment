@@ -15,6 +15,10 @@ func TestResolver_paths(t *testing.T) {
 	r := NewResolver(readyCaseRelPath)
 	caseDir := filepath.Join(env.AppBaseDir(), readyCaseRelPath)
 
+	if r.RelDirPath() != readyCaseRelPath {
+		t.Fatalf("RelDirPath: got %q want %q", r.RelDirPath(), readyCaseRelPath)
+	}
+
 	if r.FullDirPath() != caseDir {
 		t.Fatalf("case root: got %q want %q", r.FullDirPath(), caseDir)
 	}
@@ -28,7 +32,7 @@ func TestResolver_paths(t *testing.T) {
 	}{
 		{"folder_map.xlsx", r.ExcelPath(config)},
 		{"config.json", r.ConfigPath()},
-		{"schemas", r.SchemaCollectionPath()},
+		{"schemas", r.SchemasDir()},
 		{"schemas/sheet1.json", r.SchemaPath("sheet1")},
 		{"schemas/sheet2.json", r.SchemaPath("sheet2")},
 	}

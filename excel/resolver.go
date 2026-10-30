@@ -9,6 +9,9 @@ import (
 
 // Resolver resolves paths for a single Excel case directory under APP_BASE_DIR.
 //
+// RelDirPath returns a path relative to APP_BASE_DIR. All other path methods return
+// absolute paths for file I/O.
+//
 // Expected layout:
 //
 //	$APP_BASE_DIR/<relDirPath>/
@@ -32,6 +35,10 @@ func NewResolver(relDirPath string) Resolver {
 	}
 }
 
+func (p Resolver) RelDirPath() string {
+	return p.relDirPath
+}
+
 func (p Resolver) FullDirPath() string {
 	return filepath.Join(p.appBaseDir, p.relDirPath)
 }
@@ -44,12 +51,12 @@ func (p Resolver) ConfigPath() string {
 	return filepath.Join(p.FullDirPath(), "config.json")
 }
 
-func (p Resolver) SchemaCollectionPath() string {
+func (p Resolver) SchemasDir() string {
 	return filepath.Join(p.FullDirPath(), "schemas")
 }
 
 func (p Resolver) SchemaPath(schemaName string) string {
-	return filepath.Join(p.SchemaCollectionPath(), schemaName+".json")
+	return filepath.Join(p.SchemasDir(), schemaName+".json")
 }
 
 func (p Resolver) ValidateDir() error {
