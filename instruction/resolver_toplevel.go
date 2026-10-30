@@ -15,7 +15,7 @@ import (
 //	  assets/入稿指示書/
 //	    format_sources/   # canonical workbooks (format embedded in sheets)
 //	    format_schemas/
-//	      <name>/         # per-format case tree (bootstrap via BuildDir)
+//	      <name>/         # per-format case tree (bootstrap via [BuildFormatSchema] or [BuildDirs])
 //
 // Example: NewTopLevelResolver().FormatSchemaDir("client-a")
 type TopLevelResolver struct {
@@ -30,10 +30,10 @@ func (t TopLevelResolver) FormatSourcesDir() string {
 	return filepath.Join(t.appBaseDir, "assets", "入稿指示書", "format_sources")
 }
 
-func (t TopLevelResolver) FormatSchemasDir() string {
+func (t TopLevelResolver) FormatSchemasRoot() string {
 	return filepath.Join(t.appBaseDir, "assets", "入稿指示書", "format_schemas")
 }
 
-func (t TopLevelResolver) FormatSchemaDir(name string) string {
-	return filepath.Join(t.FormatSchemasDir(), name)
+func (t TopLevelResolver) FormatSchemaDir(formatName string) string {
+	return filepath.Join(t.FormatSchemasRoot(), formatName)
 }

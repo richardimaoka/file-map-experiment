@@ -1,9 +1,81 @@
 package instruction
 
-import "fmt"
+import (
+	"fmt"
+	"path/filepath"
+	"strings"
+)
 
+func formatSchemaRelDirPath(name string) string {
+	return filepath.Join("assets", "入稿指示書", "format_schemas", name)
+}
+
+func formatSourceWorkbookPath(resolver TopLevelResolver, name string) (string, error) {
+	_ = resolver
+	_ = name
+	return "", fmt.Errorf("formatSourceWorkbookPath: not implemented yet")
+}
+
+func formatSourceExcelPaths(resolver TopLevelResolver) ([]string, error) {
+	_ = resolver
+	return nil, fmt.Errorf("formatSourceExcelPaths: not implemented yet")
+}
+
+func buildFormatSchema(name string) error {
+	top := NewTopLevelResolver()
+
+	sourcePath, err := formatSourceWorkbookPath(top, name)
+	if err != nil {
+		return fmt.Errorf("buildFormatSchema: %w", err)
+	}
+
+	relDirPath := formatSchemaRelDirPath(name)
+	if err := BuildDir(sourcePath, relDirPath); err != nil {
+		return fmt.Errorf("buildFormatSchema: %w", err)
+	}
+	return nil
+}
+
+func formatName(excelPath string) (string, error) {
+	excelFileName := filepath.Base(excelPath)
+	_ = excelFileName
+	return "", fmt.Errorf("dirName not yet implemented")
+}
+
+// BuildDirs bootstraps every format_schemas/<name>/ tree from workbooks in format_sources/.
+// It does not modify format_sources/. Paths come from [TopLevelResolver].
 func BuildDirs() error {
-	// Copy format_sources Excel files into format_schemas
+	top := NewTopLevelResolver()
 
-	return fmt.Errorf("instruction.BuildDir not implemented yet")
+	excelPaths, err := formatSourceExcelPaths(top)
+	if err != nil {
+		return fmt.Errorf("BuildDirs: %w", err)
+	}
+
+	for _, excelPath := range excelPaths {
+		fmtDirName, err := formatName(excelPath)
+		if err != nil {
+			return fmt.Errorf("BuildDirs: %w", err)
+		}
+		fmtDirPath := top.FormatSchemaDir(fmtDirName)
+		BuildDir(excelPath, fmtDirPath)
+		if err := buildFormatSchema(fmtDirName); err != nil {
+			return fmt.Errorf("BuildDirs: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// BuildFormatSchema bootstraps format_schemas/<name>/ from the canonical workbook in
+// format_sources/ (same base name as <name>, .xlsx or .xlsm).
+func BuildFormatSchema(name string) error {
+	if strings.TrimSpace(name) == "" {
+		return fmt.Errorf("BuildFormatSchema: name is not set")
+	}
+
+	if err := buildFormatSchema(name); err != nil {
+		return fmt.Errorf("BuildFormatSchema: %w", err)
+	}
+	return nil
 }
