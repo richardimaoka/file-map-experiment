@@ -2,10 +2,8 @@ package excel
 
 import (
 	"bytes"
-	"encoding/json"
 	"os"
 	"path/filepath"
-	"reflect"
 	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/fs"
@@ -16,8 +14,6 @@ func TestBuildDir(t *testing.T) {
 	excelName := "ads_report_simple.xlsx"
 	sourceExcel := filepath.Join("testdata", "samples", excelName)
 	sourceBytes := mustReadFile(t, sourceExcel)
-
-	preservedConfig := mustParseConfigFixture(t, filepath.Join("testdata", "build", "existing_dir_with_config", "config.json"))
 
 	cases := []buildExcelDirCase{
 		// Target path does not exist yet: create it, copy the source Excel file, write config.json.
@@ -31,12 +27,11 @@ func TestBuildDir(t *testing.T) {
 			buildFixture: "existing_dir_only",
 			wantExcel:    sourceBytes,
 		},
-		// testdata/build/existing_dir_with_config: config.json only.
+		// testdata/build/existing_dir_with_config: config.json only; schema_preps resynced from workbook.
 		{
 			name:         "existing_dir_with_config",
 			buildFixture: "existing_dir_with_config",
 			wantExcel:    sourceBytes,
-			wantConfig:   &preservedConfig,
 		},
 		// testdata/build/existing_dir_with_excel: Excel file only (overwritten from source).
 		{
@@ -44,12 +39,11 @@ func TestBuildDir(t *testing.T) {
 			buildFixture: "existing_dir_with_excel",
 			wantExcel:    sourceBytes,
 		},
-		// testdata/build/existing_dir_with_excel_and_config: Excel overwritten; config.json preserved.
+		// testdata/build/existing_dir_with_excel_and_config: Excel overwritten; schema_preps resynced.
 		{
 			name:         "existing_dir_with_excel_and_config",
 			buildFixture: "existing_dir_with_excel_and_config",
 			wantExcel:    sourceBytes,
-			wantConfig:   &preservedConfig,
 		},
 	}
 
@@ -79,7 +73,7 @@ func TestBuildDir(t *testing.T) {
 			}
 
 			assertFileBytes(t, excelPath, tc.wantExcel)
-			assertConfigAfter(t, configPath, tc.wantConfig, excelName)
+			assertConfigAfter(t, configPath)
 			assertSchemasDirAfter(t, filepath.Join(targetDir, "schemas"))
 		})
 	}
@@ -96,37 +90,18 @@ type buildExcelDirCase struct {
 	name         string
 	buildFixture string // testdata/build/<name>; empty = target directory does not exist yet
 	wantExcel    []byte
-	wantConfig   *Config // nil: expect InitConfig-shaped config after build
 }
 
-func assertConfigAfter(t *testing.T, configPath string, want *Config, excelName string) {
+func assertConfigAfter(t *testing.T, configPath string) {
 	cfg, err := ReadConfig(configPath)
 	if err != nil {
 		t.Fatalf("ReadConfig: %v", err)
-	}
-	if want != nil {
-		if !reflect.DeepEqual(cfg, *want) {
-			t.Errorf("config: got %+v want %+v", cfg, *want)
-		}
-		return
-	}
-	if cfg.ExcelFileName != excelName {
-		t.Errorf("ExcelFileName: got %q want %q", cfg.ExcelFileName, excelName)
 	}
 	wantCfg, err := ReadConfig(filepath.Join("testdata", "config", "enrich_ads_report_simple", "config.json"))
 	if err != nil {
 		t.Fatalf("ReadConfig golden: %v", err)
 	}
 	fatalIfJSONGoldenMismatch(t, cfg, wantCfg)
-}
-
-func mustParseConfigFixture(t *testing.T, path string) Config {
-	data := mustReadFile(t, path)
-	var cfg Config
-	if err := json.Unmarshal(data, &cfg); err != nil {
-		t.Fatalf("parse config fixture %s: %v", path, err)
-	}
-	return cfg
 }
 
 func mustReadFile(t *testing.T, path string) []byte {

@@ -120,9 +120,9 @@ func InitConfig(excelFileName string) Config {
 	}
 }
 
-// enrichConfig fills cfg.SchemaPreps with one default prep per workbook sheet (is_ready false).
+// enrichConfig sets cfg.SchemaPreps from mergeSchemaPrepsFromWorkbook.
 func enrichConfig(cfg Config, excelPath string) (Config, error) {
-	preps, err := schemaPrepsFromWorkbook(excelPath)
+	preps, err := mergeSchemaPrepsFromWorkbook(cfg.SchemaPreps, excelPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -130,23 +130,70 @@ func enrichConfig(cfg Config, excelPath string) (Config, error) {
 	return cfg, nil
 }
 
-func schemaPrepsFromWorkbook(excelPath string) ([]SchemaPrep, error) {
+func schemaPrepIsLocked(p SchemaPrep) bool {
+	return p.IsReady || p.Comment != ""
+}
+
+// mergeSchemaPrepsFromWorkbook lists one prep per workbook tab. Locked preps (is_ready or comment) stay as-is if sheet_name exists; missing sheet is error. Unlocked existing preps are dropped.
+func mergeSchemaPrepsFromWorkbook(existing []SchemaPrep, excelPath string) ([]SchemaPrep, error) {
 	f, err := excelize.OpenFile(excelPath)
 	if err != nil {
-		return nil, fmt.Errorf("schemaPrepsFromWorkbook: %w", err)
+		return nil, fmt.Errorf("open workbook: %w", err)
 	}
 	defer f.Close()
 
 	sheetNames := f.GetSheetList()
-
-	preps := make([]SchemaPrep, 0, len(sheetNames))
-	for _, sheetName := range sheetNames {
-		if strings.TrimSpace(sheetName) == "" {
+	sheets := make(map[string]struct{}, len(sheetNames))
+	for _, name := range sheetNames {
+		if name == "" {
 			continue
 		}
-		preps = append(preps, defaultSchemaPrepForSheet(sheetName))
+		sheets[name] = struct{}{}
 	}
-	return preps, nil
+
+	lockedBySheet := make(map[string]SchemaPrep)
+	for _, prep := range existing {
+		if !schemaPrepIsLocked(prep) {
+			continue
+		}
+		if prep.SheetName == "" {
+			return nil, fmt.Errorf(
+				"schema_prep %q has is_ready or comment set but sheet_name is empty; set sheet_name to the Excel tab name",
+				prep.SchemaName,
+			)
+		}
+		if _, ok := sheets[prep.SheetName]; !ok {
+			return nil, fmt.Errorf(
+				"schema_prep %q (sheet %q): sheet not in workbook after copy; if the sheet was renamed, update sheet_name in config.json to the new tab name; if the sheet was removed, clear is_ready and comment on this prep so BuildDir can drop it, then adjust schema_preps if needed",
+				prep.SchemaName,
+				prep.SheetName,
+			)
+		}
+		if _, dup := lockedBySheet[prep.SheetName]; dup {
+			return nil, fmt.Errorf(
+				"multiple schema_preps use sheet %q; keep one prep per sheet",
+				prep.SheetName,
+			)
+		}
+		lockedBySheet[prep.SheetName] = prep
+	}
+
+	merged := make([]SchemaPrep, 0, len(sheetNames))
+	for _, sheetName := range sheetNames {
+		if sheetName == "" {
+			continue
+		}
+		if prep, ok := lockedBySheet[sheetName]; ok {
+			merged = append(merged, prep)
+			continue
+		}
+		merged = append(merged, defaultSchemaPrepForSheet(sheetName))
+	}
+	return merged, nil
+}
+
+func schemaPrepsFromWorkbook(excelPath string) ([]SchemaPrep, error) {
+	return mergeSchemaPrepsFromWorkbook(nil, excelPath)
 }
 
 func defaultSchemaPrepForSheet(sheetName string) SchemaPrep {

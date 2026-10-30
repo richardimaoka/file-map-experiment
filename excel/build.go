@@ -27,22 +27,28 @@ func copyExcelFile(sourceExcelPath string, resolver Resolver) error {
 	return nil
 }
 
-func ensureConfigExists(sourceExcelPath string, resolver Resolver) error {
+// syncConfigFile loads config.json (or InitConfig), merges schema_preps from the case workbook, writes config.json.
+func syncConfigFile(sourceExcelPath string, resolver Resolver) error {
 	configPath := resolver.ConfigPath()
+	excelName := filepath.Base(sourceExcelPath)
 
-	_, err := ReadConfig(configPath)
+	config, err := ReadConfig(configPath)
 	if err != nil {
-		excelName := filepath.Base(sourceExcelPath)
-		config := InitConfig(excelName)
-		config, err = enrichConfig(config, sourceExcelPath)
-		if err != nil {
-			return fmt.Errorf("ensureConfigExists: %w", err)
-		}
-		if err := jsonutil.Write(configPath, config); err != nil {
-			return fmt.Errorf("ensureConfigExists: %w", err)
+		if _, statErr := os.Stat(configPath); os.IsNotExist(statErr) {
+			config = InitConfig(excelName)
+		} else {
+			return fmt.Errorf("syncConfigFile: %w", err)
 		}
 	}
 
+	workbookPath := resolver.ExcelPath(config)
+	config, err = enrichConfig(config, workbookPath)
+	if err != nil {
+		return fmt.Errorf("syncConfigFile: %w", err)
+	}
+	if err := jsonutil.Write(configPath, config); err != nil {
+		return fmt.Errorf("syncConfigFile: %w", err)
+	}
 	return nil
 }
 
@@ -73,7 +79,7 @@ func updateSchemasFromConfig(resolver Resolver) error {
 // BuildDir bootstraps a case directory at relDirPath:
 // - ensure the target dir exists
 // - copy Excel file
-// - ensure config.json exists
+// - sync config.json schema_preps with the copied workbook
 // - rewrite schemas/ from config schema_preps (workbook was just overwritten)
 //
 // For the full on-disk layout, see [Resolver].
@@ -95,8 +101,8 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
-	// ensure config.json exists
-	if err := ensureConfigExists(sourceExcelPath, resolver); err != nil {
+	// sync config.json schema_preps with the copied workbook
+	if err := syncConfigFile(sourceExcelPath, resolver); err != nil {
 		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 

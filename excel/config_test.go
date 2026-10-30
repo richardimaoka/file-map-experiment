@@ -3,6 +3,7 @@ package excel
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/richardimaoka/file-map-experiment/jsonutil"
@@ -68,6 +69,56 @@ func TestEnrichConfig(t *testing.T) {
 			t.Fatal("expected error")
 		}
 	})
+}
+
+func TestMergeSchemaPrepsFromWorkbook_keepsLockedPrep(t *testing.T) {
+	excelPath := filepath.Join("testdata", "samples", "ads_report_simple.xlsx")
+	locked := SchemaPrep{
+		SchemaName:     "custom-schema",
+		SheetName:      "Sheet1",
+		Comment:        "kept",
+		IsReady:        false,
+		HeaderStartRow: 2,
+		HeaderEndRow:   3,
+		StartColumn:    "B",
+		EndColumn:      "C",
+	}
+	got, err := mergeSchemaPrepsFromWorkbook([]SchemaPrep{locked}, excelPath)
+	if err != nil {
+		t.Fatalf("mergeSchemaPrepsFromWorkbook: %v", err)
+	}
+	if len(got) != 1 || !reflect.DeepEqual(got[0], locked) {
+		t.Fatalf("got %+v want %+v", got, []SchemaPrep{locked})
+	}
+}
+
+func TestMergeSchemaPrepsFromWorkbook_missingLockedSheet(t *testing.T) {
+	excelPath := filepath.Join("testdata", "samples", "ads_report_simple.xlsx")
+	locked := SchemaPrep{
+		SchemaName: "old-name",
+		SheetName:  "RenamedAway",
+		IsReady:    true,
+	}
+	_, err := mergeSchemaPrepsFromWorkbook([]SchemaPrep{locked}, excelPath)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestMergeSchemaPrepsFromWorkbook_dropsUnlockedPrep(t *testing.T) {
+	excelPath := filepath.Join("testdata", "samples", "ads_report_simple.xlsx")
+	stale := SchemaPrep{
+		SchemaName: "preserved_marker",
+		IsReady:    false,
+	}
+	got, err := mergeSchemaPrepsFromWorkbook([]SchemaPrep{stale}, excelPath)
+	if err != nil {
+		t.Fatalf("mergeSchemaPrepsFromWorkbook: %v", err)
+	}
+	want := []SchemaPrep{defaultSchemaPrepForSheet("Sheet1")}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %+v want %+v", got, want)
+	}
 }
 
 func TestCreateEnrichConfigFixturesInTestdata(t *testing.T) {
