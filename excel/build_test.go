@@ -113,9 +113,11 @@ func assertConfigAfter(t *testing.T, configPath string, want *Config, excelName 
 	if cfg.ExcelFileName != excelName {
 		t.Errorf("ExcelFileName: got %q want %q", cfg.ExcelFileName, excelName)
 	}
-	if len(cfg.SchemaPreps) != 0 {
-		t.Errorf("SchemaPreps: got %v want empty", cfg.SchemaPreps)
+	wantCfg, err := ReadConfig(filepath.Join("testdata", "config", "enrich_ads_report_simple", "config.json"))
+	if err != nil {
+		t.Fatalf("ReadConfig golden: %v", err)
 	}
+	fatalIfJSONGoldenMismatch(t, cfg, wantCfg)
 }
 
 func mustParseConfigFixture(t *testing.T, path string) Config {

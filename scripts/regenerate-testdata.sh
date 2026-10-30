@@ -7,6 +7,6 @@ cd "$ROOT"
 
 export APP_BASE_DIR="$ROOT"
 
-RUN='TestCreate.*FixturesInTestdata|TestReadSchemaInternal|TestReadRawDataSchemaData|TestReadRowsSchema|TestReadRawVerticals|TestLoadMergedRanges|TestReadCellValue|TestReadSchemaFromExcel|TestReadRowsFromExcel'
+RUN='TestCreate.*FixturesInTestdata|TestReadSchemaInternal|TestReadRawDataSchemaData|TestReadRowsSchema|TestReadRawVerticals|TestLoadMergedRanges|TestReadCellValue|TestReadSchemaFromExcel|TestReadRowsFromExcel|TestEnrichConfig|TestCreateEnrichConfigFixturesInTestdata'
 
 exec go test ./excel -count=1 -update -run "$RUN"

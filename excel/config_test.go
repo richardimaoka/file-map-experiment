@@ -10,7 +10,7 @@ func TestInitConfig(t *testing.T) {
 	if cfg.ExcelFileName != "folder_map.xlsx" {
 		t.Errorf("ExcelFileName: got %q", cfg.ExcelFileName)
 	}
-	if cfg.SchemaPreps != nil {
+	if len(cfg.SchemaPreps) != 0 {
 		t.Errorf("SchemaPreps: got %v want nil", cfg.SchemaPreps)
 	}
 }

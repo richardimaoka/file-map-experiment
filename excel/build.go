@@ -34,6 +34,10 @@ func ensureConfigExists(sourceExcelPath string, resolver Resolver) error {
 	if err != nil {
 		excelName := filepath.Base(sourceExcelPath)
 		config := InitConfig(excelName)
+		config, err = enrichConfig(config, sourceExcelPath)
+		if err != nil {
+			return fmt.Errorf("ensureConfigExists: %w", err)
+		}
 		if err := jsonutil.Write(configPath, config); err != nil {
 			return fmt.Errorf("ensureConfigExists: %w", err)
 		}

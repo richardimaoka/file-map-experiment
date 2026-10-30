@@ -119,6 +119,47 @@ func InitConfig(excelFileName string) Config {
 	}
 }
 
+// enrichConfig fills cfg.SchemaPreps with one default prep per workbook sheet (is_ready false).
+func enrichConfig(cfg Config, excelPath string) (Config, error) {
+	preps, err := schemaPrepsFromWorkbook(excelPath)
+	if err != nil {
+		return Config{}, err
+	}
+	cfg.SchemaPreps = preps
+	return cfg, nil
+}
+
+func schemaPrepsFromWorkbook(excelPath string) ([]SchemaPrep, error) {
+	f, err := excelize.OpenFile(excelPath)
+	if err != nil {
+		return nil, fmt.Errorf("schemaPrepsFromWorkbook: %w", err)
+	}
+	defer f.Close()
+
+	sheetNames := f.GetSheetList()
+
+	preps := make([]SchemaPrep, 0, len(sheetNames))
+	for _, sheetName := range sheetNames {
+		if strings.TrimSpace(sheetName) == "" {
+			continue
+		}
+		preps = append(preps, defaultSchemaPrepForSheet(sheetName))
+	}
+	return preps, nil
+}
+
+func defaultSchemaPrepForSheet(sheetName string) SchemaPrep {
+	return SchemaPrep{
+		SchemaName:     sheetName,
+		SheetName:      sheetName,
+		IsReady:        false,
+		HeaderStartRow: 1,
+		HeaderEndRow:   1,
+		StartColumn:    "A",
+		EndColumn:      "A",
+	}
+}
+
 func ReadConfig(jsonPath string) (Config, error) {
 	var config Config
 	err := jsonutil.Read(jsonPath, &config)
