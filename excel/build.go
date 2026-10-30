@@ -46,17 +46,16 @@ func ensureConfigExists(sourceExcelPath string, resolver PathResolver) error {
 	return nil
 }
 
-// BuildExcelDir creates the case directory under APP_BASE_DIR at relPath
-// - ensure the target dir exists
-// - copy Excel file
-// - ensure config.json exists
-func BuildExcelDir(sourceExcelPath string, relPath string) error {
+// BuildExcelDir bootstraps a case directory at relDirPath:
+// creates the directory, copies the workbook, and writes config.json if missing.
+// It does not create schemas/ or schema JSON files. For the full on-disk layout, see [PathResolver].
+func BuildExcelDir(sourceExcelPath string, relDirPath string) error {
 	excelName := filepath.Base(sourceExcelPath)
 	if excelName == "." || excelName == "/" || excelName == "" {
 		return fmt.Errorf("BuildExcelDir: invalid excel path %q", sourceExcelPath)
 	}
 
-	resolver := NewPathResolver(relPath)
+	resolver := NewPathResolver(relDirPath)
 
 	// ensure the target dir exists
 	if err := ensureDirExists(resolver); err != nil {
