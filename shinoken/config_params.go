@@ -1,6 +1,11 @@
 package shinoken
 
-import "github.com/richardimaoka/file-map-experiment/excel"
+import (
+	"fmt"
+
+	"github.com/richardimaoka/file-map-experiment/excel"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
+)
 
 type ParamsConfig struct {
 	SchemaName string `json:"scema_file"`
@@ -8,8 +13,34 @@ type ParamsConfig struct {
 	excel.Config
 }
 
-// func CreateParamsConfig(schemaName, sheetName)
+func CreateParamsConfig(excelFileName, schemaName, sheetName string) ParamsConfig {
+	return ParamsConfig{
+		SchemaName: schemaName,
+		SheetName:  sheetName,
+		Config:     excel.InitConfig(excelFileName),
+	}
+}
 
-// func ReadParamsConfig(configPath)
-// validate if the fields are non-empty
-// if len(errors) > 0, return error
+func (c ParamsConfig) Validate() error {
+	if c.SchemaName == "" {
+		return fmt.Errorf("ParamsConfig.Validate: scema_file is not set")
+	}
+	if c.SheetName == "" {
+		return fmt.Errorf("ParamsConfig.Validate: sheet_name is not set")
+	}
+	if c.ExcelFileName == "" {
+		return fmt.Errorf("ParamsConfig.Validate: excel_file_name is not set")
+	}
+	return nil
+}
+
+func ReadParamsConfig(configPath string) (ParamsConfig, error) {
+	var cfg ParamsConfig
+	if err := jsonutil.Read(configPath, &cfg); err != nil {
+		return ParamsConfig{}, fmt.Errorf("ReadParamsConfig: %w", err)
+	}
+	if err := cfg.Validate(); err != nil {
+		return ParamsConfig{}, fmt.Errorf("ReadParamsConfig: %w", err)
+	}
+	return cfg, nil
+}
