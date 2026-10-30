@@ -13,7 +13,7 @@ func ensureDefaultDataExists(resolver Resolver) error {
 
 // BuildDir bootstraps an instruction case at relDirPath:
 // runs [excel.BuildDir], then writes defaults/<schemaName>.json sidecars.
-// It does not create schemas/ entries beyond what [excel.BuildDir] already skips. For the layout, see [Resolver].
+// schemas/ is rewritten by [excel.BuildDir] when schema_preps are ready. For the layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
 	if err := excel.BuildDir(sourceExcelPath, relDirPath); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)

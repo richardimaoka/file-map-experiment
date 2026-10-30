@@ -80,7 +80,15 @@ func TestBuildDir(t *testing.T) {
 
 			assertFileBytes(t, excelPath, tc.wantExcel)
 			assertConfigAfter(t, configPath, tc.wantConfig, excelName)
+			assertSchemasDirAfter(t, filepath.Join(targetDir, "schemas"))
 		})
+	}
+}
+
+func assertSchemasDirAfter(t *testing.T, schemasDir string) {
+	info, err := os.Stat(schemasDir)
+	if err != nil || !info.IsDir() {
+		t.Fatalf("schemas dir: %v", err)
 	}
 }
 

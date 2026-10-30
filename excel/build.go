@@ -46,9 +46,34 @@ func ensureConfigExists(sourceExcelPath string, resolver Resolver) error {
 	return nil
 }
 
+func updateSchemasFromConfig(resolver Resolver) error {
+	config, err := ReadConfig(resolver.ConfigPath())
+	if err != nil {
+		return fmt.Errorf("updateSchemasFromConfig: %w", err)
+	}
+
+	if err := os.MkdirAll(resolver.SchemasDir(), 0o755); err != nil {
+		return fmt.Errorf("updateSchemasFromConfig: %w", err)
+	}
+
+	for _, prep := range config.SchemaPreps {
+		if !prep.IsReady {
+			continue
+		}
+		if err := prep.Validate(); err != nil {
+			return fmt.Errorf("updateSchemasFromConfig: %w", err)
+		}
+		if err := WriteSchemaFromExcel(resolver, prep.SchemaName); err != nil {
+			return fmt.Errorf("updateSchemasFromConfig: %w", err)
+		}
+	}
+	return nil
+}
+
 // BuildDir bootstraps a case directory at relDirPath:
-// creates the directory, copies the workbook, and writes config.json if missing.
-// It does not create schemas/ or schema JSON files. For the full on-disk layout, see [Resolver].
+// creates the directory, copies the workbook (overwriting), writes config.json if missing,
+// and rewrites schemas/<name>.json for each ready entry in config schema_preps from the
+// copied workbook. For the full on-disk layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
 	excelName := filepath.Base(sourceExcelPath)
 	if excelName == "." || excelName == "/" || excelName == "" {
@@ -69,6 +94,11 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 
 	// ensure config.json exists
 	if err := ensureConfigExists(sourceExcelPath, resolver); err != nil {
+		return fmt.Errorf("excel.BuildDir: %w", err)
+	}
+
+	// rewrite schemas/ from config schema_preps (workbook was just overwritten)
+	if err := updateSchemasFromConfig(resolver); err != nil {
 		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
