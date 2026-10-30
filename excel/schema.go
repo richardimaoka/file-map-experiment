@@ -402,7 +402,7 @@ func mergeIsSingleColumn(m MergedRange) bool {
 	return ul.ColumnName == br.ColumnName
 }
 
-func ReadSchemaFromExcel(resolver PathResolver, schemaName string) (TableSchema, error) {
+func ReadSchemaFromExcel(resolver Resolver, schemaName string) (TableSchema, error) {
 	config, err := ReadExcelConfig(resolver.ConfigPath())
 	if err != nil {
 		return TableSchema{}, fmt.Errorf("ReadSchemaFromExcel: %w", err)
@@ -435,7 +435,7 @@ func WriteSchemaToJson(jsonPath string, schema TableSchema) error {
 }
 
 // WriteSchemaFromExcel derives the schema from a reference workbook and persists it under schemas/<name>.json.
-func WriteSchemaFromExcel(resolver PathResolver, schemaName string) error {
+func WriteSchemaFromExcel(resolver Resolver, schemaName string) error {
 	config, err := ReadExcelConfig(resolver.ConfigPath())
 	if err != nil {
 		return fmt.Errorf("WriteSchemaFromExcel: %w", err)

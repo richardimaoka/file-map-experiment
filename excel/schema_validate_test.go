@@ -9,7 +9,7 @@ import (
 )
 
 func TestValidateExcelAgainstSchema_readAPIFixture_matches(t *testing.T) {
-	resolver := NewPathResolver(readAPICaseRelPath)
+	resolver := NewResolver(readAPICaseRelPath)
 	var got TableSchema
 	stderr := captureStderr(func() {
 		got = ValidateExcelAgainstSchema(resolver, "data-all-string")

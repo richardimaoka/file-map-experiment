@@ -15,7 +15,7 @@ const validateExcelAgainstSchemaDetailedDiff = false
 // ValidateExcelAgainstSchema loads schemas/<name>.json, derives the schema from the
 // instance workbook, and warns on mismatch. It never returns an error; on success it
 // returns the workbook-derived schema.
-func ValidateExcelAgainstSchema(resolver PathResolver, schemaName string) TableSchema {
+func ValidateExcelAgainstSchema(resolver Resolver, schemaName string) TableSchema {
 	persisted, err := ReadSchemaFromJson(resolver.SchemaPath(schemaName))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ValidateExcelAgainstSchema: warning: could not load persisted schema %q: %v\n", schemaName, err)

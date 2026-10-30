@@ -70,7 +70,7 @@ func TestBuildExcelDir(t *testing.T) {
 			excelPath := filepath.Join(targetDir, excelName)
 			configPath := filepath.Join(targetDir, "config.json")
 
-			if err := BuildExcelDir(sourceExcel, caseRelPath); err != nil {
+			if err := BuildDir(sourceExcel, caseRelPath); err != nil {
 				t.Fatalf("BuildExcelDir: %v", err)
 			}
 

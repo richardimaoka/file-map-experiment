@@ -9,15 +9,15 @@ import (
 	"github.com/richardimaoka/file-map-experiment/fs"
 )
 
-func ensureDirExists(resolver PathResolver) error {
-	path := resolver.DirPath()
+func ensureDirExists(resolver Resolver) error {
+	path := resolver.FullDirPath()
 	if err := os.MkdirAll(path, 0o755); err != nil {
 		return fmt.Errorf("ensureDirExists: %w", err)
 	}
 	return nil
 }
 
-func copyExcelFile(sourceExcelPath string, resolver PathResolver) error {
+func copyExcelFile(sourceExcelPath string, resolver Resolver) error {
 	excelName := filepath.Base(sourceExcelPath)
 	cfg := InitConfig(excelName)
 	destExcel := resolver.ExcelPath(cfg)
@@ -27,7 +27,7 @@ func copyExcelFile(sourceExcelPath string, resolver PathResolver) error {
 	return nil
 }
 
-func ensureConfigExists(sourceExcelPath string, resolver PathResolver) error {
+func ensureConfigExists(sourceExcelPath string, resolver Resolver) error {
 	configPath := resolver.ConfigPath()
 
 	_, err := ReadExcelConfig(configPath)
@@ -46,16 +46,16 @@ func ensureConfigExists(sourceExcelPath string, resolver PathResolver) error {
 	return nil
 }
 
-// BuildExcelDir bootstraps a case directory at relDirPath:
+// BuildDir bootstraps a case directory at relDirPath:
 // creates the directory, copies the workbook, and writes config.json if missing.
-// It does not create schemas/ or schema JSON files. For the full on-disk layout, see [PathResolver].
-func BuildExcelDir(sourceExcelPath string, relDirPath string) error {
+// It does not create schemas/ or schema JSON files. For the full on-disk layout, see [Resolver].
+func BuildDir(sourceExcelPath string, relDirPath string) error {
 	excelName := filepath.Base(sourceExcelPath)
 	if excelName == "." || excelName == "/" || excelName == "" {
 		return fmt.Errorf("BuildExcelDir: invalid excel path %q", sourceExcelPath)
 	}
 
-	resolver := NewPathResolver(relDirPath)
+	resolver := NewResolver(relDirPath)
 
 	// ensure the target dir exists
 	if err := ensureDirExists(resolver); err != nil {

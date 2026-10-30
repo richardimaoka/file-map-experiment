@@ -7,53 +7,52 @@ import (
 	"github.com/richardimaoka/file-map-experiment/env"
 )
 
-// PathResolver resolves paths for a single Excel case directory under APP_BASE_DIR.
+// Resolver resolves paths for a single Excel case directory under APP_BASE_DIR.
 //
 // Expected layout:
 //
-//	$APP_BASE_DIR/<relPath>/
+//	$APP_BASE_DIR/<relDirPath>/
 //	  <excelFileName>   # .xlsx/.xlsm; name from config.json
 //	  config.json
 //	  schemas/
 //	    <name>.json
 //
-// Example: NewPathResolver("cases/client1")
-type PathResolver struct {
-	baseDir string
-	relPath string
+// Example: NewResolver("cases/client1")
+type Resolver struct {
+	baseDir    string
+	relDirPath string
 }
 
-func NewPathResolver(relPath string) PathResolver {
+func NewResolver(relDirPath string) Resolver {
 	baseDir := env.AppBaseDir()
 
-	return PathResolver{
-		baseDir: baseDir,
-		relPath: relPath,
+	return Resolver{
+		baseDir:    baseDir,
+		relDirPath: relDirPath,
 	}
 }
 
-func (p PathResolver) DirPath() string {
-	return filepath.Join(p.baseDir, p.relPath)
+func (p Resolver) FullDirPath() string {
+	return filepath.Join(p.baseDir, p.relDirPath)
 }
 
-func (p PathResolver) ExcelPath(config ExcelConfig) string {
-	return filepath.Join(p.DirPath(), config.ExcelFileName)
+func (p Resolver) ExcelPath(config ExcelConfig) string {
+	return filepath.Join(p.FullDirPath(), config.ExcelFileName)
 }
 
-func (p PathResolver) ConfigPath() string {
-	return filepath.Join(p.DirPath(), "config.json")
-
+func (p Resolver) ConfigPath() string {
+	return filepath.Join(p.FullDirPath(), "config.json")
 }
 
-func (p PathResolver) SchemaCollectionPath() string {
-	return filepath.Join(p.DirPath(), "schemas")
+func (p Resolver) SchemaCollectionPath() string {
+	return filepath.Join(p.FullDirPath(), "schemas")
 }
 
-func (p PathResolver) SchemaPath(schemaName string) string {
+func (p Resolver) SchemaPath(schemaName string) string {
 	return filepath.Join(p.SchemaCollectionPath(), schemaName+".json")
 }
 
-func (p PathResolver) ValidateDir() error {
+func (p Resolver) ValidateDir() error {
 	_, err := ReadExcelConfig(p.ConfigPath())
 	if err != nil {
 		return fmt.Errorf("ValidateDir: %w", err)
