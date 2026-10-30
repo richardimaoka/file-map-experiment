@@ -49,7 +49,7 @@ func FilesWithExtensions(parentDir string, extensions ...string) ([]string, erro
 		if !extensionAllowed(got, wantExt) {
 			continue
 		}
-		paths = append(paths, filepath.Join(parentDir, entry.Name()))
+		paths = append(paths, entry.Name())
 	}
 	return paths, nil
 }
