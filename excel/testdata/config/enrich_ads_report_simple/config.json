@@ -4,6 +4,7 @@
     {
       "schema_name": "Sheet1",
       "sheet_name": "Sheet1",
+      "comment": "",
       "is_ready": false,
       "header_start_row": 1,
       "header_end_row": 1,

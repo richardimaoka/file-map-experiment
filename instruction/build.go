@@ -36,20 +36,46 @@ func updateDefaultDataFromConfig(resolver Resolver) error {
 	return nil
 }
 
+func updateConfigFromWorkbook(resolver Resolver) error {
+	cfg, err := ReadConfig(resolver.ConfigPath())
+	if err != nil {
+		return fmt.Errorf("updateConfigFromWorkbook: %w", err)
+	}
+	excelPath := resolver.ExcelPath(cfg.Config)
+	cfg, err = enrichConfig(cfg, excelPath)
+	if err != nil {
+		return fmt.Errorf("updateConfigFromWorkbook: %w", err)
+	}
+	if err := jsonutil.Write(resolver.ConfigPath(), cfg.Config); err != nil {
+		return fmt.Errorf("updateConfigFromWorkbook: %w", err)
+	}
+	return nil
+}
+
 // BuildDir bootstraps an instruction case at relDirPath:
-// runs [excel.BuildDir], then rewrites defaults/<schemaName>.json from the copied workbook
-// for each schemas/<schemaName>.json present after bootstrap. For the layout, see [Resolver].
+// - run [excel.BuildDir]
+// - rewrite config.json from enrichConfig (management sheets, comments)
+// - rewrite defaults/<schemaName>.json for each schemas/<schemaName>.json
+//
+// For the full on-disk layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
 	excelFileName := filepath.Base(sourceExcelPath)
 	relDirBase := filepath.Base(relDirPath)
 	slog.Info("instruction.BuildDir: starting", "rel_dir", relDirBase, "excelFile", excelFileName)
 
+	// run excel.BuildDir
 	if err := excel.BuildDir(sourceExcelPath, relDirPath); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
 	}
 
 	resolver := NewResolver(relDirPath)
 
+	// rewrite config.json from enrichConfig
+	if err := updateConfigFromWorkbook(resolver); err != nil {
+		return fmt.Errorf("instruction.BuildDir: %w", err)
+	}
+
+	// rewrite defaults/<schemaName>.json for each schemas/<schemaName>.json
 	if err := updateDefaultDataFromConfig(resolver); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
 	}

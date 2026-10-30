@@ -4,6 +4,7 @@
     {
       "schema_name": "alpha",
       "sheet_name": "alpha",
+      "comment": "",
       "is_ready": false,
       "header_start_row": 1,
       "header_end_row": 1,
@@ -15,6 +16,7 @@
     {
       "schema_name": "beta",
       "sheet_name": "beta",
+      "comment": "",
       "is_ready": false,
       "header_start_row": 1,
       "header_end_row": 1,

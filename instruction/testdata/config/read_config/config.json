@@ -1,0 +1,17 @@
+{
+  "excel_file_name": "format_workbook.xlsx",
+  "schema_preps": [
+    {
+      "schema_name": "入稿シート",
+      "sheet_name": "入稿シート",
+      "comment": "要確認",
+      "is_ready": false,
+      "header_start_row": 1,
+      "header_end_row": 1,
+      "data_start_row": 0,
+      "data_end_row": 0,
+      "start_column": "A",
+      "end_column": "A"
+    }
+  ]
+}

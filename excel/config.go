@@ -12,6 +12,7 @@ import (
 type SchemaPrep struct {
 	SchemaName     string `json:"schema_name"`
 	SheetName      string `json:"sheet_name"`
+	Comment        string `json:"comment"`
 	IsReady        bool   `json:"is_ready"`
 	HeaderStartRow int    `json:"header_start_row"`
 	HeaderEndRow   int    `json:"header_end_row"`
@@ -152,6 +153,7 @@ func defaultSchemaPrepForSheet(sheetName string) SchemaPrep {
 	return SchemaPrep{
 		SchemaName:     sheetName,
 		SheetName:      sheetName,
+		Comment:        "",
 		IsReady:        false,
 		HeaderStartRow: 1,
 		HeaderEndRow:   1,
