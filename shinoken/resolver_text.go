@@ -25,14 +25,10 @@ func (r TextResolver) DataDir() string {
 	return filepath.Join(r.FullDirPath(), "data")
 }
 
-func (r TextResolver) SchemasDir() string {
-	return filepath.Join(r.FullDirPath(), "schemas")
+func (r TextResolver) TextSchemaPath(config TextConfig) string {
+	return filepath.Join(r.SchemasDir(), config.SchemaName+".json")
 }
 
-func (r TextResolver) DataPath(schemaName string) string {
-	return filepath.Join(r.DataDir(), schemaName+".json")
-}
-
-func (r TextResolver) SchemaPath(schemaName string) string {
-	return filepath.Join(r.SchemasDir(), schemaName+".json")
+func (r TextResolver) TextDataPath(config TextConfig) string {
+	return filepath.Join(r.DataDir(), config.SchemaName+".json")
 }

@@ -13,26 +13,22 @@ import (
 //	schemas/<schemaName>.json
 //	config.json
 
-type ParametersResolver struct {
+type ParamsResolver struct {
 	excel.Resolver
 }
 
-func NewParametersResolver(relDirPath string) ParametersResolver {
-	return ParametersResolver{Resolver: excel.NewResolver(relDirPath)}
+func NewParametersResolver(relDirPath string) ParamsResolver {
+	return ParamsResolver{Resolver: excel.NewResolver(relDirPath)}
 }
 
-func (r ParametersResolver) DataDir() string {
+func (r ParamsResolver) DataDir() string {
 	return filepath.Join(r.FullDirPath(), "data")
 }
 
-func (r ParametersResolver) SchemasDir() string {
-	return filepath.Join(r.FullDirPath(), "schemas")
+func (r ParamsResolver) ParamsSchemaPath(config ParamsConfig) string {
+	return filepath.Join(r.SchemasDir(), config.SchemaName+".json")
 }
 
-func (r ParametersResolver) DataPath(schemaName string) string {
-	return filepath.Join(r.DataDir(), schemaName+".json")
-}
-
-func (r ParametersResolver) SchemaPath(schemaName string) string {
-	return filepath.Join(r.SchemasDir(), schemaName+".json")
+func (r ParamsResolver) ParamsAllPath(config ParamsConfig) string {
+	return filepath.Join(r.DataDir(), config.SchemaName+".json")
 }
