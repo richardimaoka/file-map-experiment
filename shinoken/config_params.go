@@ -14,10 +14,25 @@ type ParamsConfig struct {
 }
 
 func CreateParamsConfig(excelFileName, schemaName, sheetName string) ParamsConfig {
+	excelConfig := excel.InitConfig(excelFileName)
+	excelConfig.SchemaPreps = []excel.SchemaPrep{
+		{
+			SchemaName:     schemaName,
+			SheetName:      sheetName,
+			IsReady:        true,
+			HeaderStartRow: 4,
+			HeaderEndRow:   4,
+			DataStartRow:   205,
+			DataEndRow:     5000,
+			StartColumn:    "B",
+			EndColumn:      "P",
+		},
+	}
+
 	return ParamsConfig{
 		SchemaName: schemaName,
 		SheetName:  sheetName,
-		Config:     excel.InitConfig(excelFileName),
+		Config:     excelConfig,
 	}
 }
 
