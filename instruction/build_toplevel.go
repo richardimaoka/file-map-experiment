@@ -26,29 +26,28 @@ func formatSourceExcelPaths(resolver TopLevelResolver) ([]string, error) {
 }
 
 func formatName(excelPath string) string {
-	excelFileName := filepath.Base(excelPath)
-
-	var name string
-	name = strings.Replace(excelFileName, ".xlsx", "", 1)
-	name = strings.Replace(excelFileName, "01_更新者_yyyymmdd_案件名", "", 1)
-	name = strings.Replace(excelFileName, "yyyymmdd_案件名_", "", 1)
-	name = strings.Replace(excelFileName, "【公式】", "", 1)
-	name = strings.Replace(excelFileName, "依頼FMT", "", 1)
-	name = strings.Replace(excelFileName, "（アプリ領域）", "", 1)
-	name = strings.Replace(excelFileName, "入稿指示書", "", 1)
-	name = strings.Replace(excelFileName, "_入稿シート_", "", 1)
+	name := filepath.Base(excelPath)
+	name = strings.Replace(name, ".xlsx", "", 1)
+	name = strings.Replace(name, ".xlsm", "", 1)
+	name = strings.Replace(name, "【公式】", "", 1)
+	name = strings.Replace(name, "依頼FMT", "", 1)
+	name = strings.Replace(name, "01_更新者", "", 1)
+	name = strings.Replace(name, "_yymmdd_案件名_", "", 1)
+	name = strings.Replace(name, "（アプリ領域）", "", 1)
+	name = strings.Replace(name, "入稿指示書", "", 1)
+	name = strings.Replace(name, "_入稿シート_", "", 1)
 
 	// 半角カッコに囲まれた部分
-	firstOpen := strings.Index(excelFileName, "(")
-	lastOpen := strings.LastIndex(excelFileName, "(")
-	firstClose := strings.Index(excelFileName, ")")
-	lastClose := strings.LastIndex(excelFileName, ")")
+	firstOpen := strings.Index(name, "(")
+	lastOpen := strings.LastIndex(name, "(")
+	firstClose := strings.Index(name, ")")
+	lastClose := strings.LastIndex(name, ")")
 	// 半角カッコがそれぞれちょうどひとつだけ存在し、かつ"("が")"より前にある場合
 	if firstOpen != -1 && firstOpen == lastOpen &&
 		firstClose != -1 && firstClose == lastClose &&
 		firstOpen < firstClose {
-		name = strings.Replace(excelFileName, "(", "", 1)
-		name = strings.Replace(excelFileName, ")", "", 1)
+		name = strings.Replace(name, "(", "", 1)
+		name = strings.Replace(name, ")", "", 1)
 	}
 
 	return name
