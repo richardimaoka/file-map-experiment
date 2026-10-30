@@ -3,7 +3,6 @@ package excel
 import (
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -84,8 +83,6 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 		return fmt.Errorf("excel.BuildDir: invalid excel path %q", sourceExcelPath)
 	}
 
-	slog.Info("excel.BuildDir: starting", "rel_dir", relDirPath, "source_excel", sourceExcelPath)
-
 	resolver := NewResolver(relDirPath)
 
 	// ensure the target dir exists
@@ -108,6 +105,5 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
-	slog.Info("excel.BuildDir: finished", "rel_dir", relDirPath)
 	return nil
 }

@@ -40,7 +40,8 @@ func updateDefaultDataFromConfig(resolver Resolver) error {
 // runs [excel.BuildDir], then rewrites defaults/<schemaName>.json from the copied workbook
 // for each schemas/<schemaName>.json present after bootstrap. For the layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
-	slog.Info("instruction.BuildDir: starting", "rel_dir", relDirPath, "source_excel", sourceExcelPath)
+	excelFileName := filepath.Base(sourceExcelPath)
+	slog.Info("instruction.BuildDir: starting", "rel_dir", relDirPath, "excelFile", excelFileName)
 
 	if err := excel.BuildDir(sourceExcelPath, relDirPath); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
