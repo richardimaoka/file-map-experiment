@@ -2,6 +2,7 @@ package instruction
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -39,6 +40,8 @@ func updateDefaultDataFromConfig(resolver Resolver) error {
 // runs [excel.BuildDir], then rewrites defaults/<schemaName>.json from the copied workbook
 // for each schemas/<schemaName>.json present after bootstrap. For the layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
+	slog.Info("instruction.BuildDir: starting", "rel_dir", relDirPath, "source_excel", sourceExcelPath)
+
 	if err := excel.BuildDir(sourceExcelPath, relDirPath); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
 	}
@@ -49,5 +52,6 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
 	}
 
+	slog.Info("instruction.BuildDir: finished", "rel_dir", relDirPath)
 	return nil
 }

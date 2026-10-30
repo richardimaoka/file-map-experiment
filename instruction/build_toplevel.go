@@ -2,6 +2,7 @@ package instruction
 
 import (
 	"fmt"
+	"log/slog"
 	"path/filepath"
 	"strings"
 
@@ -64,14 +65,19 @@ func BuildDirs() error {
 		return fmt.Errorf("BuildDirs: %w", err)
 	}
 
+	slog.Info("instruction.BuildDirs: starting", "workbook_count", len(excelPaths))
+
 	for _, excelPath := range excelPaths {
 		formatName := formatName(excelPath)
-		formatSchemaDir := top.FormatSchemaDir(formatName)
+		relDir := top.FormatSchemaRelDir(formatName)
 
-		if err := BuildDir(excelPath, formatSchemaDir); err != nil {
+		slog.Info("instruction.BuildDirs: building format", "format", formatName, "rel_dir", relDir, "source_excel", excelPath)
+
+		if err := BuildDir(excelPath, relDir); err != nil {
 			return fmt.Errorf("BuildDirs: %w", err)
 		}
 	}
 
+	slog.Info("instruction.BuildDirs: finished", "workbook_count", len(excelPaths))
 	return nil
 }
