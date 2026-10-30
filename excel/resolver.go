@@ -19,7 +19,7 @@ import (
 //
 // Example: NewResolver("cases/client1")
 type Resolver struct {
-	baseDir    string
+	appBaseDir string
 	relDirPath string
 }
 
@@ -27,13 +27,13 @@ func NewResolver(relDirPath string) Resolver {
 	baseDir := env.AppBaseDir()
 
 	return Resolver{
-		baseDir:    baseDir,
+		appBaseDir: baseDir,
 		relDirPath: relDirPath,
 	}
 }
 
 func (p Resolver) FullDirPath() string {
-	return filepath.Join(p.baseDir, p.relDirPath)
+	return filepath.Join(p.appBaseDir, p.relDirPath)
 }
 
 func (p Resolver) ExcelPath(config ExcelConfig) string {
