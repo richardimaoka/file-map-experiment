@@ -92,8 +92,8 @@ func TestSchemaPrep_Validate(t *testing.T) {
 	}
 }
 
-func TestExcelConfig_GetSchemaPrep(t *testing.T) {
-	cfg := ExcelConfig{
+func TestConfig_GetSchemaPrep(t *testing.T) {
+	cfg := Config{
 		SchemaPreps: []SchemaPrep{
 			{SchemaName: "sheet1", DataStartRow: 3},
 			{SchemaName: "sheet2"},
@@ -114,8 +114,8 @@ func TestExcelConfig_GetSchemaPrep(t *testing.T) {
 	}
 }
 
-// ReadExcelConfig loads config.json and runs ExcelConfig.Validate.
-func TestReadExcelConfig(t *testing.T) {
+// ReadConfig loads config.json and runs Config.Validate.
+func TestReadConfig(t *testing.T) {
 	cases := []struct {
 		name           string
 		fixture        string // testdata/config/<fixture>/config.json
@@ -163,7 +163,7 @@ func TestReadExcelConfig(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			path := filepath.Join("testdata", "config", tc.fixture, "config.json")
 
-			cfg, err := ReadExcelConfig(path)
+			cfg, err := ReadConfig(path)
 			if tc.wantErr {
 				if err == nil {
 					t.Fatal("expected error")
@@ -171,7 +171,7 @@ func TestReadExcelConfig(t *testing.T) {
 				return
 			}
 			if err != nil {
-				t.Fatalf("ReadExcelConfig: %v", err)
+				t.Fatalf("ReadConfig: %v", err)
 			}
 			if tc.hasSchemaPreps {
 				if len(cfg.SchemaPreps) == 0 {

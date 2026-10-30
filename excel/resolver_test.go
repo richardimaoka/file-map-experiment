@@ -42,7 +42,7 @@ func TestResolver_paths(t *testing.T) {
 	}
 }
 
-// ValidateDir delegates to ReadExcelConfig; config edge cases live in config_test.go.
+// ValidateDir delegates to ReadConfig; config edge cases live in config_test.go.
 func TestResolver_ValidateDir(t *testing.T) {
 	cases := []struct {
 		name       string

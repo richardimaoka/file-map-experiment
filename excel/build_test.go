@@ -11,8 +11,8 @@ import (
 	"github.com/richardimaoka/file-map-experiment/fs"
 )
 
-// BuildExcelDir prepares a working directory from an existing Excel file.
-func TestBuildExcelDir(t *testing.T) {
+// BuildDir prepares a working directory from an existing Excel file.
+func TestBuildDir(t *testing.T) {
 	excelName := "ads_report_simple.xlsx"
 	sourceExcel := filepath.Join("testdata", "samples", excelName)
 	sourceBytes := mustReadFile(t, sourceExcel)
@@ -88,13 +88,13 @@ type buildExcelDirCase struct {
 	name         string
 	buildFixture string // testdata/build/<name>; empty = target directory does not exist yet
 	wantExcel    []byte
-	wantConfig   *ExcelConfig // nil: expect InitConfig-shaped config after build
+	wantConfig   *Config // nil: expect InitConfig-shaped config after build
 }
 
-func assertConfigAfter(t *testing.T, configPath string, want *ExcelConfig, excelName string) {
-	cfg, err := ReadExcelConfig(configPath)
+func assertConfigAfter(t *testing.T, configPath string, want *Config, excelName string) {
+	cfg, err := ReadConfig(configPath)
 	if err != nil {
-		t.Fatalf("ReadExcelConfig: %v", err)
+		t.Fatalf("ReadConfig: %v", err)
 	}
 	if want != nil {
 		if !reflect.DeepEqual(cfg, *want) {
@@ -110,9 +110,9 @@ func assertConfigAfter(t *testing.T, configPath string, want *ExcelConfig, excel
 	}
 }
 
-func mustParseConfigFixture(t *testing.T, path string) ExcelConfig {
+func mustParseConfigFixture(t *testing.T, path string) Config {
 	data := mustReadFile(t, path)
-	var cfg ExcelConfig
+	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		t.Fatalf("parse config fixture %s: %v", path, err)
 	}

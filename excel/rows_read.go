@@ -65,7 +65,7 @@ func readRowsFromExcelInternal(excelPath string, schema TableSchema) ([]RowData,
 }
 
 func ReadRowsFromExcel(resolver Resolver, schemaName string) ([]RowData, error) {
-	config, err := ReadExcelConfig(resolver.ConfigPath())
+	config, err := ReadConfig(resolver.ConfigPath())
 	if err != nil {
 		return nil, fmt.Errorf("ReadRowsFromExcel: %w", err)
 	}

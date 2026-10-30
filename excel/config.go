@@ -83,29 +83,29 @@ func (p SchemaPrep) Validate() error {
 	return nil
 }
 
-type ExcelConfig struct {
+type Config struct {
 	ExcelFileName string       `json:"excel_file_name"`
 	SchemaPreps   []SchemaPrep `json:"schema_preps"` // manually updated in config.json
 }
 
-func (c ExcelConfig) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
+func (c Config) GetSchemaPrep(schemaName string) (SchemaPrep, error) {
 	for _, prep := range c.SchemaPreps {
 		if prep.SchemaName == schemaName {
 			return prep, nil
 		}
 	}
 
-	return SchemaPrep{}, fmt.Errorf("ExcelConfig.GetSchemaPrep: schema %q not found in config", schemaName)
+	return SchemaPrep{}, fmt.Errorf("Config.GetSchemaPrep: schema %q not found in config", schemaName)
 }
 
 // Validate checks the config contents, but doesn't validate if the directory holding config.json
 // is in a good shape (e.g. if the Excel file exists).
-func (c ExcelConfig) Validate() error {
+func (c Config) Validate() error {
 	if strings.TrimSpace(c.ExcelFileName) == "" {
-		return fmt.Errorf("ExcelConfig.Validate: excel_file_name is not set")
+		return fmt.Errorf("Config.Validate: excel_file_name is not set")
 	}
 	if !strings.HasSuffix(c.ExcelFileName, ".xlsx") && !strings.HasSuffix(c.ExcelFileName, ".xlsm") {
-		return fmt.Errorf("ExcelConfig.Validate: excel_file_name must end with .xlsx or .xlsm")
+		return fmt.Errorf("Config.Validate: excel_file_name must end with .xlsx or .xlsm")
 	}
 
 	return nil
@@ -113,21 +113,21 @@ func (c ExcelConfig) Validate() error {
 
 // The excelFileName argument is needed, assuming you already know
 // which Excel file to read upon creating config.json
-func InitConfig(excelFileName string) ExcelConfig {
-	return ExcelConfig{
+func InitConfig(excelFileName string) Config {
+	return Config{
 		ExcelFileName: excelFileName,
 	}
 }
 
-func ReadExcelConfig(jsonPath string) (ExcelConfig, error) {
-	var config ExcelConfig
+func ReadConfig(jsonPath string) (Config, error) {
+	var config Config
 	err := jsonutil.Read(jsonPath, &config)
 	if err != nil {
-		return ExcelConfig{}, fmt.Errorf("ReadExcelConfig: %w", err)
+		return Config{}, fmt.Errorf("excel.ReadConfig: %w", err)
 	}
 
 	if err := config.Validate(); err != nil {
-		return ExcelConfig{}, fmt.Errorf("ReadExcelConfig: %w", err)
+		return Config{}, fmt.Errorf("excel.ReadConfig: %w", err)
 	}
 
 	return config, nil

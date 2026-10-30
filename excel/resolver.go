@@ -36,7 +36,7 @@ func (p Resolver) FullDirPath() string {
 	return filepath.Join(p.appBaseDir, p.relDirPath)
 }
 
-func (p Resolver) ExcelPath(config ExcelConfig) string {
+func (p Resolver) ExcelPath(config Config) string {
 	return filepath.Join(p.FullDirPath(), config.ExcelFileName)
 }
 
@@ -53,7 +53,7 @@ func (p Resolver) SchemaPath(schemaName string) string {
 }
 
 func (p Resolver) ValidateDir() error {
-	_, err := ReadExcelConfig(p.ConfigPath())
+	_, err := ReadConfig(p.ConfigPath())
 	if err != nil {
 		return fmt.Errorf("ValidateDir: %w", err)
 	}
