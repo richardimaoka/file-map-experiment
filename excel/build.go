@@ -71,9 +71,12 @@ func updateSchemasFromConfig(resolver Resolver) error {
 }
 
 // BuildDir bootstraps a case directory at relDirPath:
-// creates the directory, copies the workbook (overwriting), writes config.json if missing,
-// and rewrites schemas/<name>.json for each ready entry in config schema_preps from the
-// copied workbook. For the full on-disk layout, see [Resolver].
+// - ensure the target dir exists
+// - copy Excel file
+// - ensure config.json exists
+// - rewrite schemas/ from config schema_preps (workbook was just overwritten)
+//
+// For the full on-disk layout, see [Resolver].
 func BuildDir(sourceExcelPath string, relDirPath string) error {
 	excelName := filepath.Base(sourceExcelPath)
 	if excelName == "." || excelName == "/" || excelName == "" {
