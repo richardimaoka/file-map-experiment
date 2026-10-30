@@ -31,9 +31,11 @@ func formatName(excelPath string) string {
 	name = strings.Replace(name, ".xlsm", "", 1)
 	name = strings.Replace(name, "【公式】", "", 1)
 	name = strings.Replace(name, "依頼FMT", "", 1)
+	name = strings.Replace(name, "※DDA依頼不可※", "", 1)
 	name = strings.Replace(name, "01_更新者", "", 1)
+	name = strings.Replace(name, "_yyyymm_案件名_", "", 1)
 	name = strings.Replace(name, "_yymmdd_案件名_", "", 1)
-	name = strings.Replace(name, "（アプリ領域）", "", 1)
+	name = strings.Replace(name, "（アプリ領域）", "アプリ領域 ", 1)
 	name = strings.Replace(name, "入稿指示書", "", 1)
 	name = strings.Replace(name, "_入稿シート_", "", 1)
 
