@@ -1,12 +1,12 @@
 package excel
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/richardimaoka/file-map-experiment/fs"
+	"github.com/richardimaoka/file-map-experiment/jsonutil"
 )
 
 func ensureDirExists(resolver Resolver) error {
@@ -34,11 +34,7 @@ func ensureConfigExists(sourceExcelPath string, resolver Resolver) error {
 	if err != nil {
 		excelName := filepath.Base(sourceExcelPath)
 		config := InitConfig(excelName)
-		data, err := json.Marshal(config)
-		if err != nil {
-			return fmt.Errorf("ensureConfigExists: %w", err)
-		}
-		if err := os.WriteFile(configPath, data, 0o644); err != nil {
+		if err := jsonutil.Write(configPath, config); err != nil {
 			return fmt.Errorf("ensureConfigExists: %w", err)
 		}
 	}
