@@ -30,6 +30,10 @@ func NewResolver(relDirPath string) Resolver {
 	return Resolver{Resolver: excel.NewResolver(relDirPath)}
 }
 
+func (r Resolver) DefaultsDir() string {
+	return filepath.Join(r.FullDirPath(), "defaults")
+}
+
 func (r Resolver) DefaultDataPath(schemaName string) string {
-	return filepath.Join(r.FullDirPath(), "defaults", schemaName+".json")
+	return filepath.Join(r.DefaultsDir(), schemaName+".json")
 }
