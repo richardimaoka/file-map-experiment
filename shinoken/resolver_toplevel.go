@@ -85,27 +85,3 @@ func (t TopLevelResolver) TextRelDir() string {
 func (t TopLevelResolver) TextDir() string {
 	return filepath.Join(t.RootDir(), "text")
 }
-
-type caseDir struct {
-	appBaseDir string
-	relDirPath string
-}
-
-func newCaseDir(relDirPath string) caseDir {
-	return caseDir{
-		appBaseDir: env.AppBaseDir(),
-		relDirPath: relDirPath,
-	}
-}
-
-func (c caseDir) RelDirPath() string {
-	return c.relDirPath
-}
-
-func (c caseDir) FullDirPath() string {
-	return filepath.Join(c.appBaseDir, c.relDirPath)
-}
-
-func (c caseDir) ConfigPath() string {
-	return filepath.Join(c.FullDirPath(), "config.json")
-}

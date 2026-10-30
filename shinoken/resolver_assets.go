@@ -1,6 +1,10 @@
 package shinoken
 
-import "path/filepath"
+import (
+	"path/filepath"
+
+	"github.com/richardimaoka/file-map-experiment/env"
+)
 
 // Assets case layout under $APP_BASE_DIR/<relDirPath>/:
 //
@@ -10,14 +14,28 @@ import "path/filepath"
 //	config.json
 
 type AssetsResolver struct {
-	caseDir
+	appBaseDir string
+	relDirPath string
 }
 
 func NewAssetsResolver(relDirPath string) AssetsResolver {
-	return AssetsResolver{caseDir: newCaseDir(relDirPath)}
+	baseDir := env.AppBaseDir()
+
+	return AssetsResolver{
+		appBaseDir: baseDir,
+		relDirPath: relDirPath,
+	}
 }
 
-func (r AssetsResolver) SpecificDefaultInstructionPath() string {
+func (r AssetsResolver) FullDirPath() string {
+	return filepath.Join(r.appBaseDir, r.relDirPath)
+}
+
+func (r AssetsResolver) ConfigPath() string {
+	return filepath.Join(r.FullDirPath(), "config.json")
+}
+
+func (r AssetsResolver) SpecificDefaultInstructionPath(fileName string) string {
 	return filepath.Join(r.FullDirPath(), "specific_default_instruction.json")
 }
 

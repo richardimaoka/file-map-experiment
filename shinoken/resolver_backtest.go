@@ -1,6 +1,11 @@
 package shinoken
 
-import "path/filepath"
+import (
+	"path/filepath"
+
+	"github.com/richardimaoka/file-map-experiment/env"
+	"github.com/richardimaoka/file-map-experiment/instruction"
+)
 
 // Backtest case layout under $APP_BASE_DIR/<relDirPath>/:
 //
@@ -9,17 +14,23 @@ import "path/filepath"
 //	config.json
 
 type BacktestResolver struct {
-	caseDir
+	appBaseDir string
+	relDirPath string
+
+	Forward      ForwardResolver
+	Reverse      ReverseResolver
+	Instructions instruction.Resolver
 }
 
 func NewBacktestResolver(relDirPath string) BacktestResolver {
-	return BacktestResolver{caseDir: newCaseDir(relDirPath)}
+	baseDir := env.AppBaseDir()
+
+	return BacktestResolver{
+		appBaseDir: baseDir,
+		relDirPath: relDirPath,
+	}
 }
 
-func (r BacktestResolver) ForwardDir() string {
-	return filepath.Join(r.FullDirPath(), "forward")
-}
-
-func (r BacktestResolver) ReverseDir() string {
-	return filepath.Join(r.FullDirPath(), "reverse")
+func (r BacktestResolver) FullDirPath() string {
+	return filepath.Join(r.appBaseDir, r.relDirPath)
 }
