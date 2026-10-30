@@ -52,24 +52,24 @@ func ensureConfigExists(sourceExcelPath string, resolver Resolver) error {
 func BuildDir(sourceExcelPath string, relDirPath string) error {
 	excelName := filepath.Base(sourceExcelPath)
 	if excelName == "." || excelName == "/" || excelName == "" {
-		return fmt.Errorf("BuildExcelDir: invalid excel path %q", sourceExcelPath)
+		return fmt.Errorf("excel.BuildDir: invalid excel path %q", sourceExcelPath)
 	}
 
 	resolver := NewResolver(relDirPath)
 
 	// ensure the target dir exists
 	if err := ensureDirExists(resolver); err != nil {
-		return fmt.Errorf("BuildExcelDir: %w", err)
+		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
 	// copy Excel file
 	if err := copyExcelFile(sourceExcelPath, resolver); err != nil {
-		return fmt.Errorf("BuildExcelDir: %w", err)
+		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
 	// ensure config.json exists
 	if err := ensureConfigExists(sourceExcelPath, resolver); err != nil {
-		return fmt.Errorf("BuildExcelDir: %w", err)
+		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
 	return nil
