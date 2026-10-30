@@ -36,25 +36,25 @@ func updateDefaultDataFromConfig(resolver Resolver) error {
 	return nil
 }
 
-func updateConfigFromWorkbook(resolver Resolver) error {
+func syncInstructionConfig(resolver Resolver) error {
 	cfg, err := ReadConfig(resolver.ConfigPath())
 	if err != nil {
-		return fmt.Errorf("updateConfigFromWorkbook: %w", err)
+		return fmt.Errorf("syncInstructionConfig: %w", err)
 	}
 	excelPath := resolver.ExcelPath(cfg.Config)
-	cfg, err = enrichConfig(cfg, excelPath)
+	cfg, err = filterSchemaPreps(cfg, excelPath)
 	if err != nil {
-		return fmt.Errorf("updateConfigFromWorkbook: %w", err)
+		return fmt.Errorf("syncInstructionConfig: %w", err)
 	}
 	if err := jsonutil.Write(resolver.ConfigPath(), cfg.Config); err != nil {
-		return fmt.Errorf("updateConfigFromWorkbook: %w", err)
+		return fmt.Errorf("syncInstructionConfig: %w", err)
 	}
 	return nil
 }
 
 // BuildDir bootstraps an instruction case at relDirPath:
 // - run [excel.BuildDir]
-// - rewrite config.json from enrichConfig (management sheets, comments)
+// - rewrite config.json from filterSchemaPreps (management sheets, comments)
 // - rewrite defaults/<schemaName>.json for each schemas/<schemaName>.json
 //
 // For the full on-disk layout, see [Resolver].
@@ -70,8 +70,8 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 
 	resolver := NewResolver(relDirPath)
 
-	// rewrite config.json from enrichConfig
-	if err := updateConfigFromWorkbook(resolver); err != nil {
+	// rewrite config.json from filterSchemaPreps
+	if err := syncInstructionConfig(resolver); err != nil {
 		return fmt.Errorf("instruction.BuildDir: %w", err)
 	}
 

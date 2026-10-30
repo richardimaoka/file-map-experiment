@@ -37,12 +37,11 @@ var managementSheets = []string{
 	"自動入稿時確認シート",
 }
 
-// enrichConfig adjusts cfg.SchemaPreps for instruction workbooks: drops management sheets,
-// flags other sheets without 入力規則 text or data validation with Comment 要確認.
-func enrichConfig(cfg Config, excelPath string) (Config, error) {
+// filterSchemaPreps drops management sheets and sets Comment 要確認 when a sheet lacks 入力規則 text or data validation.
+func filterSchemaPreps(cfg Config, excelPath string) (Config, error) {
 	f, err := excelize.OpenFile(excelPath)
 	if err != nil {
-		return Config{}, fmt.Errorf("enrichConfig: %w", err)
+		return Config{}, fmt.Errorf("filterSchemaPreps: %w", err)
 	}
 	defer f.Close()
 
@@ -50,15 +49,15 @@ func enrichConfig(cfg Config, excelPath string) (Config, error) {
 	for _, prep := range cfg.SchemaPreps {
 		sheetName := prep.SheetName
 		if sheetName == "" {
-			return Config{}, fmt.Errorf("enrichConfig: schema %q: sheet_name is not set", prep.SchemaName)
+			return Config{}, fmt.Errorf("filterSchemaPreps: schema %q: sheet_name is not set", prep.SchemaName)
 		}
 
 		idx, err := f.GetSheetIndex(sheetName)
 		if err != nil {
-			return Config{}, fmt.Errorf("enrichConfig: sheet %q: %w", sheetName, err)
+			return Config{}, fmt.Errorf("filterSchemaPreps: sheet %q: %w", sheetName, err)
 		}
 		if idx < 0 {
-			return Config{}, fmt.Errorf("enrichConfig: sheet %q not found in workbook", sheetName)
+			return Config{}, fmt.Errorf("filterSchemaPreps: sheet %q not found in workbook", sheetName)
 		}
 
 		if isManagementSheet(sheetName) {
@@ -67,11 +66,11 @@ func enrichConfig(cfg Config, excelPath string) (Config, error) {
 
 		hasRulesText, err := sheetContainsText(f, sheetName, "入力規則")
 		if err != nil {
-			return Config{}, fmt.Errorf("enrichConfig: %w", err)
+			return Config{}, fmt.Errorf("filterSchemaPreps: %w", err)
 		}
 		hasDataValidation, err := sheetHasDataValidation(f, sheetName)
 		if err != nil {
-			return Config{}, fmt.Errorf("enrichConfig: %w", err)
+			return Config{}, fmt.Errorf("filterSchemaPreps: %w", err)
 		}
 
 		if !hasRulesText && !hasDataValidation {

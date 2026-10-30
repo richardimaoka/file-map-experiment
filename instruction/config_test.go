@@ -57,9 +57,9 @@ func TestInstructionEnrichConfig(t *testing.T) {
 		},
 	}
 
-	got, err := enrichConfig(cfg, path)
+	got, err := filterSchemaPreps(cfg, path)
 	if err != nil {
-		t.Fatalf("enrichConfig: %v", err)
+		t.Fatalf("filterSchemaPreps: %v", err)
 	}
 
 	want := []excel.SchemaPrep{
@@ -101,9 +101,9 @@ func TestInstructionEnrichConfig_dataValidationRetainsWithoutComment(t *testing.
 		},
 	}
 
-	got, err := enrichConfig(cfg, path)
+	got, err := filterSchemaPreps(cfg, path)
 	if err != nil {
-		t.Fatalf("enrichConfig: %v", err)
+		t.Fatalf("filterSchemaPreps: %v", err)
 	}
 	if len(got.SchemaPreps) != 1 {
 		t.Fatalf("SchemaPreps len: got %d want 1", len(got.SchemaPreps))
@@ -129,7 +129,7 @@ func TestInstructionEnrichConfig_emptySheetName(t *testing.T) {
 			}},
 		},
 	}
-	_, err := enrichConfig(cfg, path)
+	_, err := filterSchemaPreps(cfg, path)
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -148,7 +148,7 @@ func TestInstructionEnrichConfig_missingSheet(t *testing.T) {
 			SchemaPreps:   []excel.SchemaPrep{excelPrep("missing")},
 		},
 	}
-	_, err := enrichConfig(cfg, path)
+	_, err := filterSchemaPreps(cfg, path)
 	if err == nil {
 		t.Fatal("expected error")
 	}
