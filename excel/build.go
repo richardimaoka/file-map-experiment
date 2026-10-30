@@ -52,7 +52,7 @@ func syncConfigFile(sourceExcelPath string, resolver Resolver) error {
 	return nil
 }
 
-func updateSchemasFromConfig(resolver Resolver) error {
+func UpdateSchemasFromConfig(resolver Resolver) error {
 	config, err := ReadConfig(resolver.ConfigPath())
 	if err != nil {
 		return fmt.Errorf("updateSchemasFromConfig: %w", err)
@@ -107,7 +107,7 @@ func BuildDir(sourceExcelPath string, relDirPath string) error {
 	}
 
 	// rewrite schemas/ from config schema_preps (workbook was just overwritten)
-	if err := updateSchemasFromConfig(resolver); err != nil {
+	if err := UpdateSchemasFromConfig(resolver); err != nil {
 		return fmt.Errorf("excel.BuildDir: %w", err)
 	}
 
